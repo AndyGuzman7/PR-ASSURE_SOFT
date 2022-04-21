@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:taxi_segurito_app/pages/contacList/list_contact.dart';
 import 'package:taxi_segurito_app/pages/vehicle_screen/vehicle_edit_screen.dart';
 import 'package:taxi_segurito_app/pages/vehicle_screen/vehicle_register_screen.dart';
+import 'package:taxi_segurito_app/prueba/iotScreen.dart';
 import './pages/driver_register/driver_register.dart';
 import './pages/main_window/main_window.dart';
 import './pages/log_in/log_in_page.dart';
@@ -69,9 +70,10 @@ class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
       title: "Taxi Segurito",
       theme: ThemeData(primarySwatch: Colors.amber),
       debugShowCheckedModeBanner: false,
-      initialRoute: routeInitial,
+      initialRoute: 'iot',
       routes: {
         'loginUser': (_) => UserLoginPage(),
+        'iot': (_) => IotScreen(),
         'registerScreen': (_) => RegisterPage(),
         'firstScreen': (_) => MainWindow(),
         'scannerQr': (_) => ScannerQrPage(name: this.sessionName),
