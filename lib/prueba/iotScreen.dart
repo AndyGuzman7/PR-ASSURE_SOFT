@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:location/location.dart';
 import 'package:taxi_segurito_app/models/client_request.dart';
 
 class IotScreen extends StatefulWidget {
@@ -11,6 +12,32 @@ class IotScreen extends StatefulWidget {
 }
 
 class _IotScreenState extends State<IotScreen> {
+  Location location = new Location();
+
+  late bool _serviceEnabled;
+  late PermissionStatus _permissionGranted;
+  late LocationData _locationData;
+
+  Future<void> initUbicacion() async {
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return;
+      }
+    }
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+
+    _locationData = await location.getLocation();
+  }
+
   bool value = false;
   final dbRef = FirebaseDatabase.instance.reference();
 
@@ -21,10 +48,7 @@ class _IotScreenState extends State<IotScreen> {
 
   Future<void> writeDataUser() async {
     ClienRequest clienRequest = new ClienRequest("casa", "cine", 1, 12, 12, 12);
-    dbRef
-        .reference()
-        .child("LightState2")
-        .set({"destino": clienRequest.destino});
+    dbRef.reference().child("Solicitudes").push().set(clienRequest.toJson());
   }
 
   onUpdate() {
@@ -41,6 +65,19 @@ class _IotScreenState extends State<IotScreen> {
     Stream<Event> streamBuilder = dbRef.child("Data").onValue;
     streamBuilder.listen((event) {
       print(event.snapshot.value);
+    });
+    initUbicacion();
+    location.onLocationChanged.listen((LocationData currentLocation) {
+      // Use current location
+      _getLocation();
+    });
+  }
+
+  void _getLocation() async {
+    final LocationData pos = await location.getLocation();
+    setState(() {
+      print(pos.latitude);
+      // _lastMapPosition = pos;
     });
   }
 
@@ -140,6 +177,11 @@ class _IotScreenState extends State<IotScreen> {
                         onUpdate();
                         writeData();
                         writeDataUser();
+                      },
+                      label: Text("ON")),
+                  FloatingActionButton.extended(
+                      onPressed: () {
+                        _getLocation();
                       },
                       label: Text("ON"))
                 ],
