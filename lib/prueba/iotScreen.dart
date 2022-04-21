@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:taxi_segurito_app/models/client_request.dart';
 
 class IotScreen extends StatefulWidget {
   IotScreen({Key? key}) : super(key: key);
@@ -16,6 +17,14 @@ class _IotScreenState extends State<IotScreen> {
   Future<void> writeData() async {
     dbRef.reference().child("LightState").set({"switch": value});
     dbRef.reference().child("Data").set({"Huminty": 0, "Temperatura": 0});
+  }
+
+  Future<void> writeDataUser() async {
+    ClienRequest clienRequest = new ClienRequest("casa", "cine", 1, 12, 12, 12);
+    dbRef
+        .reference()
+        .child("LightState2")
+        .set({"destino": clienRequest.destino});
   }
 
   onUpdate() {
@@ -130,6 +139,7 @@ class _IotScreenState extends State<IotScreen> {
                       onPressed: () {
                         onUpdate();
                         writeData();
+                        writeDataUser();
                       },
                       label: Text("ON"))
                 ],
