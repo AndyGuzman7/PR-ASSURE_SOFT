@@ -49,12 +49,14 @@ class DriverRegisterFormState<T extends DriverRegisterForm> extends State<T> {
   }
 
   Driver getDriver() {
-    return new Driver.insert(
+    return new Driver.insertV2(
       fullName: fullname,
       cellphone: fieldCellphone.getValue(),
       license: fieldLicense.getValue(),
       ci: fieldCi.getValue(),
       pictureStr: fieldImage.getImageBase64AsString(),
+      email: fieldEmail.getValue(),
+      password: fieldPassword.getValue()
     );
   }
 

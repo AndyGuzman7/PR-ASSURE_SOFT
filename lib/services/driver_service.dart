@@ -20,6 +20,8 @@ class DriversService {
         "ci": driver.ci,
         "picture": driver.pictureStr,
         "ownerId": ownerId,
+        "email" : driver.email,
+        "password" : driver.password,
       }),
     );
     return response.statusCode == 200;
@@ -35,6 +37,7 @@ class DriversService {
     );
 
     http.Response response = await http.get(endpoint);
+    print(response.statusCode.toString() + " MENSAJE");
     if (response.statusCode == 200) {
       return _jsonToList(response);
     }
@@ -94,7 +97,9 @@ class DriversService {
             'cellphone': driver.cellphone,
             'license': driver.license,
             'ci': driver.ci,
-            'picture': stringFromBase64Bytes(driver.picture)
+            'picture': stringFromBase64Bytes(driver.picture),
+            "email" : driver.email,
+            "password" : driver.password,
           },
         ),
       );
