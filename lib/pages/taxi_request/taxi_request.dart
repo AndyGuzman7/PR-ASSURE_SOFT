@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:taxi_segurito_app/components/buttons/CustomButton.dart';
+import 'package:taxi_segurito_app/components/slider/slider.dart';
+import 'package:taxi_segurito_app/models/client_request.dart';
+import 'package:taxi_segurito_app/pages/taxi_request/taxi_request_functionality.dart';
+import 'package:taxi_segurito_app/services/sessions_service.dart';
 import '../../components/inputs/CustomTextField.dart';
 import '../../validators/TextFieldValidators.dart';
 
@@ -16,7 +21,12 @@ class _PruebaState extends State<ServiceFormMap> {
   Map<MarkerId, Marker> _markers = {};
   Set<Marker> get markers => _markers.values.toSet();
   late CustomTextField fieldPassengers;
+  late CustomSlider customSlider;
   Location location = Location();
+  TaxiRequestFunctionality taxiRequestFunctionality =
+      new TaxiRequestFunctionality();
+  late LatLng latLngOrigen;
+  late LatLng latLngDestino;
 
   LatLng ubi = LatLng(-0.000327615289788, -0.00522494279294);
 
@@ -45,6 +55,7 @@ class _PruebaState extends State<ServiceFormMap> {
         //  icon: pinLocationIconCar,
         infoWindow: InfoWindow(title: "Destine"),
         onDragEnd: (newPosition) {
+          latLngDestino = newPosition;
           print("new position Destine is $newPosition");
         });
 
@@ -82,6 +93,7 @@ class _PruebaState extends State<ServiceFormMap> {
       setCustomMapPin();
       initUbicacion();
     });
+    taxiRequestFunctionality.initFirebase();
   }
 
   void setCustomMapPin() async {
@@ -97,6 +109,27 @@ class _PruebaState extends State<ServiceFormMap> {
 
   @override
   Widget build(BuildContext context) {
+    final btnRegister = new CustomButton(
+      onTap: () {
+        ClienRequest clienRequest = new ClienRequest(
+            1,
+            latLngOrigen.latitude,
+            latLngOrigen.longitude,
+            int.parse(fieldPassengers.getValue()),
+            latLngDestino.latitude,
+            latLngDestino.longitude,
+            customSlider.getValue());
+        taxiRequestFunctionality.sendRequest(clienRequest);
+      },
+      buttonText: "Enviar Solicitud",
+      buttonColor: Color.fromRGBO(255, 193, 7, 1),
+      buttonTextColor: Colors.white,
+      marginBotton: 0,
+      marginLeft: 5,
+      marginRight: 0,
+      marginTop: 0,
+    );
+    customSlider = new CustomSlider();
     fieldPassengers = CustomTextField(
       hint: "Número de pasajeros",
       multiValidator: MultiValidator([
@@ -117,11 +150,22 @@ class _PruebaState extends State<ServiceFormMap> {
             Row(
               children: [
                 Expanded(
-                    child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  //CustomFieldText Passengers
-                  child: fieldPassengers,
-                ))
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    //CustomFieldText Passengers
+                    child: Column(
+                      children: [
+                        fieldPassengers,
+                        Container(
+                          child: Text("Rango de Busqueda",
+                              textAlign: TextAlign.right),
+                        ),
+                        customSlider,
+                        btnRegister
+                      ],
+                    ),
+                  ),
+                )
               ],
             ),
 
@@ -134,6 +178,7 @@ class _PruebaState extends State<ServiceFormMap> {
                   final locat = snapshot.data;
                   LatLng locationOri =
                       LatLng(locat?.latitude ?? 0.0, locat?.longitude ?? 0.0);
+                  latLngOrigen = locationOri;
                   print("respuesta " + locationOri.latitude.toString());
 
                   return Expanded(

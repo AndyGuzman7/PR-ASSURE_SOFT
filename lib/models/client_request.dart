@@ -1,29 +1,38 @@
 import 'package:flutter/cupertino.dart';
 
 class ClienRequest {
-  late String origen;
-  late String destino;
+  late double idUser;
+  late double latitudOrigen;
+  late double longitudOrigen;
   late int numeroPasageros;
   late double rango;
-  late double latitud;
-  late double longitud;
-  ClienRequest(this.origen, this.destino, this.numeroPasageros, this.latitud,
-      this.longitud, this.rango);
+  late double latitudDestino;
+  late double longitudDestino;
+  ClienRequest(
+      this.idUser,
+      this.latitudOrigen,
+      this.longitudOrigen,
+      this.numeroPasageros,
+      this.latitudDestino,
+      this.longitudDestino,
+      this.rango);
 
   ClienRequest.fromJson(Map<dynamic, dynamic> json)
-      : origen = json['origen'] as String,
-        destino = json['destino'] as String,
+      : idUser = double.parse(json['idUser'] as String),
+        latitudOrigen = double.parse(json['latitudOrigen'] as String),
+        longitudOrigen = double.parse(json['longitudOrigen'] as String),
         numeroPasageros = int.parse(json['numeroPasajeros'] as String),
         rango = double.parse(json['rango'] as String),
-        latitud = double.parse(json['latitud'] as String),
-        longitud = double.parse(json['longitud'] as String);
+        latitudDestino = double.parse(json['latitudDestino'] as String),
+        longitudDestino = double.parse(json['longitudDestino'] as String);
 
   Map<dynamic, dynamic> toJson() => <dynamic, dynamic>{
-        'origen': origen,
-        'destino': destino,
+        'idUser': idUser,
+        'latitudOrigen': latitudOrigen,
+        'longitudOrigen': longitudOrigen,
         'numeroPasajeros': numeroPasageros,
         'rango': rango,
-        'latitud': latitud,
-        'longitud': longitud
+        'latitudDestino': latitudDestino,
+        'longitudDestino': longitudDestino
       };
 }
