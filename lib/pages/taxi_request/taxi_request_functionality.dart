@@ -58,8 +58,6 @@ class TaxiRequestFunctionality {
   }
 
   void getInstance() {
-    return dbRef.child(nameBranch).once().then((DataSnapshot value) {
-      //print(value.value["Temperatura"]);
-    });
+    return dbRef;
   }
 }

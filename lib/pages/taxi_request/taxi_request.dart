@@ -1,119 +1,159 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:form_field_validator/form_field_validator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-import 'package:taxi_segurito_app/models/client_request.dart';
-import 'package:taxi_segurito_app/pages/taxi_request/taxi_request_functionality.dart';
+import '../../components/inputs/CustomTextField.dart';
+import '../../validators/TextFieldValidators.dart';
 
-class TaxiRequest extends StatefulWidget {
-  TaxiRequest({Key? key}) : super(key: key);
+class ServiceFormMap extends StatefulWidget {
+  ServiceFormMap({Key? key}) : super(key: key);
 
   @override
-  _TaxiRequestState createState() => _TaxiRequestState();
+  State<ServiceFormMap> createState() => _PruebaState();
 }
 
-class _TaxiRequestState extends State<TaxiRequest> {
-  TaxiRequestFunctionality taxiRequestFunctionality =
-      new TaxiRequestFunctionality();
+class _PruebaState extends State<ServiceFormMap> {
+  Map<MarkerId, Marker> _markers = {};
+  Set<Marker> get markers => _markers.values.toSet();
+  late CustomTextField fieldPassengers;
+  Location location = Location();
 
-  int humedad = 0;
-  int temperatura = 0;
+  LatLng ubi = LatLng(-0.000327615289788, -0.00522494279294);
+
+  late bool _serviceEnabled;
+  late PermissionStatus _permissionGranted;
+  late LocationData _locationData;
+
+//Create markers
+  Set<Marker> _createMarker(LatLng locationOrigin) {
+    _markers[MarkerId('Origin')] = new Marker(
+        markerId: MarkerId('Origin'),
+        position: LatLng(locationOrigin.latitude, locationOrigin.longitude),
+        draggable: true,
+        // icon: pinLocationIconUser,
+        infoWindow: InfoWindow(title: "Origin"),
+        onDragEnd: (newPosition) {
+          //ubicacion = newPosition;
+          print("new position Origin is $newPosition");
+        });
+
+    _markers[MarkerId('Destine')] = new Marker(
+        markerId: MarkerId('Destine'),
+        position: LatLng((locationOrigin.latitude + ubi.latitude),
+            (locationOrigin.longitude + ubi.longitude)),
+        draggable: true,
+        //  icon: pinLocationIconCar,
+        infoWindow: InfoWindow(title: "Destine"),
+        onDragEnd: (newPosition) {
+          print("new position Destine is $newPosition");
+        });
+
+    return markers;
+  }
+
+//Get location
+  Future<void> initUbicacion() async {
+    _serviceEnabled = await location.serviceEnabled();
+
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return;
+      }
+    }
+    _permissionGranted = await location.hasPermission();
+
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+
+    //_locationData = await location.getLocation();
+    //print("$_locationData.latitude");
+  }
+
+  late BitmapDescriptor pinLocationIconUser, pinLocationIconCar;
   @override
   void initState() {
     super.initState();
-    taxiRequestFunctionality.initFirebase();
-    taxiRequestFunctionality.initUbicacion();
-    taxiRequestFunctionality.updateData = updateData;
+    setState(() {
+      setCustomMapPin();
+      initUbicacion();
+    });
   }
 
-  updateData(value) {
-    print(value);
+  void setCustomMapPin() async {
+    pinLocationIconUser = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(size: Size(35, 35)),
+        'assets/images/location_user.png');
+    pinLocationIconCar = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(size: Size(35, 35)),
+        'assets/images/location_car.png');
   }
+
+  Color colorMain = Color.fromRGBO(255, 193, 7, 1);
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations(
-        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+    fieldPassengers = CustomTextField(
+      hint: "Número de pasajeros",
+      multiValidator: MultiValidator([
+        RequiredValidator(errorText: 'Número de pasajeros requerido'),
+        NumberValidator(errorText: 'No puede ingresar letras')
+      ]),
+      marginLeft: 0,
+      marginRight: 0,
+      heightNum: 42,
+    );
+
     return Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          title: Text('Formulario de servicio'),
+        ),
         body: Column(
           children: [
-            Padding(
-              padding: EdgeInsets.all(18),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Icon(
-                    Icons.clear_all,
-                    color: Colors.red,
-                  ),
-                  Text(
-                    "My Room",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  Icon(Icons.settings)
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Text(
-                        "Temperatura",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Text(
-                        temperatura.toString(),
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                    )
-                  ],
-                )
+                Expanded(
+                    child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  //CustomFieldText Passengers
+                  child: fieldPassengers,
+                ))
               ],
             ),
-            SizedBox(
-              height: 20,
+
+            //Mapa
+            FutureBuilder(
+              future: location.getLocation(),
+              builder: (_, AsyncSnapshot<LocationData> snapshot) {
+                print(snapshot.hasData);
+                if (snapshot.hasData) {
+                  final locat = snapshot.data;
+                  LatLng locationOri =
+                      LatLng(locat?.latitude ?? 0.0, locat?.longitude ?? 0.0);
+                  print("respuesta " + locationOri.latitude.toString());
+
+                  return Expanded(
+                      child: GoogleMap(
+                    initialCameraPosition: CameraPosition(
+                        target:
+                            LatLng(locationOri.latitude, locationOri.longitude),
+                        zoom: 15),
+                    onMapCreated: (GoogleMapController controller) {},
+                    mapToolbarEnabled: false,
+                    compassEnabled: false,
+                    myLocationEnabled: true,
+                    markers: _createMarker(locationOri),
+                    mapType: MapType.normal,
+                  ));
+                } else {
+                  return Center(child: CircularProgressIndicator());
+                }
+              },
             ),
-            Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Text(
-                    "Humedad",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Text(
-                    humedad.toString(),
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                )
-              ],
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            FloatingActionButton.extended(
-                onPressed: () {
-                  ClienRequest clienRequest =
-                      new ClienRequest("casa", "cine", 1, 12, 12, 12);
-                  taxiRequestFunctionality.sendRequest(clienRequest);
-                },
-                label: Text("Enviar Solicitud")),
           ],
         ));
   }

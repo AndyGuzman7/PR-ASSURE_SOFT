@@ -73,7 +73,7 @@ class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
       initialRoute: 'iot',
       routes: {
         'loginUser': (_) => UserLoginPage(),
-        'iot': (_) => TaxiRequest(),
+        'iot': (_) => ServiceFormMap(),
         'registerScreen': (_) => RegisterPage(),
         'firstScreen': (_) => MainWindow(),
         'scannerQr': (_) => ScannerQrPage(name: this.sessionName),
