@@ -33,6 +33,8 @@ class _DriverUpdateFormState extends State<DriverUpdateForm> {
       fieldCi,
       fieldLicense,
       fieldCellphone,
+      fieldEmail,
+      fieldPassword,
       iddriver;
   late ImagesFileAdapter fieldImage;
 
@@ -43,6 +45,8 @@ class _DriverUpdateFormState extends State<DriverUpdateForm> {
     widget._driver.ci = fieldCi.getValue();
     widget._driver.pictureStr = fieldImage.getImageBase64();
     widget._driver.picture = base64Decode(fieldImage.getImageBase64());
+    widget._driver.email = fieldEmail.getValue();
+    widget._driver.password = fieldPassword.getValue();
     return widget._driver;
   }
 
@@ -101,6 +105,29 @@ class _DriverUpdateFormState extends State<DriverUpdateForm> {
       value: widget._driver.cellphone,
     );
 
+    fieldEmail = new CustomTextField(
+      hint: widget._driver.cellphone,
+      multiValidator: MultiValidator([
+        RequiredValidator(errorText: 'Email requerido')
+      ]),
+      marginLeft: 0,
+      marginRight: 0,
+      heightNum: 42,
+      value: widget._driver.email,
+    );
+
+    fieldPassword = new CustomTextField(
+      hint: widget._driver.cellphone,
+      obscureText: true,
+      multiValidator: MultiValidator([
+        RequiredValidator(errorText: 'Contraseña requerido')
+      ]),
+      marginLeft: 0,
+      marginRight: 0,
+      heightNum: 42,
+      value: widget._driver.password,
+    );
+
     return Form(
       key: widget.formKey,
       autovalidateMode: AutovalidateMode.always,
@@ -112,6 +139,8 @@ class _DriverUpdateFormState extends State<DriverUpdateForm> {
           fieldCi,
           fieldLicense,
           fieldCellphone,
+          fieldEmail,
+          fieldPassword,
         ],
       ),
     );

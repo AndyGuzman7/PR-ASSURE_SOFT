@@ -37,7 +37,6 @@ class DriversService {
     );
 
     http.Response response = await http.get(endpoint);
-    print(response.statusCode.toString() + " MENSAJE");
     if (response.statusCode == 200) {
       return _jsonToList(response);
     }
@@ -98,8 +97,9 @@ class DriversService {
             'license': driver.license,
             'ci': driver.ci,
             'picture': stringFromBase64Bytes(driver.picture),
-            "email" : driver.email,
-            "password" : driver.password,
+            'ownerId': driver.ownerId,
+            'email' : driver.email,
+            'password' : driver.password,
           },
         ),
       );
