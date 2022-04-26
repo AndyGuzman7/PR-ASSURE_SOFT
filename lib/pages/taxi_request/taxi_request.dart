@@ -32,7 +32,6 @@ class _PruebaState extends State<ServiceFormMap> {
 
   late bool _serviceEnabled;
   late PermissionStatus _permissionGranted;
-  late LocationData _locationData;
 
 //Create markers
   Set<Marker> _createMarker(LatLng locationOrigin) {
@@ -44,7 +43,9 @@ class _PruebaState extends State<ServiceFormMap> {
         infoWindow: InfoWindow(title: "Origin"),
         onDragEnd: (newPosition) {
           //ubicacion = newPosition;
+          latLngOrigen = LatLng(newPosition.latitude, newPosition.longitude);
           print("new position Origin is $newPosition");
+          print("$latLngOrigen.longitude $latLngOrigen.latitude");
         });
 
     _markers[MarkerId('Destine')] = new Marker(
@@ -55,8 +56,9 @@ class _PruebaState extends State<ServiceFormMap> {
         //  icon: pinLocationIconCar,
         infoWindow: InfoWindow(title: "Destine"),
         onDragEnd: (newPosition) {
-          latLngDestino = newPosition;
+          latLngDestino = LatLng(newPosition.latitude, newPosition.longitude);
           print("new position Destine is $newPosition");
+          print("$latLngDestino.longitude $latLngDestino.latitude");
         });
 
     return markers;

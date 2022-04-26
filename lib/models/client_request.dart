@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
 class ClienRequest {
-  late double idUser;
+  late int idUser;
   late double latitudOrigen;
   late double longitudOrigen;
   late int numeroPasageros;
@@ -18,13 +18,13 @@ class ClienRequest {
       this.rango);
 
   ClienRequest.fromJson(Map<dynamic, dynamic> json)
-      : idUser = double.parse(json['idUser'] as String),
-        latitudOrigen = double.parse(json['latitudOrigen'] as String),
-        longitudOrigen = double.parse(json['longitudOrigen'] as String),
-        numeroPasageros = int.parse(json['numeroPasajeros'] as String),
-        rango = double.parse(json['rango'] as String),
-        latitudDestino = double.parse(json['latitudDestino'] as String),
-        longitudDestino = double.parse(json['longitudDestino'] as String);
+      : idUser = json['idUser'],
+        latitudOrigen = json['latitudOrigen'],
+        longitudOrigen = json['longitudOrigen'],
+        numeroPasageros = json['numeroPasajeros'],
+        rango = json['rango'] * 1.0,
+        latitudDestino = json['latitudDestino'],
+        longitudDestino = json['longitudDestino'];
 
   Map<dynamic, dynamic> toJson() => <dynamic, dynamic>{
         'idUser': idUser,
