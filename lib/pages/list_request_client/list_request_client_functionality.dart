@@ -105,20 +105,17 @@ class ListRequestClientFunctionality {
 
   Future<LocationData> getUbication() async {
     return _locationData = await location.getLocation();
-    //print(_locationData.latitude);
   }
 
   void getInstance() {
     return dbRef;
   }
 
-  //formula para calcular distancias de dos ubicaciones
   double getDistance(
       double startLat, double starLong, double endLat, double endLong) {
-    //la distancia calculada es en metros
     double distance =
         Geolocator.distanceBetween(startLat, starLong, endLat, endLong);
-    //distance = Geolocator.distanceBetween(52.2165157, 6.9437819, 52.3546274, 4.8285838);
+
     return distance;
   }
 

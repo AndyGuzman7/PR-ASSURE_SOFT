@@ -39,7 +39,7 @@ class _PruebaState extends State<ServiceFormMap> {
         markerId: MarkerId('Origin'),
         position: LatLng(locationOrigin.latitude, locationOrigin.longitude),
         draggable: true,
-        // icon: pinLocationIconUser,
+        icon: pinLocationIconUser,
         infoWindow: InfoWindow(title: "Origin"),
         onDragEnd: (newPosition) {
           //ubicacion = newPosition;
@@ -53,7 +53,7 @@ class _PruebaState extends State<ServiceFormMap> {
         position: LatLng((locationOrigin.latitude + latLngDestino.latitude),
             (locationOrigin.longitude + latLngDestino.longitude)),
         draggable: true,
-        //  icon: pinLocationIconCar,
+        icon: pinLocationIconCar,
         infoWindow: InfoWindow(title: "Destine"),
         onDragEnd: (newPosition) {
           latLngDestino = LatLng(newPosition.latitude, newPosition.longitude);
@@ -91,10 +91,10 @@ class _PruebaState extends State<ServiceFormMap> {
   @override
   void initState() {
     super.initState();
-    setState(() {
-      setCustomMapPin();
-      initUbicacion();
-    });
+
+    setCustomMapPin();
+    initUbicacion();
+
     taxiRequestFunctionality.initFirebase();
   }
 

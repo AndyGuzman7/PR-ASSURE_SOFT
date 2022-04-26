@@ -13,29 +13,11 @@ class TaxiRequestFunctionality {
   late Location location = new Location();
   late bool _serviceEnabled;
   late PermissionStatus _permissionGranted;
-  late LocationData _locationData;
-
   Function(String)? updateData;
 
   TaxiRequestFunctionality();
   void initFirebase() {
     dbRef = FirebaseDatabase.instance.reference();
-    Stream<Event> streamBuilder = dbRef.child("Request").onValue;
-    streamBuilder.listen((event) {
-      DataSnapshot d = event.snapshot;
-      final extractedData = d.value;
-      late List<ClienRequest> lista = [];
-      extractedData.forEach((blogId, blogData) {
-        print(blogData);
-        ClienRequest s = ClienRequest.fromJson(blogData);
-
-        lista.add(s);
-      });
-
-      for (var item in lista) {
-        print(item);
-      }
-    });
   }
 
   void update(value) {
@@ -44,13 +26,8 @@ class TaxiRequestFunctionality {
 
   Future<void> sendRequest(ClienRequest clienRequest) async {
     String key = dbRef.reference().child(nameBranch).push().key.toString();
-
     clienRequest.iduserFirebase = key;
     dbRef.reference().child(nameBranch).child(key).set(clienRequest.toJson());
-  }
-
-  Stream<Event> getEvent() {
-    return dbRef.child(nameBranch).onValue;
   }
 
   Future<void> initUbicacion() async {
@@ -61,7 +38,6 @@ class TaxiRequestFunctionality {
         return;
       }
     }
-
     _permissionGranted = await location.hasPermission();
     if (_permissionGranted == PermissionStatus.denied) {
       _permissionGranted = await location.requestPermission();
@@ -69,44 +45,9 @@ class TaxiRequestFunctionality {
         return;
       }
     }
-
-    _locationData = await location.getLocation();
-
-    print(_locationData.latitude);
   }
 
   void getInstance() {
     return dbRef;
-  }
-
-  //formula para calcular distancias de dos ubicaciones
-  double getDistance(
-      double startLat, double starLong, double endLat, double endLong) {
-    //la distancia calculada es en metros
-    double distance =
-        Geolocator.distanceBetween(startLat, starLong, endLat, endLong);
-    //distance = Geolocator.distanceBetween(52.2165157, 6.9437819, 52.3546274, 4.8285838);
-    return distance;
-  }
-
-  double getConvertKm(double distanceMeters) {
-    double varMeters = distanceMeters;
-    double varKm = varMeters / 1000;
-    double rangeDistance = double.parse((varKm).toStringAsFixed(2));
-    print(varMeters);
-    print(varKm);
-    print(rangeDistance);
-    return rangeDistance;
-  }
-
-  bool rangeBetween(int rangeSlider) {
-    var response = true;
-    var valueDistance =
-        getDistance(52.2165157, 6.9437819, 52.3546274, 4.8285838);
-    var valueRange = getConvertKm(valueDistance);
-    if (valueRange <= rangeSlider) {
-      return response;
-    }
-    return false;
   }
 }
