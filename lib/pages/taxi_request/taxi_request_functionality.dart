@@ -43,7 +43,10 @@ class TaxiRequestFunctionality {
   }
 
   Future<void> sendRequest(ClienRequest clienRequest) async {
-    dbRef.reference().child(nameBranch).push().set(clienRequest.toJson());
+    String key = dbRef.reference().child(nameBranch).push().key.toString();
+
+    clienRequest.iduserFirebase = key;
+    dbRef.reference().child(nameBranch).child(key).set(clienRequest.toJson());
   }
 
   Stream<Event> getEvent() {

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 
 class ClienRequest {
   late int idUser;
+  late String iduserFirebase;
   late double latitudOrigen;
   late double longitudOrigen;
   late int numeroPasageros;
@@ -10,6 +11,7 @@ class ClienRequest {
   late double longitudDestino;
   ClienRequest(
       this.idUser,
+      this.iduserFirebase,
       this.latitudOrigen,
       this.longitudOrigen,
       this.numeroPasageros,
@@ -19,6 +21,7 @@ class ClienRequest {
 
   ClienRequest.fromJson(Map<dynamic, dynamic> json)
       : idUser = json['idUser'],
+        iduserFirebase = json['iduserFirebase'],
         latitudOrigen = json['latitudOrigen'],
         longitudOrigen = json['longitudOrigen'],
         numeroPasageros = json['numeroPasajeros'],
@@ -28,6 +31,7 @@ class ClienRequest {
 
   Map<dynamic, dynamic> toJson() => <dynamic, dynamic>{
         'idUser': idUser,
+        'iduserFirebase': iduserFirebase,
         'latitudOrigen': latitudOrigen,
         'longitudOrigen': longitudOrigen,
         'numeroPasajeros': numeroPasageros,

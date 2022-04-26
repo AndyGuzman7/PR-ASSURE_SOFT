@@ -49,17 +49,17 @@ class ListRequestClientFunctionality {
       double latitudClient = item.latitudOrigen;
       double longitudClient = item.longitudOrigen;
 
-      double distancia =
-          getDistance(latitudClient, longitudClient, latitudTaxi, longitudTaxi);
+      double distancia = getConvertKm(getDistance(
+          latitudClient, longitudClient, latitudTaxi, longitudTaxi));
 
-      if (distancia < 1000 * item.rango) {
+      if (distancia <= item.rango) {
         listRequest.add(item);
       }
     }
 
     for (var item in listRequest) {
       print(item.rango.toString() +
-          " sfsdfsdf" +
+          " sfsdfsdf " +
           item.numeroPasageros.toString());
     }
   }

@@ -26,9 +26,9 @@ class _PruebaState extends State<ServiceFormMap> {
   TaxiRequestFunctionality taxiRequestFunctionality =
       new TaxiRequestFunctionality();
   late LatLng latLngOrigen;
-  late LatLng latLngDestino;
+  late LatLng latLngDestino = LatLng(-0.000327615289788, -0.00522494279294);
 
-  LatLng ubi = LatLng(-0.000327615289788, -0.00522494279294);
+  // LatLng ubi = LatLng(-0.000327615289788, -0.00522494279294);
 
   late bool _serviceEnabled;
   late PermissionStatus _permissionGranted;
@@ -50,8 +50,8 @@ class _PruebaState extends State<ServiceFormMap> {
 
     _markers[MarkerId('Destine')] = new Marker(
         markerId: MarkerId('Destine'),
-        position: LatLng((locationOrigin.latitude + ubi.latitude),
-            (locationOrigin.longitude + ubi.longitude)),
+        position: LatLng((locationOrigin.latitude + latLngDestino.latitude),
+            (locationOrigin.longitude + latLngDestino.longitude)),
         draggable: true,
         //  icon: pinLocationIconCar,
         infoWindow: InfoWindow(title: "Destine"),
@@ -115,6 +115,7 @@ class _PruebaState extends State<ServiceFormMap> {
       onTap: () {
         ClienRequest clienRequest = new ClienRequest(
             1,
+            '',
             latLngOrigen.latitude,
             latLngOrigen.longitude,
             int.parse(fieldPassengers.getValue()),
