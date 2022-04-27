@@ -51,8 +51,7 @@ class LocationService {
       print(currentLocation);
       var latitude = currentLocation.latitude;
       var longitude = currentLocation.longitude;
-      var kmDiference = getConvertKm(
-          getDistance(latitude!, longitude!, latitudeGlobal, longitudeGlobal));
+      var kmDiference = getConvertKm(getDistance(latitude!, longitude!, latitudeGlobal, longitudeGlobal));
       print(kmDiference);
       if (kmDiference > 5) {
         FirebaseService firebaseService = new FirebaseService();
@@ -68,18 +67,16 @@ class LocationService {
     });
   }
 
-  double getDistance(
-      double startLat, double starLong, double endLat, double endLong) {
-    double distance =
-        Geolocator.distanceBetween(startLat, starLong, endLat, endLong);
+  double getDistance( double startLat, double starLong, double endLat, double endLong) {
+    var distance = Geolocator.distanceBetween(startLat, starLong, endLat, endLong);
 
     return distance;
   }
 
   double getConvertKm(double distanceMeters) {
-    double varMeters = distanceMeters;
-    double varKm = varMeters / 1000;
-    double rangeDistance = double.parse((varKm).toStringAsFixed(2));
+    var varMeters = distanceMeters;
+    var varKm = varMeters / 1000;
+    var rangeDistance = double.parse((varKm).toStringAsFixed(2));
     print(varMeters);
     print(varKm);
     print(rangeDistance);
@@ -88,10 +85,9 @@ class LocationService {
   }
 
   bool rangeBetween(int rangeSlider) {
-    var response = true;
-    var valueDistance =
-        getDistance(52.2165157, 6.9437819, 52.3546274, 4.8285838);
-    var valueRange = getConvertKm(valueDistance);
+    bool response = true;
+    double valueDistance = getDistance(52.2165157, 6.9437819, 52.3546274, 4.8285838);
+    double valueRange = getConvertKm(valueDistance);
     if (valueRange <= rangeSlider) {
       return response;
     }

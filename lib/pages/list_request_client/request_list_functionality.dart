@@ -6,7 +6,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart';
 import 'package:location/location.dart';
 import 'package:taxi_segurito_app/models/client_request.dart';
-import 'package:taxi_segurito_app/pages/list_request_client/location.dart';
 
 class ListRequestClientFunctionality {
   List<ClienRequest> listRequest = [];
@@ -48,9 +47,8 @@ class ListRequestClientFunctionality {
     for (ClienRequest item in listRequestPreview) {
       double latitudClient = item.latitudOrigen;
       double longitudClient = item.longitudOrigen;
-
-      double distancia = getConvertKm(getDistance(
-          latitudClient, longitudClient, latitudTaxi, longitudTaxi));
+      var distanciaKm =  getConvertKm(getDistance(latitudClient, longitudClient, latitudTaxi, longitudTaxi));
+      double distancia = distanciaKm;
 
       if (distancia <= item.rango) {
         listRequest.add(item);
@@ -107,30 +105,32 @@ class ListRequestClientFunctionality {
     return dbRef;
   }
 
+  
+
+
+
   double getDistance(
-      double startLat, double starLong, double endLat, double endLong) {
-    double distance =
-        Geolocator.distanceBetween(startLat, starLong, endLat, endLong);
+    double startLat, double starLong, double endLat, double endLong) {
+    double distance = Geolocator.distanceBetween(startLat, starLong, endLat, endLong);
+
 
     return distance;
   }
 
   double getConvertKm(double distanceMeters) {
-    double varMeters = distanceMeters;
-    double varKm = varMeters / 1000;
-    double rangeDistance = double.parse((varKm).toStringAsFixed(2));
+    var varMeters = distanceMeters;
+    var varKm = varMeters / 1000;
+    var rangeDistance = double.parse((varKm).toStringAsFixed(2));
     print(varMeters);
     print(varKm);
-    print(rangeDistance);
 
     return rangeDistance;
   }
 
   bool rangeBetween(int rangeSlider) {
-    var response = true;
-    var valueDistance =
-        getDistance(52.2165157, 6.9437819, 52.3546274, 4.8285838);
-    var valueRange = getConvertKm(valueDistance);
+    bool response = true;
+    double valueDistance = getDistance(52.2165157, 6.9437819, 52.3546274, 4.8285838);
+    double valueRange = getConvertKm(valueDistance);
     if (valueRange <= rangeSlider) {
       return response;
     }
