@@ -13,6 +13,9 @@ class CustomTextField extends StatefulWidget {
   MultiValidator? multiValidator;
   double heightNum;
   bool obscureText;
+  bool readOnly;
+  bool filled;
+  Color fillColor;
   _CustomTextFieldState _customTextFieldState = new _CustomTextFieldState();
   TextEditingController _controller = TextEditingController();
 
@@ -29,6 +32,9 @@ class CustomTextField extends StatefulWidget {
     this.marginBotton = 5,
     this.heightNum = 35,
     this.obscureText = false,
+    this.readOnly = false,
+    this.filled = false,
+    this.fillColor = Colors.yellow,
     this.value = '',
     this.multiValidator,
     this.assignValue,
@@ -84,6 +90,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           child: new TextFormField(
             onChanged: widget.assignValue,
             obscureText: widget.obscureText,
+            readOnly: widget.readOnly,
             textCapitalization: TextCapitalization.sentences,
             validator: (value) {
               var validators = widget.multiValidator!.validators;
@@ -110,7 +117,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 ),
                 borderSide: BorderSide(width: 2, color: Colors.amber),
               ),
-              fillColor: Colors.yellow,
+              filled: widget.filled,
+              fillColor: widget.fillColor,
               border: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.red, width: 0.0),
                 borderRadius: BorderRadius.all(

@@ -34,7 +34,6 @@ class _DriverUpdateFormState extends State<DriverUpdateForm> {
       fieldLicense,
       fieldCellphone,
       fieldEmail,
-      fieldPassword,
       iddriver;
   late ImagesFileAdapter fieldImage;
 
@@ -46,7 +45,6 @@ class _DriverUpdateFormState extends State<DriverUpdateForm> {
     widget._driver.pictureStr = fieldImage.getImageBase64();
     widget._driver.picture = base64Decode(fieldImage.getImageBase64());
     widget._driver.email = fieldEmail.getValue();
-    widget._driver.password = fieldPassword.getValue();
     return widget._driver;
   }
 
@@ -71,6 +69,9 @@ class _DriverUpdateFormState extends State<DriverUpdateForm> {
 
     fieldCi = new CustomTextField(
       hint: widget._driver.ci,
+      readOnly: true,
+      fillColor: Color(0xFFCDCDC8),
+      filled: true,
       multiValidator: MultiValidator([
         RequiredValidator(errorText: 'Número de carnet requerido'),
         NumberValidator(errorText: 'No puede ingresar letras')
@@ -107,6 +108,9 @@ class _DriverUpdateFormState extends State<DriverUpdateForm> {
 
     fieldEmail = new CustomTextField(
       hint: widget._driver.cellphone,
+      readOnly: true,
+      fillColor: Color(0xFFCDCDC8),
+      filled: true,
       multiValidator: MultiValidator([
         RequiredValidator(errorText: 'Email requerido')
       ]),
@@ -114,18 +118,6 @@ class _DriverUpdateFormState extends State<DriverUpdateForm> {
       marginRight: 0,
       heightNum: 42,
       value: widget._driver.email,
-    );
-
-    fieldPassword = new CustomTextField(
-      hint: widget._driver.cellphone,
-      obscureText: true,
-      multiValidator: MultiValidator([
-        RequiredValidator(errorText: 'Contraseña requerido')
-      ]),
-      marginLeft: 0,
-      marginRight: 0,
-      heightNum: 42,
-      value: widget._driver.password,
     );
 
     return Form(
@@ -136,11 +128,10 @@ class _DriverUpdateFormState extends State<DriverUpdateForm> {
           SizedBox(height: 18),
           fieldImage,
           fullnameField,
-          fieldCi,
-          fieldLicense,
           fieldCellphone,
+          fieldLicense,
+          fieldCi,
           fieldEmail,
-          fieldPassword,
         ],
       ),
     );
