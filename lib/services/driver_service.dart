@@ -20,6 +20,8 @@ class DriversService {
         "ci": driver.ci,
         "picture": driver.pictureStr,
         "ownerId": ownerId,
+        "email" : driver.email,
+        "password" : driver.password,
       }),
     );
     return response.statusCode == 200;
@@ -94,7 +96,10 @@ class DriversService {
             'cellphone': driver.cellphone,
             'license': driver.license,
             'ci': driver.ci,
-            'picture': stringFromBase64Bytes(driver.picture)
+            'picture': stringFromBase64Bytes(driver.picture),
+            'ownerId': driver.ownerId,
+            'email' : driver.email,
+            'password' : driver.password,
           },
         ),
       );
