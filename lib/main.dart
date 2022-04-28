@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:taxi_segurito_app/pages/contacList/list_contact.dart';
+import 'package:taxi_segurito_app/pages/menu/driver_menu.dart';
 import 'package:taxi_segurito_app/pages/vehicle_screen/vehicle_edit_screen.dart';
 import 'package:taxi_segurito_app/pages/vehicle_screen/vehicle_register_screen.dart';
 import './pages/driver_register/driver_register.dart';
@@ -77,6 +78,7 @@ class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
         'scannerQr': (_) => ScannerQrPage(name: this.sessionName),
         'ownerMenu': (_) => OwnerMenu(name: this.sessionName),
         'adminMenu': (_) => AdminMenu(name: this.sessionName),
+        'driverMenu': (_) => DriverMenu(name: this.sessionName),
         'driverList': (_) => DriversListPage(),
         'registerCompany': (_) => CompanyRegisterScreen(),
         'companyList': (_) => CompanyListPage(),

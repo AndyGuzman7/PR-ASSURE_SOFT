@@ -24,6 +24,8 @@ class DriversService {
         "password" : driver.password,
       }),
     );
+    print(response.body);
+
     return response.statusCode == 200;
   }
 

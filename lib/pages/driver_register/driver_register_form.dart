@@ -163,7 +163,9 @@ class DriverRegisterFormState<T extends DriverRegisterForm> extends State<T> {
       hint: "Contraseña",
       obscureText: true,
       multiValidator: MultiValidator([
-        RequiredValidator(errorText: 'Contraseña requerido')
+        RequiredValidator(errorText: 'Contraseña requerido'),
+        MinLengthValidator(6,errorText: "Mínimo 6 caracteres"),
+        MaxLengthValidator(12,errorText: "Máximo 12 caracteres"),
       ]),
       marginLeft: 0,
       marginRight: 0,
