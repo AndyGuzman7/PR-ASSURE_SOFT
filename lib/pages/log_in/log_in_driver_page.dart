@@ -41,7 +41,7 @@ class _DriverLoginPageState extends State<LogInDriverPage> {
         new LoginDriverFuctionality(context);
 
     CustomTextField txtNameOR = new CustomTextField(
-      value: widget.driver.username,
+      value: widget.driver.email,
       hint: 'Ingrese su celular o e-mail',
       multiValidator: MultiValidator(
         [
@@ -49,7 +49,7 @@ class _DriverLoginPageState extends State<LogInDriverPage> {
         ],
       ),
       assignValue: (value) {
-        widget.driver.username = value;
+        widget.driver.email = value;
       },
     );
 

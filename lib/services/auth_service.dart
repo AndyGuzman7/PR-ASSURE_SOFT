@@ -32,10 +32,9 @@ class AuthService {
     return userRes;
   }
 
-  
   Future<Driver?> _getUserDriver(Driver driver) async {
     log("Entra Metodo get");
-    final queryParams = {'username': driver.username, 'password': driver.password};
+    final queryParams = {'email': driver.email, 'password': driver.password};
     final endpoint = Uri.http(
       Server.host,
       "${Server.baseEndpoint}/auth/auth_driver_controller.php",
@@ -83,13 +82,14 @@ class AuthService {
     final name = await _sessionsService.getSessionValue("name");
     return name.toString();
   }
-  
+
   _saveSessionDriver(Driver driver) async {
     await _sessionsService.addSessionValue('id', driver.idPerson.toString());
     await _sessionsService.addSessionValue('role', driver.role);
     await _sessionsService.addSessionValue('name', driver.fullName);
     await _sessionsService.addSessionValue('cellphone', driver.cellphone);
   }
+
   _saveSession(User user) async {
     await _sessionsService.addSessionValue('id', user.idPerson.toString());
     await _sessionsService.addSessionValue('role', user.role);
