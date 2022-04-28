@@ -1,7 +1,7 @@
 class Server {
   static const protocol = "http://";
-  static const host = "ec2-34-207-65-236.compute-1.amazonaws.com:81";
-  // static const host = "172.22.32.1:8080";
+  // static const host = "ec2-34-207-65-236.compute-1.amazonaws.com:81";
+  static const host = "172.20.96.1:8080";
   // static const host = "da6d-186-2-94-223.ngrok.io";
   // static const host = "10.0.3.2:8086";
   static const baseEndpoint = "/app/api";
