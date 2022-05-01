@@ -111,18 +111,29 @@ class _PruebaState extends State<ServiceFormMap> {
 
   @override
   Widget build(BuildContext context) {
+    final _formKey = GlobalKey<FormState>();
+
+    bool registerRequest() {
+      if (_formKey.currentState!.validate()) {
+        return true;
+      }
+      return false;
+    }
+
     final btnRegister = new CustomButton(
       onTap: () {
-        ClienRequest clienRequest = new ClienRequest(
-            1,
-            '',
-            latLngOrigen.latitude,
-            latLngOrigen.longitude,
-            int.parse(fieldPassengers.getValue()),
-            latLngDestino.latitude,
-            latLngDestino.longitude,
-            customSlider.getValue());
-        taxiRequestFunctionality.sendRequest(clienRequest);
+        if (registerRequest()) {
+          ClienRequest clienRequest = new ClienRequest(
+              1,
+              '',
+              latLngOrigen.latitude,
+              latLngOrigen.longitude,
+              int.parse(fieldPassengers.getValue()),
+              latLngDestino.latitude,
+              latLngDestino.longitude,
+              customSlider.getValue());
+          taxiRequestFunctionality.sendRequest(clienRequest);
+        }
       },
       buttonText: "Enviar Solicitud",
       buttonColor: Color.fromRGBO(255, 193, 7, 1),
@@ -144,6 +155,23 @@ class _PruebaState extends State<ServiceFormMap> {
       heightNum: 42,
     );
 
+    Text title = new Text(
+      "¿A donde vamos?",
+      style: const TextStyle(
+          fontSize: 25.0, color: Colors.black, fontWeight: FontWeight.w700),
+      textAlign: TextAlign.left,
+    );
+
+    final containerTitle = new Container(
+        alignment: Alignment.centerLeft,
+        margin: new EdgeInsets.only(
+          top: 5.0,
+          bottom: 10.0,
+          left: 0.0,
+          right: 35.0,
+        ),
+        child: title);
+
     return Scaffold(
         appBar: AppBar(
           title: Text('Formulario de servicio'),
@@ -152,23 +180,26 @@ class _PruebaState extends State<ServiceFormMap> {
           children: [
             Row(
               children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    //CustomFieldText Passengers
-                    child: Column(
-                      children: [
-                        fieldPassengers,
-                        Container(
-                          child: Text("Rango de Busqueda",
-                              textAlign: TextAlign.right),
+                Form(
+                    key: _formKey,
+                    child: Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        //CustomFieldText Passengers
+                        child: Column(
+                          children: [
+                            containerTitle,
+                            fieldPassengers,
+                            Container(
+                              child: Text("Rango de Busqueda",
+                                  textAlign: TextAlign.right),
+                            ),
+                            customSlider,
+                            btnRegister
+                          ],
                         ),
-                        customSlider,
-                        btnRegister
-                      ],
-                    ),
-                  ),
-                )
+                      ),
+                    ))
               ],
             ),
 
