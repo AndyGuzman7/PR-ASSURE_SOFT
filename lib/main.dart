@@ -72,11 +72,7 @@ class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
       title: "Taxi Segurito",
       theme: ThemeData(primarySwatch: Colors.amber),
       debugShowCheckedModeBanner: false,
-<<<<<<< HEAD
-      initialRoute: 'serviceFormMap',
-=======
       initialRoute: 'firstScreen',
->>>>>>> 07dfdc5ee550665ff37a0258731e8c43e0538f6d
       routes: {
         'loginUser': (_) => UserLoginPage(),
         'listRequestClient': (_) => ListRequestClient(),
