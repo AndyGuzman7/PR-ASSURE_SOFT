@@ -12,9 +12,9 @@ class SignUpService {
     print("Se hizo una pericion");
     final response = await http.post(
       Uri.parse(path),
-      /*headers: <String, String>{
+      headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-      },*/
+      },
       body: jsonEncode(<String, String>{
         "email": clientUser.email,
         "password": clientUser.password,
