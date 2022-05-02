@@ -31,6 +31,15 @@ class TaxiRequestFunctionality {
     print(key);
   }
 
+  Future<void> deleteRequest(String idRequest) async {
+    String key = idRequest;
+    dbRef.reference().child(nameBranch).child(key);
+    DatabaseReference nodeToRemove =
+        dbRef.reference().child(nameBranch).child(key);
+    nodeToRemove.remove();
+    print(key);
+  }
+
   Future<void> initUbicacion() async {
     _serviceEnabled = await location.serviceEnabled();
     if (!_serviceEnabled) {
