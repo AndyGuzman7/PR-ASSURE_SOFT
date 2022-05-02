@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
-import 'package:taxi_segurito_app/bloc/validators/blocValidate.dart';
 import 'package:taxi_segurito_app/components/inputs/CustomTextField.dart';
 import 'package:taxi_segurito_app/models/driver.dart';
 import 'package:taxi_segurito_app/providers/ImagesFileAdapter.dart';
@@ -26,7 +25,7 @@ class DriverRegisterForm extends StatefulWidget {
 
 class DriverRegisterFormState<T extends DriverRegisterForm> extends State<T> {
   late CustomTextField fieldName, fieldLastname, fieldSecondLastname;
-  late CustomTextField fieldCi, fieldLicense, fieldCellphone, fieldEmail, fieldPassword;
+  late CustomTextField fieldCi, fieldLicense, fieldCellphone;
   late ImagesFileAdapter fieldImage = ImagesFileAdapter(
     imagePathDefaultUser: "assets/images/user_default.png",
     isShapeCircle: true,
@@ -38,25 +37,13 @@ class DriverRegisterFormState<T extends DriverRegisterForm> extends State<T> {
 
   }
 
-  String? validatePassword(value) {
-    if (value.isEmpty) {
-      return "Confirme su contraseña";
-    }
-    if (value != fieldPassword.getValue()) {
-      return "La contraseña no coincide";
-    }
-    return null;
-  }
-
   Driver getDriver() {
-    return new Driver.insertV2(
+    return new Driver.insert(
       fullName: fullname,
       cellphone: fieldCellphone.getValue(),
       license: fieldLicense.getValue(),
       ci: fieldCi.getValue(),
       pictureStr: fieldImage.getImageBase64AsString(),
-      email: fieldEmail.getValue(),
-      password: fieldPassword.getValue()
     );
   }
 
@@ -149,42 +136,6 @@ class DriverRegisterFormState<T extends DriverRegisterForm> extends State<T> {
       heightNum: 42,
     );
 
-    fieldEmail = new CustomTextField(
-      hint: "Correo Electrónico",
-      multiValidator: MultiValidator([
-        RequiredValidator(errorText: 'Correo Electrónico requerido')
-      ]),
-      marginLeft: 0,
-      marginRight: 0,
-      heightNum: 42,
-    );
-
-    fieldPassword = new CustomTextField(
-      hint: "Contraseña",
-      obscureText: true,
-      multiValidator: MultiValidator([
-        RequiredValidator(errorText: 'Contraseña requerido'),
-        MinLengthValidator(6,errorText: "Mínimo 6 caracteres"),
-        MaxLengthValidator(12,errorText: "Máximo 12 caracteres"),
-      ]),
-      marginLeft: 0,
-      marginRight: 0,
-      heightNum: 42,
-    );
-
-    /*fieldRePassword = new CustomTextField(
-      hint: "Confirmar Contraseña",
-      obscureText: true,
-      multiValidator: MultiValidator([
-        RequiredValidator(errorText: 'Confirmacion de Contraseña requerido'),
-      ]),
-      marginLeft: 0,
-      marginRight: 0,
-      heightNum: 42,
-    );*/
-
-    
-
     return Form(
       autovalidateMode: AutovalidateMode.always,
       key: widget.formKey,
@@ -203,31 +154,6 @@ class DriverRegisterFormState<T extends DriverRegisterForm> extends State<T> {
           fieldCi,
           fieldLicense,
           fieldCellphone,
-          fieldEmail,
-          fieldPassword,
-          TextFormField(
-            validator: validatePassword,//((val) => MatchValidator(errorText: 'diferente').validateMatch(fieldPassword.value,val.toString())),
-            textAlignVertical: TextAlignVertical.center,
-            textAlign: TextAlign.start,
-            style: TextStyle(fontSize: 13),
-            decoration: InputDecoration(
-              contentPadding: EdgeInsets.all(10),
-              hintText: 'Confirmar Contraseña',
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(10),
-                ),
-                borderSide: BorderSide(width: 2, color: Colors.amber),
-              ),
-              fillColor: Colors.yellow,
-              border: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.red, width: 0.0),
-                borderRadius: BorderRadius.all(
-                  Radius.circular(10),
-                ),
-              ),
-            )
-          )
         ],
       ),
     );

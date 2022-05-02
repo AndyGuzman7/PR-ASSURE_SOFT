@@ -21,19 +21,14 @@ class RegisterFunctionality {
 
   registerClient(Clientuser clientUser) async {
     final signUpService = SignUpService();
-    try {
-      final success =
-          await signUpService.registerClientThroughEmail(clientUser);
-      if (success) {
-        // GlobalToast.displayToast(
-        //     Text("Registro Exitoso"), Colors.green, Icon(Icons.check), 2);
-        Navigator.pushNamed(context, 'loginUser');
-      } else {
-        // GlobalToast.displayToast(
-        //     Text("Registro no completado"), Colors.red, Icon(Icons.error), 2);
-      }
-    } catch (e) {
-      print(e);
+    final success = await signUpService.registerClientThroughEmail(clientUser);
+    if (success) {
+      // GlobalToast.displayToast(
+      //     Text("Registro Exitoso"), Colors.green, Icon(Icons.check), 2);
+      Navigator.pushNamed(context, 'loginUser');
+    } else {
+      // GlobalToast.displayToast(
+      //     Text("Registro no completado"), Colors.red, Icon(Icons.error), 2);
     }
   }
 }
