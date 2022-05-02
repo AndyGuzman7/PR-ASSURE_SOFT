@@ -9,6 +9,7 @@ class SignUpService {
   Future<bool> _registerClient(Clientuser clientUser, String signUpType) async {
     print(clientUser.fullName + clientUser.email + clientUser.cellphone);
     String path = Server.url + "/auth/auth_controller.php";
+    print("Se hizo una pericion");
     final response = await http.post(
       Uri.parse(path),
       headers: <String, String>{
@@ -22,6 +23,8 @@ class SignUpService {
         "cellphone": clientUser.cellphone
       }),
     );
+
+    print(response);
     final success = response.statusCode == 200;
     return success;
   }
