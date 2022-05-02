@@ -20,8 +20,8 @@ class DriversService {
         "ci": driver.ci,
         "picture": driver.pictureStr,
         "ownerId": ownerId,
-        "email" : driver.email,
-        "password" : driver.password,
+        "email": driver.email,
+        "password": driver.password,
       }),
     );
     print(response.body);
@@ -34,9 +34,10 @@ class DriversService {
     final queryParams = {'ownerId': ownerId.toString()};
     final endpoint = Uri.http(
       Server.host,
-      '${Server.baseEndpoint}/driver/driver_controller.php',
+      '${Server.url}/driver/driver_controller.php',
       queryParams,
     );
+    print(endpoint);
 
     http.Response response = await http.get(endpoint);
     if (response.statusCode == 200) {
@@ -100,8 +101,8 @@ class DriversService {
             'ci': driver.ci,
             'picture': stringFromBase64Bytes(driver.picture),
             'ownerId': driver.ownerId,
-            'email' : driver.email,
-            'password' : driver.password,
+            'email': driver.email,
+            'password': driver.password,
           },
         ),
       );
