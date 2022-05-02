@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:taxi_segurito_app/components/buttons/CustomButtonWithLinearBorder.dart';
 import 'package:taxi_segurito_app/models/client_request.dart';
 import 'package:taxi_segurito_app/models/company.dart';
 import 'package:taxi_segurito_app/pages/company_screen/company_edit_screen.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:taxi_segurito_app/pages/list_request_client/request_list_functionality.dart';
+import 'package:taxi_segurito_app/pages/list_request_client/widgets/request_list_item_functionality.dart';
 
 class RequestListItem extends StatefulWidget {
   void Function(ClienRequest clienRequest) callbackRequest;
@@ -18,13 +23,14 @@ class _RequestListItemState extends State<RequestListItem> {
   Color colorMain = Color.fromRGBO(255, 193, 7, 1);
   Color colorMainDanger = Color.fromRGBO(242, 78, 30, 1);
   Color colorMainNull = Color.fromRGBO(153, 153, 153, 1);
+  RequestListItemFunctionality requestListItemFunctionality =
+      new RequestListItemFunctionality();
 
   @override
   Widget build(BuildContext context) {
     Image imagedefault = new Image.asset(
-      "assets/images/company.png",
+      "assets/images/user_default.png",
     );
-    Color colorMain = Color.fromRGBO(255, 193, 7, 1);
 
     Container columnOne = new Container(
       child: Align(
@@ -41,28 +47,42 @@ class _RequestListItemState extends State<RequestListItem> {
       ),
     );
 
+    boxData(value) {
+      return new Container(
+        alignment: Alignment.centerLeft,
+        child: value,
+      );
+    }
+
     Container columnTwo = new Container(
+      alignment: Alignment.centerLeft,
       margin: EdgeInsets.only(
         left: 10,
       ),
-      //height: 60,
-      child: Container(
-        //color: Colors.red,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            ListTile(
-              title: Text(
-                widget.clientRequest!.numeroPasageros.toString(),
-              ),
-              subtitle: Text(
-                "Nit: " + widget.clientRequest!.rango.toString(),
-              ),
-            )
-          ],
-        ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          boxData(
+            Text(
+              'Distancia: ' +
+                  requestListItemFunctionality
+                      .getDistance(widget.clientRequest!),
+            ),
+          ),
+          boxData(requestListItemFunctionality.getNameDirectionAddress(
+              'De: ',
+              widget.clientRequest!.latitudOrigen,
+              widget.clientRequest!.longitudOrigen)),
+          boxData(requestListItemFunctionality.getNameDirectionAddress(
+              'A: ',
+              widget.clientRequest!.latitudDestino,
+              widget.clientRequest!.longitudDestino)),
+          boxData(Text(
+            "Pasajeros: " + widget.clientRequest!.numeroPasageros.toString(),
+          )),
+        ],
       ),
     );
 
@@ -83,24 +103,14 @@ class _RequestListItemState extends State<RequestListItem> {
                         Icons.delete,
                         color: Colors.grey,
                       ),
-                      onPressed: () {
-                        //showAlertDialog();
-                      },
+                      onPressed: () {},
                     ),
                     IconButton(
                       icon: Icon(
                         Icons.edit,
                         color: Colors.grey,
                       ),
-                      onPressed: () {
-                        /* Navigator.push(
-                          context,
-                          new MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                new CompanyEditScreen(widget.clientRequest),
-                          ),
-                        );*/
-                      },
+                      onPressed: () {},
                     )
                   ],
                 ),
@@ -114,11 +124,14 @@ class _RequestListItemState extends State<RequestListItem> {
 
     Container containerOwnerData = new Container(
       height: 110,
-      color: Color.fromRGBO(246, 246, 246, 1),
+      color: Color.fromARGB(255, 187, 187, 187),
       margin:
           new EdgeInsets.only(top: 5.0, bottom: 5.0, left: 00.0, right: 00.0),
       child: Material(
         child: InkWell(
+          onTap: () {
+            widget.callbackRequest(widget.clientRequest!);
+          },
           child: Container(
             margin: new EdgeInsets.only(
               top: 10.0,
@@ -135,10 +148,6 @@ class _RequestListItemState extends State<RequestListItem> {
                 Expanded(
                   flex: 1,
                   child: columnTwo,
-                ),
-                Expanded(
-                  flex: 0,
-                  child: columnThree,
                 ),
               ],
             ),

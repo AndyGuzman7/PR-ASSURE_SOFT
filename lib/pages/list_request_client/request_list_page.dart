@@ -12,6 +12,7 @@ class ListRequestClient extends StatefulWidget {
 
 class _ListRequestClientState extends State<ListRequestClient> {
   List<ClienRequest> listRequest = [];
+
   ListRequestClientFunctionality listRequestClientFunctionality =
       new ListRequestClientFunctionality();
   @override
@@ -26,11 +27,25 @@ class _ListRequestClientState extends State<ListRequestClient> {
 
   @override
   Widget build(BuildContext context) {
+    RequestList requestList = new RequestList();
+    requestList.listRequest = listRequest;
+    requestList.callback = (value) {
+      //Evento click de un item
+    };
+
     listRequestClientFunctionality.updateListRequest = ((value) {
       setState(() {
         listRequest = value;
+        requestList.listRequest = listRequest;
       });
     });
+
+    Text title = new Text(
+      "Lista de Solicitudes",
+      style: const TextStyle(
+          fontSize: 25.0, color: Colors.black, fontWeight: FontWeight.w700),
+      textAlign: TextAlign.left,
+    );
 
     AppBar appbar = new AppBar(
       foregroundColor: Colors.white,
@@ -46,16 +61,14 @@ class _ListRequestClientState extends State<ListRequestClient> {
     return Scaffold(
       appBar: appbar,
       body: Container(
+        color: Color.fromARGB(255, 248, 248, 248),
         child: Column(
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            title,
             Expanded(
-              child: Container(
-                child: RequestList(
-                  listRequest: listRequest,
-                ),
-              ),
+              child: Container(child: requestList),
             )
           ],
         ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../request_list_functionality.dart';
-import 'company_list_item.dart';
+import 'request_list_item.dart';
 
 class RequestList extends StatefulWidget {
   List<dynamic>? listRequest = [];
@@ -17,7 +17,7 @@ class RequestList extends StatefulWidget {
     this.callback = function;
   }
 
-  /* updateListView() {
+  /* updateListView() { 
     _containerListViewState.updateListView();
   }*/
 }
