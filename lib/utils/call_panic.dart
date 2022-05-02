@@ -10,10 +10,12 @@ class CallPanic {
     if (contacts != null) {
       try {
         String num = getListNumberAsString(contacts).first;
+
         FlutterPhoneDirectCaller.callNumber(num);
         return true;
       } catch (e) {
         FlutterPhoneDirectCaller.callNumber("911");
+
         return true;
       }
     }

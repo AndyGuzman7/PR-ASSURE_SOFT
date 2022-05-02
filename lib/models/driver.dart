@@ -11,6 +11,7 @@ class Driver extends Person {
   late int? ownerId;
   late String email;
   late String password;
+  late String role;
 
   Driver(String fullName, this.ci, String cellphone)
       : super.insert(fullName, cellphone);
@@ -42,6 +43,10 @@ class Driver extends Person {
     required this.email,
     required this.password,
   }) : super.insert(fullName, cellphone);
+  Driver.logInDriver(this.email, this.password);
+  Driver.logInDriverResponse(
+      int id, this.role, String fullname, String cellphone)
+      : super.logIn(id, fullname, cellphone);
 
   Driver.fromJson(Map<String, dynamic> json) {
     super.idPerson = json['id'] as int;
@@ -56,6 +61,9 @@ class Driver extends Person {
 
     String pictureBase64 = json['picture'] as String;
     picture = bytesFromBase64String(pictureBase64);
+    this.email = json['role'] as String;
+    this.email = json['email'] as String;
+    this.password = json['password'] as String;
   }
 
   Driver.init();
