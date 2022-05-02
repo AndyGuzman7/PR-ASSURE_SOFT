@@ -58,7 +58,7 @@ class RegisterOwnerFunctionality {
       if (value) {
         activeShowDialog!();
         Fluttertoast.showToast(
-            msg: "Dueño se actualizo ",
+            msg: "Owner se actualizo ",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             backgroundColor: Colors.purple,

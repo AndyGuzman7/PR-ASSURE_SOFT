@@ -10,8 +10,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:taxi_segurito_app/pages/log_in/log_in_fuctionality.dart';
 import 'package:taxi_segurito_app/validators/TextFieldValidators.dart';
 
-import 'log_in_driver_page.dart';
-
 class UserLoginPage extends StatefulWidget {
   User user = new User.login("", "");
 
@@ -178,26 +176,11 @@ class _UserLoginPageState extends State<UserLoginPage> {
                                               RecoveryPassword()),
                                     );
                                   },
-                                  child: Text("¿Olvidaste tu contraseña?",
+                                  child: Text("Olvidaste tu contraseña?",
                                       style:
                                           TextStyle(color: Colors.blueAccent)),
                                 ),
-                              ),
-                              Container(
-                                child: TextButton(
-                                  onPressed: () => {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                LogInDriverPage()))
-                                  },
-                                  child: Text(
-                                      "¿O quieres iniciar sesión como taxista?",
-                                      style:
-                                          TextStyle(color: Colors.blueAccent)),
-                                ),
-                              ),
+                              )
                             ],
                           ),
                         ),
