@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:taxi_segurito_app/SRC/providers/push_notifications_provider.dart';
 import 'package:taxi_segurito_app/pages/contacList/list_contact.dart';
 import 'package:taxi_segurito_app/pages/list_request_client/request_list_page.dart';
 import 'package:taxi_segurito_app/pages/menu/driver_menu.dart';
@@ -62,6 +63,12 @@ class AppTaxiSegurito extends StatefulWidget {
 }
 
 class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
+  @override
+  void initState() {
+    super.initState();
+    PushNotificationService.initializedApp();
+  }
+
   String routeInitial;
   String? sessionName;
   _AppTaxiSeguritoState(this.routeInitial, {this.sessionName});

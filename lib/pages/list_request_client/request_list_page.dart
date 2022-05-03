@@ -29,9 +29,7 @@ class _ListRequestClientState extends State<ListRequestClient> {
   Widget build(BuildContext context) {
     RequestList requestList = new RequestList();
     requestList.listRequest = listRequest;
-    requestList.callback = (value) {
-      //Evento click de un item
-    };
+    requestList.callback = (value) {};
 
     listRequestClientFunctionality.updateListRequest = ((value) {
       setState(() {
