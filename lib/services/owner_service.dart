@@ -10,7 +10,7 @@ class OwnerService {
     var response = await http.post(
       Uri.parse(path),
       body: jsonEncode({
-        'fullname': owner.fullName,
+        'fullName': owner.fullName,
         'cellphone': owner.cellPhone,
         'email': owner.email,
         'password': owner.password,
@@ -18,6 +18,16 @@ class OwnerService {
         'ci': owner.ci,
         'companyid': owner.idCompany,
       }),
+      /*
+      "fullName": "owner ownerdos",
+        "cellphone": "63472984",
+        "email": "owner2@gmail.com",
+        "password": "236deedd81d60642a022746e81429d91",
+        "address": "av. Reducto",
+        "ci": "4892847",
+        "companyid": 1
+      
+      */
     );
 
     return response.statusCode == 200;

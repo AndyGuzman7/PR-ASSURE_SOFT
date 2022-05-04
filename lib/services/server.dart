@@ -1,6 +1,6 @@
 class Server {
-  static const protocol = "http://";
-  static const host = "ec2-34-207-65-236.compute-1.amazonaws.com:81";
+  static const protocol = "https://";
+  static const host = "236c-177-222-123-18.sa.ngrok.io";
   // static const host = "da6d-186-2-94-223.ngrok.io";
   // static const host = "10.0.3.2:8086";
   static const baseEndpoint = "/app/api";
@@ -12,9 +12,9 @@ class Server {
   static const url = "$protocol$host$baseEndpoint";
 
   static const Map<String, int> RoleCodes = {
-    'ADMIN': 1,
-    'CLIENT': 2,
-    'OWNER': 3,
+    'ADMIN': 26,
+    'CLIENT': 27,
+    'OWNER': 28,
   };
 
   static const Map<String, String> SignUpType = {
