@@ -15,6 +15,8 @@ class RequestInfo extends StatefulWidget {
 class _RequestInfoState extends State<RequestInfo> {
   late LatLng latLngOrigen = LatLng(0, 0);
   late LatLng latLngDestino = LatLng(0, 0);
+  late String distancia = "Ninguna";
+  late String passengers = "Ninguno";
 
   //final fb = FirebaseDatabase.instance.reference();
   Map<MarkerId, Marker> _markers = {};
@@ -57,11 +59,15 @@ class _RequestInfoState extends State<RequestInfo> {
             .child("Request/$requestID")
             .once())
         .value;
-    latLngOrigen =
-        LatLng(clienRequest["latitudOrigen"], clienRequest["longitudOrigen"]);
+    setState(() {
+      distancia = "400m";
+      passengers = clienRequest["numeroPasajeros"].toString();
+      latLngOrigen =
+          LatLng(clienRequest["latitudOrigen"], clienRequest["longitudOrigen"]);
 
-    latLngDestino =
-        LatLng(clienRequest["latitudDestino"], clienRequest["longitudDestino"]);
+      latLngDestino = LatLng(
+          clienRequest["latitudDestino"], clienRequest["longitudDestino"]);
+    });
   }
 
   void setCustomMapPin() async {
@@ -75,6 +81,50 @@ class _RequestInfoState extends State<RequestInfo> {
 
   @override
   Widget build(BuildContext context) {
+    Image imagedefault = new Image.asset(
+      "assets/images/user_default.png",
+    );
+
+    Container columnOne = new Container(
+      child: Align(
+        alignment: Alignment.centerRight,
+        child: Container(
+          width: 70,
+          height: 70,
+          margin: EdgeInsets.all(0),
+          decoration: BoxDecoration(
+              image:
+                  DecorationImage(image: imagedefault.image, fit: BoxFit.cover),
+              shape: BoxShape.circle),
+        ),
+      ),
+    );
+    Container columnTwo = new Container(
+      alignment: Alignment.centerLeft,
+      margin: EdgeInsets.only(
+        left: 10,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            child: Text(
+              'Distancia: ' + distancia,
+            ),
+            alignment: Alignment.topLeft,
+          ),
+          Container(
+            child: Text(
+              'Pasajeros: ' + passengers,
+            ),
+            alignment: Alignment.topLeft,
+          ),
+        ],
+      ),
+    );
+
     return Scaffold(
         appBar: AppBar(),
         body: Column(
@@ -83,10 +133,37 @@ class _RequestInfoState extends State<RequestInfo> {
               children: [
                 Expanded(
                     child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  //CustomFieldText Passengers
-                  //child: TextField(),
-                ))
+                        padding: const EdgeInsets.all(16.0),
+                        child: Container(
+                          margin: new EdgeInsets.only(
+                            top: 10.0,
+                            bottom: 10.0,
+                            left: 20.0,
+                            right: 20.0,
+                          ),
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Color.fromRGBO(203, 203, 203, 1),
+                                width: 1,
+                              ),
+                              borderRadius: BorderRadius.circular(20)),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                flex: 0,
+                                child: columnOne,
+                              ),
+                              Expanded(
+                                flex: 1,
+                                child: columnTwo,
+                              ),
+                            ],
+                          ),
+                        )
+                        //CustomFieldText Passengers
+                        //child: TextField(),
+                        ))
               ],
             ),
 
