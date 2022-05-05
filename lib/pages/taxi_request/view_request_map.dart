@@ -15,15 +15,16 @@ class RequestInfo extends StatefulWidget {
 class _RequestInfoState extends State<RequestInfo> {
   late LatLng latLngOrigen = LatLng(0, 0);
   late LatLng latLngDestino = LatLng(0, 0);
+
   late String distancia = "Ninguna";
   late String passengers = "Ninguno";
 
-  //final fb = FirebaseDatabase.instance.reference();
   Map<MarkerId, Marker> _markers = {};
   Set<Marker> get markers => _markers.values.toSet();
 
   Location location = Location();
 
+  //Creacion de marcadores
   Set<Marker> _createMarker() {
     _markers[MarkerId('Origin')] = new Marker(
       markerId: MarkerId('Origin'),
@@ -52,6 +53,7 @@ class _RequestInfoState extends State<RequestInfo> {
     });
   }
 
+  //Obtener informacion desde Firebase
   Future<void> getRequest() async {
     String? requestID = widget.requestID;
     var clienRequest = (await FirebaseDatabase.instance
@@ -70,6 +72,7 @@ class _RequestInfoState extends State<RequestInfo> {
     });
   }
 
+  //Cargar iconos de marcadores
   void setCustomMapPin() async {
     pinLocationIconUser = await BitmapDescriptor.fromAssetImage(
         ImageConfiguration(size: Size(35, 35)),
@@ -82,9 +85,26 @@ class _RequestInfoState extends State<RequestInfo> {
   @override
   Widget build(BuildContext context) {
     Image imagedefault = new Image.asset(
-      "assets/images/user_default.png",
+      "assets/images/user_icon.png",
     );
 
+    Text title = new Text(
+      "Lista de Solicitudes",
+      style: const TextStyle(
+          fontSize: 25.0, color: Colors.black, fontWeight: FontWeight.w700),
+      textAlign: TextAlign.left,
+    );
+
+    final containerTitle = new Container(
+        alignment: Alignment.centerLeft,
+        margin: new EdgeInsets.only(
+          top: 5.0,
+          bottom: 10.0,
+          left: 0.0,
+          right: 35.0,
+        ),
+        child: title);
+    //Contenedor de imagen del lado izquierdo
     Container columnOne = new Container(
       child: Align(
         alignment: Alignment.centerRight,
@@ -99,6 +119,8 @@ class _RequestInfoState extends State<RequestInfo> {
         ),
       ),
     );
+
+    //Contenedor del lado derecho: Informacion de distancia y Numero de pasajeros
     Container columnTwo = new Container(
       alignment: Alignment.centerLeft,
       margin: EdgeInsets.only(
@@ -134,32 +156,37 @@ class _RequestInfoState extends State<RequestInfo> {
                 Expanded(
                     child: Padding(
                         padding: const EdgeInsets.all(16.0),
-                        child: Container(
-                          margin: new EdgeInsets.only(
-                            top: 10.0,
-                            bottom: 10.0,
-                            left: 20.0,
-                            right: 20.0,
-                          ),
-                          padding: EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Color.fromRGBO(203, 203, 203, 1),
-                                width: 1,
+                        child: Column(
+                          children: [
+                            containerTitle,
+                            Container(
+                              margin: new EdgeInsets.only(
+                                top: 10.0,
+                                bottom: 10.0,
+                                left: 5.0,
+                                right: 5.0,
                               ),
-                              borderRadius: BorderRadius.circular(20)),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                flex: 0,
-                                child: columnOne,
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Color.fromRGBO(203, 203, 203, 1),
+                                    width: 1,
+                                  ),
+                                  borderRadius: BorderRadius.circular(20)),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    flex: 0,
+                                    child: columnOne,
+                                  ),
+                                  Expanded(
+                                    flex: 1,
+                                    child: columnTwo,
+                                  ),
+                                ],
                               ),
-                              Expanded(
-                                flex: 1,
-                                child: columnTwo,
-                              ),
-                            ],
-                          ),
+                            )
+                          ],
                         )
                         //CustomFieldText Passengers
                         //child: TextField(),
