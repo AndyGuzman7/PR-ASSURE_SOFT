@@ -61,6 +61,9 @@ dependencies:
   mailer: ^5.0.2
   geocoding: ^2.0.4
   
+  flutter_local_notifications: ^9.0.0
+  awesome_notifications: ^0.0.6+12
+  
 
 dev_dependencies:
   flutter_auth: ^0.0.1
