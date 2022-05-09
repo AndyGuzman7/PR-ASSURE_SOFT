@@ -96,14 +96,15 @@ class _RequestInfoState extends State<RequestInfo> {
     );
 
     final containerTitle = new Container(
-        alignment: Alignment.centerLeft,
-        margin: new EdgeInsets.only(
-          top: 5.0,
-          bottom: 10.0,
-          left: 0.0,
-          right: 35.0,
-        ),
-        child: title);
+      alignment: Alignment.centerLeft,
+      margin: new EdgeInsets.only(
+        top: 5.0,
+        bottom: 10.0,
+        left: 0.0,
+        right: 35.0,
+      ),
+      child: title,
+    );
     //Contenedor de imagen del lado izquierdo
     Container columnOne = new Container(
       child: Align(
@@ -148,79 +149,80 @@ class _RequestInfoState extends State<RequestInfo> {
     );
 
     return Scaffold(
-        appBar: AppBar(),
-        body: Column(
-          children: [
-            Row(
-              children: [
-                Expanded(
-                    child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          children: [
-                            containerTitle,
-                            Container(
-                              margin: new EdgeInsets.only(
-                                top: 10.0,
-                                bottom: 10.0,
-                                left: 5.0,
-                                right: 5.0,
+      appBar: AppBar(),
+      body: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        containerTitle,
+                        Container(
+                          margin: new EdgeInsets.only(
+                            top: 10.0,
+                            bottom: 10.0,
+                            left: 5.0,
+                            right: 5.0,
+                          ),
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Color.fromRGBO(203, 203, 203, 1),
+                                width: 1,
                               ),
-                              padding: EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: Color.fromRGBO(203, 203, 203, 1),
-                                    width: 1,
-                                  ),
-                                  borderRadius: BorderRadius.circular(20)),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    flex: 0,
-                                    child: columnOne,
-                                  ),
-                                  Expanded(
-                                    flex: 1,
-                                    child: columnTwo,
-                                  ),
-                                ],
+                              borderRadius: BorderRadius.circular(20)),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                flex: 0,
+                                child: columnOne,
                               ),
-                            )
-                          ],
+                              Expanded(
+                                flex: 1,
+                                child: columnTwo,
+                              ),
+                            ],
+                          ),
                         )
-                        //CustomFieldText Passengers
-                        //child: TextField(),
-                        ))
-              ],
-            ),
-
-            //Mapa
-            FutureBuilder(
-                future: location.getLocation(),
-                builder: (_, AsyncSnapshot<LocationData> snapshot) {
-                  if (snapshot.hasData) {
-                    final locat = snapshot.data;
-                    LatLng locationOri =
-                        LatLng(locat?.latitude ?? 0.0, locat?.longitude ?? 0.0);
-                    print(locationOri.latitude);
-
-                    return Expanded(
-                        child: GoogleMap(
-                      initialCameraPosition: CameraPosition(
-                          target: LatLng(
-                              latLngOrigen.latitude, latLngOrigen.longitude),
-                          zoom: 15),
-                      onMapCreated: (GoogleMapController controller) {},
-                      mapToolbarEnabled: false,
-                      myLocationEnabled: true,
-                      markers: _createMarker(),
-                      mapType: MapType.normal,
-                    ));
-                  } else {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                }),
-          ],
-        ));
+                      ],
+                    )
+                    //CustomFieldText Passengers
+                    //child: TextField(),
+                    ),
+              )
+            ],
+          ),
+          //Mapa
+          FutureBuilder(
+            future: location.getLocation(),
+            builder: (_, AsyncSnapshot<LocationData> snapshot) {
+              if (snapshot.hasData) {
+                return Expanded(
+                  child: GoogleMap(
+                    initialCameraPosition: CameraPosition(
+                      target:
+                          LatLng(latLngOrigen.latitude, latLngOrigen.longitude),
+                      zoom: 15,
+                    ),
+                    onMapCreated: (GoogleMapController controller) {},
+                    mapToolbarEnabled: false,
+                    myLocationEnabled: true,
+                    markers: _createMarker(),
+                    mapType: MapType.normal,
+                  ),
+                );
+              } else {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+            },
+          ),
+        ],
+      ),
+    );
   }
 }

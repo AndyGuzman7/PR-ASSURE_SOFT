@@ -28,6 +28,7 @@ class TaxiRequestFunctionality {
     String key = dbRef.reference().child(nameBranch).push().key.toString();
     clienRequest.iduserFirebase = key;
     dbRef.reference().child(nameBranch).child(key).set(clienRequest.toJson());
+    print(key);
   }
 
   Future<void> initUbicacion() async {

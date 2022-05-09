@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:taxi_segurito_app/pages/contacList/list_contact.dart';
 import 'package:taxi_segurito_app/pages/list_request_client/list_request_client.dart';
+import 'package:taxi_segurito_app/pages/menu/driver_menu.dart';
 import 'package:taxi_segurito_app/pages/taxi_request/taxi_request_functionality.dart';
 import 'package:taxi_segurito_app/pages/taxi_request/view_request_map.dart';
 import 'package:taxi_segurito_app/pages/vehicle_screen/vehicle_edit_screen.dart';
@@ -80,12 +81,13 @@ class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
         'serviceFormMap': (_) => ServiceFormMap(),
         'registerScreen': (_) => RegisterPage(),
         'viewRequestInfo': (_) => RequestInfo(
-              requestID: "-N19Tu8EpxbErj5cIxU0",
+              requestID: "-N1aPDdp6doREQqbAKFL",
             ),
         'firstScreen': (_) => MainWindow(),
         'scannerQr': (_) => ScannerQrPage(name: this.sessionName),
         'ownerMenu': (_) => OwnerMenu(name: this.sessionName),
         'adminMenu': (_) => AdminMenu(name: this.sessionName),
+        'driverMenu': (_) => DriverMenu(name: this.sessionName),
         'driverList': (_) => DriversListPage(),
         'registerCompany': (_) => CompanyRegisterScreen(),
         'companyList': (_) => CompanyListPage(),
