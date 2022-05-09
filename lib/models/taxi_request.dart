@@ -14,6 +14,9 @@ class TaxiRequest {
         idRequestUserFirebase = json['idRequestUserFirebase'],
         idRequestTaxiFirebase = json['idRequestTaxiFirebase'],
         estimacion = json['estimacion'] * 1.0;
+        //placa
+        //latitudTaxi
+        //longitudTaxi
 
   Map<dynamic, dynamic> toJson() => <dynamic, dynamic>{
         'idUserTaxi': idUserTaxi,
