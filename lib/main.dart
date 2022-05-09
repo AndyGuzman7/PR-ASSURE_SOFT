@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:taxi_segurito_app/pages/contacList/list_contact.dart';
 import 'package:taxi_segurito_app/pages/list_request_client/list_request_client.dart';
 import 'package:taxi_segurito_app/pages/menu/driver_menu.dart';
-import 'package:taxi_segurito_app/pages/taxi_request/taxi_request_functionality.dart';
-import 'package:taxi_segurito_app/pages/request_usertaxi/view_request_map.dart';
+import 'package:taxi_segurito_app/pages/request_user_taxi/view_request_map.dart';
+
 import 'package:taxi_segurito_app/pages/vehicle_screen/vehicle_edit_screen.dart';
 import 'package:taxi_segurito_app/pages/vehicle_screen/vehicle_register_screen.dart';
 import 'package:taxi_segurito_app/pages/taxi_request/taxi_request.dart';
@@ -74,13 +74,15 @@ class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
       title: "Taxi Segurito",
       theme: ThemeData(primarySwatch: Colors.amber),
       debugShowCheckedModeBanner: false,
-      initialRoute: 'requestInfo',
+      initialRoute: 'viewRequestInfo',
       routes: {
         'loginUser': (_) => UserLoginPage(),
         'listRequestClient': (_) => ListRequestClient(),
         'serviceFormMap': (_) => ServiceFormMap(),
-        'requestInfo': (_) => RequestInfo(),
         'registerScreen': (_) => RegisterPage(),
+        'viewRequestInfo': (_) => RequestInfo(
+              requestID: "-N1aPDdp6doREQqbAKFL",
+            ),
         'firstScreen': (_) => MainWindow(),
         'scannerQr': (_) => ScannerQrPage(name: this.sessionName),
         'ownerMenu': (_) => OwnerMenu(name: this.sessionName),
