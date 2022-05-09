@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_geofence/geofence.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart';
 import 'package:location/location.dart';
@@ -9,6 +10,10 @@ import 'package:taxi_segurito_app/models/client_request.dart';
 import 'package:taxi_segurito_app/pages/list_request_client/firebaseService.dart';
 
 class LocationService {
+  var latitudeGlobal = 0.0; //= currentLocation.latitude;
+  var longitudeGlobal = 0.0;
+
+  /// = currentLocation.longitude;
   late final nameBranch = "Request";
   late final dbRef;
   late Location location = new Location();
@@ -44,10 +49,22 @@ class LocationService {
   void getUbication() {
     location.onLocationChanged.listen((LocationData currentLocation) {
       print(currentLocation);
-      FirebaseService firebaseService = new FirebaseService();
-      //firebaseService.initFirebase();
-      //  firebaseService.sendFirebase(value++);
-      // current user location
+      var latitude = currentLocation.latitude;
+      var longitude = currentLocation.longitude;
+      var kmDiference = getConvertKm(
+          getDistance(latitude!, longitude!, latitudeGlobal, longitudeGlobal));
+      print(kmDiference);
+      if (kmDiference > 5) {
+        FirebaseService firebaseService = new FirebaseService();
+        firebaseService.initFirebase();
+        firebaseService.sendFirebase(value++);
+
+        ///current user location
+      }
+      print("leyendo ubicacion");
+
+      latitudeGlobal = latitude;
+      longitudeGlobal = longitude;
     });
   }
 

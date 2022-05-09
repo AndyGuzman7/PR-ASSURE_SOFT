@@ -223,13 +223,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.6.0+2"
+  flutter_geofence:
+    dependency: "direct main"
+    description:
+      name: flutter_geofence
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.2"
   flutter_local_notifications:
     dependency: "direct main"
     description:
       name: flutter_local_notifications
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "9.5.1"
+    version: "9.5.2"
   flutter_local_notifications_linux:
     dependency: transitive
     description:
@@ -491,7 +498,7 @@ packages:
       name: mailer
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.1.0"
+    version: "5.1.1"
   matcher:
     dependency: transitive
     description:
@@ -861,6 +868,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.5.2"
+  workmanager:
+    dependency: "direct main"
+    description:
+      name: workmanager
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.4"
   xdg_directories:
     dependency: transitive
     description:

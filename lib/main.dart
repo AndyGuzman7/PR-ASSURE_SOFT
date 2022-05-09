@@ -8,6 +8,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:typed_data';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_geofence/geofence.dart';
 import 'package:taxi_segurito_app/SRC/providers/push_notifications_provider.dart';
 import 'package:taxi_segurito_app/pages/contacList/list_contact.dart';
 import 'package:taxi_segurito_app/pages/list_request_client/request_list_page.dart';
@@ -42,6 +43,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Firebase.initializeApp();
+  Geofence.initialize();
+  Geofence.requestPermissions();
 
   HttpOverrides.global = new HttpProvider();
   SessionsService sessions = SessionsService();
@@ -63,6 +66,7 @@ void main() async {
         break;
       case 'driver':
         PushNotificationService.subscribeToTopic();
+
         app = AppTaxiSegurito('driverMenu', sessionName: name);
         break;
       default:
@@ -86,16 +90,46 @@ class AppTaxiSegurito extends StatefulWidget {
 class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
   final GlobalKey<NavigatorState> navigatorKey =
       new GlobalKey<NavigatorState>();
+  String _platformVersion = 'Unknown';
+
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      new FlutterLocalNotificationsPlugin();
 
   @override
   void initState() {
     super.initState();
+
     PushNotificationService.initializedApp();
     PushNotificationService.subscribeToTopic();
 
     PushNotificationService.messageString.listen((event) {
       print("object");
       //showNotification();
+    });
+    initPlatformState();
+  }
+
+  Future<void> initPlatformState() async {
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
+    Geofence.initialize();
+    Geofence.startListening(GeolocationEvent.entry, (entry) {
+      print("Entry of a georegion" + "Welcome to: ${entry.id}");
+    });
+
+    Geofence.startListening(GeolocationEvent.exit, (entry) {
+      print("Exit of a georegion" + "Byebye to: ${entry.id}");
+    });
+
+    var s = 0;
+    Geofence.startListeningForLocationChanges();
+    Geofence.backgroundLocationUpdated.stream.listen((event) {
+      final dbRef = FirebaseDatabase.instance.reference();
+      dbRef.reference().child("Ubicaicones").push().set(s++);
+      print("You moved significantly" +
+          "a significant location change just happened.");
     });
   }
 
