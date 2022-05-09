@@ -13,6 +13,7 @@ class TaxiRequestFunctionality {
   late Location location = new Location();
   late bool _serviceEnabled;
   late PermissionStatus _permissionGranted;
+  late BuildContext context;
   Function(String)? updateData;
 
   TaxiRequestFunctionality();
@@ -37,6 +38,9 @@ class TaxiRequestFunctionality {
     DatabaseReference nodeToRemove =
         dbRef.reference().child(nameBranch).child(key);
     nodeToRemove.remove();
+
+    Navigator.pushReplacementNamed(context, 'serviceFormMap');
+
     print(key);
   }
 
