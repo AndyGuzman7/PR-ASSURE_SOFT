@@ -26,9 +26,9 @@ class _PruebaState extends State<ServiceFormMap> {
   TaxiRequestFunctionality taxiRequestFunctionality =
       new TaxiRequestFunctionality();
   late LatLng latLngOrigen;
-  late LatLng latLngDestino = LatLng(-0.000327615289788, -0.00522494279294);
+  late LatLng latLngDestino;
 
-  // LatLng ubi = LatLng(-0.000327615289788, -0.00522494279294);
+  LatLng ubi = LatLng(-0.000327615289788, -0.00522494279294);
 
   late bool _serviceEnabled;
   late PermissionStatus _permissionGranted;
@@ -45,20 +45,20 @@ class _PruebaState extends State<ServiceFormMap> {
           //ubicacion = newPosition;
           latLngOrigen = LatLng(newPosition.latitude, newPosition.longitude);
           print("new position Origin is $newPosition");
-          print("$latLngOrigen.longitude $latLngOrigen.latitude");
+          //print("$latLngOrigen.longitude $latLngOrigen.latitude");
         });
 
     _markers[MarkerId('Destine')] = new Marker(
         markerId: MarkerId('Destine'),
-        position: LatLng((locationOrigin.latitude + latLngDestino.latitude),
-            (locationOrigin.longitude + latLngDestino.longitude)),
+        position: LatLng((locationOrigin.latitude + ubi.latitude),
+            (locationOrigin.longitude + ubi.longitude)),
         draggable: true,
         icon: pinLocationIconCar,
         infoWindow: InfoWindow(title: "Destine"),
         onDragEnd: (newPosition) {
           latLngDestino = LatLng(newPosition.latitude, newPosition.longitude);
           print("new position Destine is $newPosition");
-          print("$latLngDestino.longitude $latLngDestino.latitude");
+          //print("$latLngDestino.longitude $latLngDestino.latitude");
         });
 
     return markers;
