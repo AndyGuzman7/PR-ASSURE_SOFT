@@ -34,7 +34,7 @@ class DriversService {
     final queryParams = {'ownerId': ownerId.toString()};
     final endpoint = Uri.http(
       Server.host,
-      '${Server.url}/driver/driver_controller.php',
+      '${Server.baseEndpoint}/driver/driver_controller.php',
       queryParams,
     );
     print(endpoint);

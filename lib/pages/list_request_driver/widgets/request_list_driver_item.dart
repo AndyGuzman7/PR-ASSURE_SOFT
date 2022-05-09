@@ -24,8 +24,8 @@ class _RequestListItemState extends State<RequestListItemDriver> {
   Color colorMain = Color.fromRGBO(255, 193, 7, 1);
   Color colorMainDanger = Color.fromRGBO(242, 78, 30, 1);
   Color colorMainNull = Color.fromRGBO(153, 153, 153, 1);
-  ListRequestDriverFunctionality listRequestDriverFunctionality = new ListRequestDriverFunctionality();
-  RequestListItemFunctionality requestListItemFunctionality = new RequestListItemFunctionality();
+  //ListRequestDriverFunctionality listRequestDriverFunctionality = new ListRequestDriverFunctionality();
+  //RequestListItemFunctionality requestListItemFunctionality = new RequestListItemFunctionality();
   
   @override
   Widget build(BuildContext context) {
@@ -68,15 +68,13 @@ class _RequestListItemState extends State<RequestListItemDriver> {
           boxData(
             Text(
               'Precio: ' + widget.driverRequest!.estimacion.toString(),
-              /*requestListItemFunctionality
-                      .getDistance(widget.driverRequest!),*/
             ),
           ),
           boxData(Text(
-            'Distancia'+ requestListItemFunctionality.getDistance(widget.driverRequest!, listRequestDriverFunctionality.latitudClient, listRequestDriverFunctionality.longitudClient),
+            'Distancia: '+ widget.driverRequest!.distancia.toString() + ' Km',
           )),
           boxData(Text(
-            "Placa: " + "hola como esta",
+            "Placa: " + widget.driverRequest!.placa.toString(),
           )),
         ],
       ),

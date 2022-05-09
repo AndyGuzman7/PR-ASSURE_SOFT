@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
+import 'package:taxi_segurito_app/models/driver.dart';
 import 'package:taxi_segurito_app/models/driver_request.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:location/location.dart';
+import 'package:taxi_segurito_app/services/driver_service.dart';
 
 import '../list_request_client/list_request_client_functionality.dart';
 
@@ -23,6 +25,8 @@ class ListRequestDriverFunctionality {
   ListRequestClientFunctionality clientFunctionality =
       ListRequestClientFunctionality();
   late Function(List<DriverRequest>) updateListRequest;
+  DriversService _driversService = DriversService();
+  late Future<List<Driver>> drivers;
 
   late final dbRef;
 
@@ -60,7 +64,8 @@ class ListRequestDriverFunctionality {
       double distance = clientFunctionality.getConvertKm(
           clientFunctionality.getDistance(
               latitudTaxi, longitudTaxi, latitudClient, longitudClient));
-      if (distance <= item.rango) {
+      item.distancia = distance;
+      if (distance <= item.rango && item.idRequestUserFirebase == '-N19THZozQ9wurM6uzdF') {
         listDriverReq.add(item);
       }
     }
