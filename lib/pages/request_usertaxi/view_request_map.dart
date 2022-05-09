@@ -61,7 +61,7 @@ class _RequestInfoState extends State<RequestInfo> {
 
   Future<void> getRequest() async {
     //String? requestID = widget.requestID;
-    String? requestID = "-N19THZozQ9wurM6uzLF";
+    String? requestID = "-N1aPDdp6doREQqbAKFL";
     var clienRequest = (await FirebaseDatabase.instance
             .reference()
             .child("Request/$requestID")
@@ -135,63 +135,64 @@ class _RequestInfoState extends State<RequestInfo> {
     );
 
     return Scaffold(
-        appBar: AppBar(),
-        body: Column(
-          children: [
-            //Mapa
-            FutureBuilder(
-                future: location.getLocation(),
-                builder: (_, AsyncSnapshot<LocationData> snapshot) {
-                  if (snapshot.hasData) {
-                    final locat = snapshot.data;
-                    LatLng locationOri =
-                        LatLng(locat?.latitude ?? 0.0, locat?.longitude ?? 0.0);
-                    print(locationOri.latitude);
+      appBar: AppBar(),
+      body: Column(
+        children: [
+          //Mapa
+          FutureBuilder(
+            future: location.getLocation(),
+            builder: (_, AsyncSnapshot<LocationData> snapshot) {
+              if (snapshot.hasData) {
+                return Expanded(
+                  child: GoogleMap(
+                    initialCameraPosition: CameraPosition(
+                        target: LatLng(
+                            latLngOrigen.latitude, latLngOrigen.longitude),
+                        zoom: 15),
+                    onMapCreated: (GoogleMapController controller) {},
+                    mapToolbarEnabled: false,
+                    myLocationEnabled: true,
+                    markers: _createMarker(),
+                    mapType: MapType.normal,
+                  ),
+                );
+              } else {
+                return Center(child: CircularProgressIndicator());
+              }
+            },
+          ),
 
-                    return Expanded(
-                        child: GoogleMap(
-                      initialCameraPosition: CameraPosition(
-                          target: LatLng(
-                              latLngOrigen.latitude, latLngOrigen.longitude),
-                          zoom: 15),
-                      onMapCreated: (GoogleMapController controller) {},
-                      mapToolbarEnabled: false,
-                      myLocationEnabled: true,
-                      markers: _createMarker(),
-                      mapType: MapType.normal,
-                    ));
-                  } else {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                }),
-
-            Row(
-              children: [
-                Form(
-                    key: _formKey,
-                    child: Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        //CustomFieldText Passengers
-                        child: Column(
+          Row(
+            children: [
+              Form(
+                key: _formKey,
+                child: Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    //CustomFieldText Passengers
+                    child: Column(
+                      children: [
+                        fieldPrice,
+                        Row(
                           children: [
-                            fieldPrice,
-                            Row(
-                              children: [
-                                Expanded(child: btnCancel),
-                                Expanded(child: btnRegister),
-                              ],
+                            Expanded(child: btnCancel),
+                            Expanded(
+                              child: btnRegister,
                             ),
-                            SizedBox(
-                              height: 15,
-                            )
                           ],
                         ),
-                      ),
-                    ))
-              ],
-            ),
-          ],
-        ));
+                        SizedBox(
+                          height: 15,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }
