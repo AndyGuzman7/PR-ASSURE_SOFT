@@ -39,7 +39,7 @@ class TaxiRequestFunctionality {
         dbRef.reference().child(nameBranch).child(key);
     nodeToRemove.remove();
 
-    Navigator.pushReplacementNamed(context, 'serviceFormMap');
+    Navigator.pushNamed(context, 'serviceFormMap');
 
     print(key);
   }
