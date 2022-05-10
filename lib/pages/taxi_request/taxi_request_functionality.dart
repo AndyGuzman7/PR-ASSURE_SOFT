@@ -13,6 +13,7 @@ class TaxiRequestFunctionality {
   late Location location = new Location();
   late bool _serviceEnabled;
   late PermissionStatus _permissionGranted;
+  late BuildContext context;
   Function(String)? updateData;
 
   TaxiRequestFunctionality();
@@ -46,7 +47,7 @@ class TaxiRequestFunctionality {
         .value;
 
     if (clienRequest == null)
-      print("no existe");
+      Navigator.pushNamed(context, 'ServiceFormMap');
     else
       print("existe");
   }
