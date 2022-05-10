@@ -31,13 +31,24 @@ class TaxiRequestFunctionality {
     print(key);
   }
 
+  //Delete request
   Future<void> deleteRequest(String idRequest) async {
     String key = idRequest;
     dbRef.reference().child(nameBranch).child(key);
     DatabaseReference nodeToRemove =
         dbRef.reference().child(nameBranch).child(key);
     nodeToRemove.remove();
-    print(key);
+
+    var clienRequest = (await FirebaseDatabase.instance
+            .reference()
+            .child("Request/$key")
+            .once())
+        .value;
+
+    if (clienRequest == null)
+      print("no existe");
+    else
+      print("existe");
   }
 
   Future<void> initUbicacion() async {
