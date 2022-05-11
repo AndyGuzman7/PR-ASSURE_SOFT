@@ -6,8 +6,11 @@ import 'package:location/location.dart';
 import 'package:taxi_segurito_app/components/buttons/CustomButton.dart';
 import 'package:taxi_segurito_app/components/inputs/CustomTextField.dart';
 import 'package:taxi_segurito_app/models/taxi_request.dart';
-import 'package:taxi_segurito_app/pages/request_user_taxi/request_funcionality.dart';
+import 'package:taxi_segurito_app/pages/request_client_info_estimates/view_request_map_functionality.dart';
 import 'package:taxi_segurito_app/validators/TextFieldValidators.dart';
+import 'package:taxi_segurito_app/pages/list_request_client/convert_distance.dart';
+
+import '../../models/client_request.dart';
 
 // ignore: must_be_immutable
 class RequestInfo extends StatefulWidget {
@@ -59,27 +62,36 @@ class _RequestInfoState extends State<RequestInfo> {
     setState(() {
       taxiRequestFunctionality.initFirebase();
       setCustomMapPin();
-      getRequest();
+      getRequest().then((value) {
+        updateDate(value);
+      });
+    });
+
+    print(widget.requestID);
+  }
+
+  void updateDate(value) {
+    DataSnapshot snapshot = value;
+    ClienRequest clienRequest = ClienRequest.fromJson(snapshot.value);
+    setState(() {
+      distancia = ConvertDistance().getDistance(clienRequest);
+      passengers = clienRequest.numeroPasageros.toString();
+      latLngOrigen =
+          LatLng(clienRequest.latitudOrigen, clienRequest.longitudOrigen);
+
+      latLngDestino =
+          LatLng(clienRequest.latitudDestino, clienRequest.longitudDestino);
     });
   }
 
   //Obtener informacion desde Firebase
-  Future<void> getRequest() async {
+  Future<DataSnapshot> getRequest() async {
     String? requestID = widget.requestID;
-    var clienRequest = (await FirebaseDatabase.instance
-            .reference()
-            .child("Request/$requestID")
-            .once())
-        .value;
-    setState(() {
-      distancia = "400m";
-      passengers = clienRequest["numeroPasajeros"].toString();
-      latLngOrigen =
-          LatLng(clienRequest["latitudOrigen"], clienRequest["longitudOrigen"]);
 
-      latLngDestino = LatLng(
-          clienRequest["latitudDestino"], clienRequest["longitudDestino"]);
-    });
+    return FirebaseDatabase.instance
+        .reference()
+        .child("Request/$requestID")
+        .once();
   }
 
   //Cargar iconos de marcadores
