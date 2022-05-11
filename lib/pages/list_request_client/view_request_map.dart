@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:taxi_segurito_app/pages/list_request_client/convert_distance.dart';
 
 import '../../models/client_request.dart';
 
@@ -51,28 +52,36 @@ class _RequestInfoState extends State<RequestInfo> {
     super.initState();
     setState(() {
       setCustomMapPin();
-      getRequest();
+      getRequest().then((value) {
+        updateDate(value);
+      });
     });
+
+    print(widget.requestID);
   }
 
-  //Obtener informacion desde Firebase
-  Future<void> getRequest() async {
-    String? requestID = widget.requestID;
-    var clienRequestJson = (await FirebaseDatabase.instance
-            .reference()
-            .child("Request/$requestID")
-            .once())
-        .value;
-    ClienRequest clienRequest = new ClienRequest.fromJson(clienRequestJson);
+  void updateDate(value) {
+    DataSnapshot snapshot = value;
+    ClienRequest clienRequest = ClienRequest.fromJson(snapshot.value);
     setState(() {
-      distancia = "400m";
+      distancia = ConvertDistance().getDistance(clienRequest);
       passengers = clienRequest.numeroPasageros.toString();
       latLngOrigen =
           LatLng(clienRequest.latitudOrigen, clienRequest.longitudOrigen);
 
       latLngDestino =
-          LatLng(clienRequest.latitudDestino, clienRequest.latitudDestino);
+          LatLng(clienRequest.latitudDestino, clienRequest.longitudDestino);
     });
+  }
+
+  //Obtener informacion desde Firebase
+  Future<DataSnapshot> getRequest() async {
+    String? requestID = widget.requestID;
+
+    return FirebaseDatabase.instance
+        .reference()
+        .child("Request/$requestID")
+        .once();
   }
 
   //Cargar iconos de marcadores
