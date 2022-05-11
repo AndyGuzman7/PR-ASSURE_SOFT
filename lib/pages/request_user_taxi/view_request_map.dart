@@ -147,6 +147,7 @@ class _RequestInfoState extends State<RequestInfo> {
         RequiredValidator(errorText: 'Tarifa requerido'),
         NumberValidator(errorText: 'No puede ingresar letras')
       ]),
+      typeIput: TextInputType.number,
       marginLeft: 0,
       marginRight: 0,
       marginTop: 15,
