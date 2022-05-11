@@ -12,9 +12,9 @@ import 'package:flutter_geofence/geofence.dart';
 import 'package:taxi_segurito_app/SRC/providers/push_notifications_provider.dart';
 import 'package:taxi_segurito_app/pages/contacList/list_contact.dart';
 import 'package:taxi_segurito_app/pages/list_request_client/request_list_page.dart';
+import 'package:taxi_segurito_app/pages/request_client_info_estimates/view_request_map.dart';
 import 'package:taxi_segurito_app/pages/menu/driver_menu.dart';
-import 'package:taxi_segurito_app/pages/taxi_request/taxi_request_functionality.dart';
-import 'package:taxi_segurito_app/pages/list_request_client/view_request_map.dart';
+
 import 'package:taxi_segurito_app/pages/vehicle_screen/vehicle_edit_screen.dart';
 import 'package:taxi_segurito_app/pages/vehicle_screen/vehicle_register_screen.dart';
 import 'package:taxi_segurito_app/pages/taxi_request/taxi_request.dart';

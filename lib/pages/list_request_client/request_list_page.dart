@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:taxi_segurito_app/models/client_request.dart';
 import 'package:taxi_segurito_app/pages/list_request_client/location.dart';
 import 'package:taxi_segurito_app/pages/list_request_client/request_list_functionality.dart';
-import 'package:taxi_segurito_app/pages/list_request_client/view_request_map.dart';
+import 'package:taxi_segurito_app/pages/request_client_info_estimates/view_request_map.dart';
 import 'package:taxi_segurito_app/pages/list_request_client/widgets/request_list.dart';
 
 class ListRequestClient extends StatefulWidget {
