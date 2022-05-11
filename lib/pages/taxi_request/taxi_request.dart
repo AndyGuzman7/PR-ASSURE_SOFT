@@ -26,14 +26,11 @@ class _PruebaState extends State<ServiceFormMap> {
   TaxiRequestFunctionality taxiRequestFunctionality =
       new TaxiRequestFunctionality();
   late LatLng latLngOrigen;
-  late LatLng latLngDestino;
-
-  LatLng ubi = LatLng(-0.000327615289788, -0.00522494279294);
+  late LatLng latLngDestino = LatLng(-0.000327615289788, -0.00522494279294);
 
   late bool _serviceEnabled;
   late PermissionStatus _permissionGranted;
 
-//Create markers
   Set<Marker> _createMarker(LatLng locationOrigin) {
     _markers[MarkerId('Origin')] = new Marker(
         markerId: MarkerId('Origin'),
@@ -42,29 +39,22 @@ class _PruebaState extends State<ServiceFormMap> {
         icon: pinLocationIconUser,
         infoWindow: InfoWindow(title: "Origin"),
         onDragEnd: (newPosition) {
-          //ubicacion = newPosition;
           latLngOrigen = LatLng(newPosition.latitude, newPosition.longitude);
-          print("new position Origin is $newPosition");
-          //print("$latLngOrigen.longitude $latLngOrigen.latitude");
         });
 
     _markers[MarkerId('Destine')] = new Marker(
         markerId: MarkerId('Destine'),
-        position: LatLng((locationOrigin.latitude + ubi.latitude),
-            (locationOrigin.longitude + ubi.longitude)),
+        position: latLngDestino,
         draggable: true,
         icon: pinLocationIconCar,
         infoWindow: InfoWindow(title: "Destine"),
         onDragEnd: (newPosition) {
           latLngDestino = LatLng(newPosition.latitude, newPosition.longitude);
-          print("new position Destine is $newPosition");
-          //print("$latLngDestino.longitude $latLngDestino.latitude");
         });
 
     return markers;
   }
 
-//Get location
   Future<void> initUbicacion() async {
     _serviceEnabled = await location.serviceEnabled();
 
@@ -82,9 +72,6 @@ class _PruebaState extends State<ServiceFormMap> {
         return;
       }
     }
-
-    //_locationData = await location.getLocation();
-    //print("$_locationData.latitude");
   }
 
   late BitmapDescriptor pinLocationIconUser, pinLocationIconCar;
@@ -111,7 +98,6 @@ class _PruebaState extends State<ServiceFormMap> {
 
   @override
   Widget build(BuildContext context) {
-    taxiRequestFunctionality.context = context;
     final _formKey = GlobalKey<FormState>();
 
     bool registerRequest() {
@@ -214,6 +200,9 @@ class _PruebaState extends State<ServiceFormMap> {
                   LatLng locationOri =
                       LatLng(locat?.latitude ?? 0.0, locat?.longitude ?? 0.0);
                   latLngOrigen = locationOri;
+                  latLngDestino = LatLng(
+                      (latLngOrigen.latitude + latLngDestino.latitude),
+                      (latLngOrigen.longitude + latLngDestino.longitude));
                   print("respuesta " + locationOri.latitude.toString());
 
                   return Expanded(
