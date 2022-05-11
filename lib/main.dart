@@ -6,7 +6,7 @@ import 'package:taxi_segurito_app/pages/contacList/list_contact.dart';
 import 'package:taxi_segurito_app/pages/list_request_client/list_request_client.dart';
 import 'package:taxi_segurito_app/pages/menu/driver_menu.dart';
 import 'package:taxi_segurito_app/pages/taxi_request/taxi_request_functionality.dart';
-import 'package:taxi_segurito_app/pages/taxi_request/view_request_map.dart';
+import 'package:taxi_segurito_app/pages/list_request_client/view_request_map.dart';
 import 'package:taxi_segurito_app/pages/vehicle_screen/vehicle_edit_screen.dart';
 import 'package:taxi_segurito_app/pages/vehicle_screen/vehicle_register_screen.dart';
 import 'package:taxi_segurito_app/pages/taxi_request/taxi_request.dart';
@@ -81,7 +81,7 @@ class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
         'serviceFormMap': (_) => ServiceFormMap(),
         'registerScreen': (_) => RegisterPage(),
         'viewRequestInfo': (_) => RequestInfo(
-              requestID: "-N1aPDdp6doREQqbAKFL",
+              requestID: "-N1oqGSf7jtxDr7DEnjy",
             ),
         'firstScreen': (_) => MainWindow(),
         'scannerQr': (_) => ScannerQrPage(name: this.sessionName),

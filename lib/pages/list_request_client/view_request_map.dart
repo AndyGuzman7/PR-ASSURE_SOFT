@@ -3,6 +3,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
+import '../../models/client_request.dart';
+
 // ignore: must_be_immutable
 class RequestInfo extends StatefulWidget {
   String? requestID;
@@ -56,19 +58,20 @@ class _RequestInfoState extends State<RequestInfo> {
   //Obtener informacion desde Firebase
   Future<void> getRequest() async {
     String? requestID = widget.requestID;
-    var clienRequest = (await FirebaseDatabase.instance
+    var clienRequestJson = (await FirebaseDatabase.instance
             .reference()
             .child("Request/$requestID")
             .once())
         .value;
+    ClienRequest clienRequest = new ClienRequest.fromJson(clienRequestJson);
     setState(() {
       distancia = "400m";
-      passengers = clienRequest["numeroPasajeros"].toString();
+      passengers = clienRequest.numeroPasageros.toString();
       latLngOrigen =
-          LatLng(clienRequest["latitudOrigen"], clienRequest["longitudOrigen"]);
+          LatLng(clienRequest.latitudOrigen, clienRequest.longitudOrigen);
 
-      latLngDestino = LatLng(
-          clienRequest["latitudDestino"], clienRequest["longitudDestino"]);
+      latLngDestino =
+          LatLng(clienRequest.latitudDestino, clienRequest.latitudDestino);
     });
   }
 
