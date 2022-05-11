@@ -17,6 +17,7 @@ class TaxiRequestFunctionality {
   late PermissionStatus _permissionGranted;
   late NotificationsFirebase notificationsFirebase =
       new NotificationsFirebase();
+  late BuildContext context;
   Function(String)? updateData;
 
   TaxiRequestFunctionality();
@@ -36,6 +37,26 @@ class TaxiRequestFunctionality {
     LatLng latLng =
         new LatLng(clienRequest.latitudOrigen, clienRequest.longitudOrigen);
     notificationsFirebase.sendNotification(latLng);
+  }
+
+  //Delete request
+  Future<void> deleteRequest(String idRequest) async {
+    String key = idRequest;
+    dbRef.reference().child(nameBranch).child(key);
+    DatabaseReference nodeToRemove =
+        dbRef.reference().child(nameBranch).child(key);
+    nodeToRemove.remove();
+
+    var clienRequest = (await FirebaseDatabase.instance
+            .reference()
+            .child("Request/$key")
+            .once())
+        .value;
+
+    if (clienRequest == null)
+      Navigator.pushNamed(context, 'ServiceFormMap');
+    else
+      print("existe");
   }
 
   Future<void> initUbicacion() async {
