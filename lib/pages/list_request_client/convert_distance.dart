@@ -5,9 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../models/client_request.dart';
 
-class RequestListItemFunctionality {
-  RequestListItemFunctionality();
-
+class ConvertDistance {
   String getDistance(ClienRequest clientRequest) {
     String distanceString = "0 km";
     double origenLatitud = double.parse(clientRequest.latitudOrigen.toString());

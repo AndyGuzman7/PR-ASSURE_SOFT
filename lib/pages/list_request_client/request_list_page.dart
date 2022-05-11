@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:taxi_segurito_app/models/client_request.dart';
 import 'package:taxi_segurito_app/pages/list_request_client/location.dart';
 import 'package:taxi_segurito_app/pages/list_request_client/request_list_functionality.dart';
+import 'package:taxi_segurito_app/pages/list_request_client/view_request_map.dart';
 import 'package:taxi_segurito_app/pages/list_request_client/widgets/request_list.dart';
 
 class ListRequestClient extends StatefulWidget {
@@ -34,7 +35,17 @@ class _ListRequestClientState extends State<ListRequestClient> {
   Widget build(BuildContext context) {
     RequestList requestList = new RequestList();
     requestList.listRequest = listRequest;
-    requestList.callback = (value) {};
+    requestList.setCallbak = (ClienRequest value) {
+      print(value.iduserFirebase);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => RequestInfo(
+            requestID: value.iduserFirebase,
+          ),
+        ),
+      );
+    };
 
     listRequestClientFunctionality.updateListRequest = ((value) {
       setState(() {
