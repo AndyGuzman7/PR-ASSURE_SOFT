@@ -10,18 +10,19 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:taxi_segurito_app/pages/log_in/log_in_fuctionality.dart';
 import 'package:taxi_segurito_app/validators/TextFieldValidators.dart';
 
-import 'log_in_driver_page.dart';
+import '../../models/driver.dart';
+import 'log_in_driver_functionality.dart';
 
-class UserLoginPage extends StatefulWidget {
-  User user = new User.login("", "");
+class LogInDriverPage extends StatefulWidget {
+  Driver driver = new Driver.logInDriver("", "");
 
-  UserLoginPage({Key? key}) : super(key: key);
+  LogInDriverPage({Key? key}) : super(key: key);
 
   @override
-  _UserLoginPageState createState() => _UserLoginPageState();
+  _DriverLoginPageState createState() => _DriverLoginPageState();
 }
 
-class _UserLoginPageState extends State<UserLoginPage> {
+class _DriverLoginPageState extends State<LogInDriverPage> {
   final TextEditingController _pass = TextEditingController();
   final TextEditingController _email = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -36,10 +37,11 @@ class _UserLoginPageState extends State<UserLoginPage> {
   }
 
   Widget build(BuildContext context) {
-    LoginFuctionality functionality = new LoginFuctionality(context);
+    LoginDriverFuctionality functionality =
+        new LoginDriverFuctionality(context);
 
     CustomTextField txtNameOR = new CustomTextField(
-      value: widget.user.email,
+      value: widget.driver.email,
       hint: 'Ingrese su celular o e-mail',
       multiValidator: MultiValidator(
         [
@@ -47,12 +49,12 @@ class _UserLoginPageState extends State<UserLoginPage> {
         ],
       ),
       assignValue: (value) {
-        widget.user.email = value;
+        widget.driver.email = value;
       },
     );
 
     CustomTextField txtPassword = new CustomTextField(
-      value: widget.user.password,
+      value: widget.driver.password,
       hint: 'Contraseña',
       obscureText: true,
       multiValidator: MultiValidator(
@@ -61,7 +63,7 @@ class _UserLoginPageState extends State<UserLoginPage> {
         ],
       ),
       assignValue: (value) {
-        widget.user.password = value;
+        widget.driver.password = value;
       },
     );
     return Scaffold(
@@ -100,7 +102,7 @@ class _UserLoginPageState extends State<UserLoginPage> {
                         child: Padding(
                           padding: const EdgeInsets.only(bottom: 10),
                           child: Text(
-                            "Iniciar Sesión",
+                            "¿Que vamos hacer hoy?",
                             style: TextStyle(color: Colors.black, fontSize: 20),
                           ),
                         ),
@@ -148,7 +150,7 @@ class _UserLoginPageState extends State<UserLoginPage> {
                       CustomButton(
                         onTap: () async {
                           if (_formKey.currentState!.validate()) {
-                            functionality.validateLogIn(User.login(
+                            functionality.validateLogIn(Driver.logInDriver(
                                 _email.value.text, _pass.value.text));
                           }
                         },
@@ -169,7 +171,7 @@ class _UserLoginPageState extends State<UserLoginPage> {
                                     SessionsService sessions =
                                         new SessionsService();
                                     await sessions
-                                        .removeValuesSession("iduser");
+                                        .removeValuesSession("iddriver");
                                     await sessions.removeValuesSession("rol");
                                     Navigator.push(
                                       context,
@@ -179,21 +181,6 @@ class _UserLoginPageState extends State<UserLoginPage> {
                                     );
                                   },
                                   child: Text("¿Olvidaste tu contraseña?",
-                                      style:
-                                          TextStyle(color: Colors.blueAccent)),
-                                ),
-                              ),
-                              Container(
-                                child: TextButton(
-                                  onPressed: () => {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                LogInDriverPage()))
-                                  },
-                                  child: Text(
-                                      "¿O quieres iniciar sesión como taxista?",
                                       style:
                                           TextStyle(color: Colors.blueAccent)),
                                 ),

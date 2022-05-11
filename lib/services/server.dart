@@ -16,6 +16,7 @@ class Server {
     'ADMIN': 1,
     'CLIENT': 2,
     'OWNER': 3,
+    'DRIVER': 4
   };
 
   static const Map<String, String> SignUpType = {
