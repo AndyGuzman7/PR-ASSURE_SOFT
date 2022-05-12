@@ -34,15 +34,17 @@ class DriversService {
     final queryParams = {'ownerId': ownerId.toString()};
     final endpoint = Uri.http(
       Server.host,
-      '${Server.url}/driver/driver_controller.php',
+      '${Server.baseEndpoint}/driver/driver_controller.php',
       queryParams,
     );
     print(endpoint);
 
     http.Response response = await http.get(endpoint);
     if (response.statusCode == 200) {
+      print(response.statusCode);
       return _jsonToList(response);
     }
+
     throw 'Unable to fetch drivers data';
   }
 
@@ -66,6 +68,7 @@ class DriversService {
   }
 
   List<Driver> _jsonToList(http.Response response) {
+    print(response.body);
     List<dynamic> body = jsonDecode(response.body);
     List<Driver> drivers = body.map((d) => Driver.fromJson(d)).toList();
     return drivers;

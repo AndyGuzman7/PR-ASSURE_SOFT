@@ -44,6 +44,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Firebase.initializeApp();
+
+  PushNotificationService.initializedApp();
   Geofence.initialize();
   Geofence.requestPermissions();
 
@@ -100,7 +102,6 @@ class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
   void initState() {
     super.initState();
 
-    PushNotificationService.initializedApp();
     PushNotificationService.subscribeToTopic();
 
     PushNotificationService.messageString.listen((event) {
@@ -146,7 +147,7 @@ class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
       title: "Taxi Segurito",
       theme: ThemeData(primarySwatch: Colors.amber),
       debugShowCheckedModeBanner: false,
-      initialRoute: 'listRequestClient',
+      initialRoute: routeInitial,
       routes: {
         'loginUser': (_) => UserLoginPage(),
         'listRequestClient': (_) => ListRequestClient(),
