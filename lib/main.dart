@@ -1,3 +1,4 @@
+//import 'dart:html';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:async';
@@ -12,6 +13,7 @@ import 'package:flutter_geofence/geofence.dart';
 import 'package:taxi_segurito_app/SRC/providers/push_notifications_provider.dart';
 import 'package:taxi_segurito_app/pages/contacList/list_contact.dart';
 import 'package:taxi_segurito_app/pages/list_request_client/request_list_page.dart';
+import 'package:taxi_segurito_app/pages/list_request_driver/list_request_driver.dart';
 import 'package:taxi_segurito_app/pages/request_client_info_estimates/view_request_map.dart';
 import 'package:taxi_segurito_app/pages/menu/driver_menu.dart';
 
@@ -147,8 +149,9 @@ class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
       title: "Taxi Segurito",
       theme: ThemeData(primarySwatch: Colors.amber),
       debugShowCheckedModeBanner: false,
-      initialRoute: routeInitial,
+      home: ListRequestClient(),
       routes: {
+        //'listRequestDriver': (_) => ListRequestDriver(),
         'loginUser': (_) => UserLoginPage(),
         'listRequestClient': (_) => ListRequestClient(),
         'serviceFormMap': (_) => ServiceFormMap(),
