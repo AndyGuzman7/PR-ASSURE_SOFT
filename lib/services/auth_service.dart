@@ -18,6 +18,7 @@ class AuthService {
     User? userRes = await _getUser(user);
     if (userRes != null) {
       await _saveSession(userRes);
+      print("se guarda sesion");
     }
 
     return userRes;
@@ -45,7 +46,7 @@ class AuthService {
     log("response.body: " + response.body);
     if (response.statusCode == 200) {
       final body = json.decode(response.body);
-      log(body['name']);
+      //log(body['name']);
       return new Driver.logInDriverResponse(
           body['id'], body['role'], body['name'], body['cellphone']);
     }
