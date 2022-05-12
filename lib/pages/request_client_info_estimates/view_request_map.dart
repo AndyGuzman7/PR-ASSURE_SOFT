@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:form_field_validator/form_field_validator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:taxi_segurito_app/components/buttons/CustomButton.dart';
+import 'package:taxi_segurito_app/components/inputs/CustomTextField.dart';
+import 'package:taxi_segurito_app/models/taxi_request.dart';
+import 'package:taxi_segurito_app/pages/request_client_info_estimates/view_request_map_functionality.dart';
+import 'package:taxi_segurito_app/validators/TextFieldValidators.dart';
+import 'package:taxi_segurito_app/pages/list_request_client/convert_distance.dart';
+
+import '../../models/client_request.dart';
 
 // ignore: must_be_immutable
 class RequestInfo extends StatefulWidget {
@@ -18,8 +27,11 @@ class _RequestInfoState extends State<RequestInfo> {
 
   late String distancia = "Ninguna";
   late String passengers = "Ninguno";
-
+  late CustomTextField fieldPrice;
   Map<MarkerId, Marker> _markers = {};
+
+  ViewRequestFunctionality taxiRequestFunctionality =
+      new ViewRequestFunctionality();
   Set<Marker> get markers => _markers.values.toSet();
 
   Location location = Location();
@@ -48,28 +60,38 @@ class _RequestInfoState extends State<RequestInfo> {
   void initState() {
     super.initState();
     setState(() {
+      taxiRequestFunctionality.initFirebase();
       setCustomMapPin();
-      getRequest();
+      getRequest().then((value) {
+        updateDate(value);
+      });
+    });
+
+    print(widget.requestID);
+  }
+
+  void updateDate(value) {
+    DataSnapshot snapshot = value;
+    ClienRequest clienRequest = ClienRequest.fromJson(snapshot.value);
+    setState(() {
+      distancia = ConvertDistance().getDistance(clienRequest);
+      passengers = clienRequest.numeroPasageros.toString();
+      latLngOrigen =
+          LatLng(clienRequest.latitudOrigen, clienRequest.longitudOrigen);
+
+      latLngDestino =
+          LatLng(clienRequest.latitudDestino, clienRequest.longitudDestino);
     });
   }
 
   //Obtener informacion desde Firebase
-  Future<void> getRequest() async {
+  Future<DataSnapshot> getRequest() async {
     String? requestID = widget.requestID;
-    var clienRequest = (await FirebaseDatabase.instance
-            .reference()
-            .child("Request/$requestID")
-            .once())
-        .value;
-    setState(() {
-      distancia = "400m";
-      passengers = clienRequest["numeroPasajeros"].toString();
-      latLngOrigen =
-          LatLng(clienRequest["latitudOrigen"], clienRequest["longitudOrigen"]);
 
-      latLngDestino = LatLng(
-          clienRequest["latitudDestino"], clienRequest["longitudDestino"]);
-    });
+    return FirebaseDatabase.instance
+        .reference()
+        .child("Request/$requestID")
+        .once();
   }
 
   //Cargar iconos de marcadores
@@ -95,6 +117,55 @@ class _RequestInfoState extends State<RequestInfo> {
       textAlign: TextAlign.left,
     );
 
+    final _formKey = GlobalKey<FormState>();
+    bool registerRequest() {
+      if (_formKey.currentState!.validate()) {
+        return true;
+      }
+      return false;
+    }
+
+    final btnRegister = new CustomButton(
+      onTap: () {
+        if (registerRequest()) {
+          TaxiRequest taxiRequest = new TaxiRequest(1, '-N19THZozQ9wurM6uzLF',
+              '', double.parse(fieldPrice.getValue()));
+          taxiRequestFunctionality.sendRequest(taxiRequest);
+        }
+      },
+      buttonText: "Enviar",
+      buttonColor: Color.fromRGBO(255, 193, 7, 1),
+      buttonTextColor: Colors.white,
+      marginBotton: 0,
+      marginLeft: 5,
+      marginRight: 0,
+      marginTop: 0,
+    );
+
+    final btnCancel = new CustomButton(
+      onTap: () {},
+      buttonText: "Declinar",
+      buttonColor: Color.fromRGBO(240, 142, 136, 1),
+      buttonTextColor: Colors.white,
+      marginBotton: 0,
+      marginLeft: 5,
+      marginRight: 0,
+      marginTop: 0,
+    );
+
+    fieldPrice = CustomTextField(
+      hint: "Precio Estimado",
+      multiValidator: MultiValidator([
+        RequiredValidator(errorText: 'Tarifa requerido'),
+        NumberValidator(errorText: 'No puede ingresar letras')
+      ]),
+      typeIput: TextInputType.number,
+      marginLeft: 0,
+      marginRight: 0,
+      marginTop: 15,
+      marginBotton: 30,
+      heightNum: 42,
+    );
     final containerTitle = new Container(
       alignment: Alignment.centerLeft,
       margin: new EdgeInsets.only(
@@ -220,6 +291,35 @@ class _RequestInfoState extends State<RequestInfo> {
                 );
               }
             },
+          ),
+          Row(
+            children: [
+              Form(
+                key: _formKey,
+                child: Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    //CustomFieldText Passengers
+                    child: Column(
+                      children: [
+                        fieldPrice,
+                        Row(
+                          children: [
+                            Expanded(child: btnCancel),
+                            Expanded(
+                              child: btnRegister,
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 15,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              )
+            ],
           ),
         ],
       ),

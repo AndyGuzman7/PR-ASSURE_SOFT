@@ -11,6 +11,7 @@ class SessionsService {
   getSessionValue(String key) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? value = prefs.getString(key);
+    print(value);
     return value;
   }
 

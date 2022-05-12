@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart';
 import 'package:location/location.dart';
 import 'package:taxi_segurito_app/models/client_request.dart';
+import 'package:taxi_segurito_app/pages/list_request_client/location.dart';
 
 class ListRequestClientFunctionality {
   List<ClienRequest> listRequest = [];
@@ -14,18 +15,17 @@ class ListRequestClientFunctionality {
   late Location location = new Location();
   late bool _serviceEnabled;
   late PermissionStatus _permissionGranted;
-  late LocationData _locationData;
+  late LocationData locationData;
 
   late double latitudTaxi;
   late double longitudTaxi;
 
-  Function(String)? updateData;
+  late Function(List<ClienRequest>) updateListRequest;
 
   ListRequestClientFunctionality();
   void initFirebase() {
-    print("dasdasd" + latitudTaxi.toString());
     dbRef = FirebaseDatabase.instance.reference();
-    Stream<Event> streamBuilder = dbRef.child("Request").onValue;
+    Stream<Event> streamBuilder = dbRef.child(nameBranch).onValue;
     streamBuilder.listen((event) {
       DataSnapshot snapshot = event.snapshot;
       getItemsFirebase(snapshot);
@@ -56,16 +56,12 @@ class ListRequestClientFunctionality {
         listRequest.add(item);
       }
     }
-
+    updateListRequest(listRequest);
     for (var item in listRequest) {
       print(item.rango.toString() +
           " sfsdfsdf " +
           item.numeroPasageros.toString());
     }
-  }
-
-  void update(value) {
-    updateData!(value);
   }
 
   Future<void> sendRequest(ClienRequest clienRequest) async {
@@ -104,7 +100,7 @@ class ListRequestClientFunctionality {
   }
 
   Future<LocationData> getUbication() async {
-    return _locationData = await location.getLocation();
+    return locationData = await location.getLocation();
   }
 
   void getInstance() {
