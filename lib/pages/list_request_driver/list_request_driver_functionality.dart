@@ -65,7 +65,7 @@ class ListRequestDriverFunctionality {
           clientFunctionality.getDistance(
               latitudTaxi, longitudTaxi, latitudClient, longitudClient));
       item.distancia = distance;
-      if (distance <= item.rango && item.idRequestUserFirebase == '-N19THZozQ9wurM6uzdF') {
+      if (item.idRequestUserFirebase == '-N19THZozQ9wurM6uzdF') {
         listDriverReq.add(item);
       }
     }
