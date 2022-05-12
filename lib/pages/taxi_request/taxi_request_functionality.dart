@@ -2,12 +2,15 @@ import 'dart:convert';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart';
 import 'package:location/location.dart';
 import 'package:taxi_segurito_app/models/client_request.dart';
 import 'package:taxi_segurito_app/services/notifications.dart';
+
+import '../list_request_driver/list_request_driver.dart';
 
 class TaxiRequestFunctionality {
   late final nameBranch = "Request";
@@ -32,7 +35,20 @@ class TaxiRequestFunctionality {
   Future<void> sendRequest(ClienRequest clienRequest) async {
     String key = dbRef.reference().child(nameBranch).push().key.toString();
     clienRequest.iduserFirebase = key;
-    dbRef.reference().child(nameBranch).child(key).set(clienRequest.toJson());
+    dbRef
+        .reference()
+        .child(nameBranch)
+        .child(key)
+        .set(clienRequest.toJson())
+        .then((_) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ListRequestDriver(),
+        ),
+      );
+    });
+
     print(key);
     LatLng latLng =
         new LatLng(clienRequest.latitudOrigen, clienRequest.longitudOrigen);
