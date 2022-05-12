@@ -4,9 +4,8 @@ import 'package:taxi_segurito_app/models/driver_request.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:location/location.dart';
+import 'package:taxi_segurito_app/pages/list_request_client/request_list_functionality.dart';
 import 'package:taxi_segurito_app/services/driver_service.dart';
-
-import '../list_request_client/list_request_client_functionality.dart';
 
 class ListRequestDriverFunctionality {
   List<DriverRequest> listDriverReq = [];

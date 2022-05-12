@@ -3,9 +3,11 @@ import 'dart:convert';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart';
 import 'package:location/location.dart';
 import 'package:taxi_segurito_app/models/client_request.dart';
+import 'package:taxi_segurito_app/services/notifications.dart';
 
 class TaxiRequestFunctionality {
   late final nameBranch = "Request";
@@ -13,6 +15,9 @@ class TaxiRequestFunctionality {
   late Location location = new Location();
   late bool _serviceEnabled;
   late PermissionStatus _permissionGranted;
+  late NotificationsFirebase notificationsFirebase =
+      new NotificationsFirebase();
+  late BuildContext context;
   Function(String)? updateData;
 
   TaxiRequestFunctionality();
@@ -29,6 +34,29 @@ class TaxiRequestFunctionality {
     clienRequest.iduserFirebase = key;
     dbRef.reference().child(nameBranch).child(key).set(clienRequest.toJson());
     print(key);
+    LatLng latLng =
+        new LatLng(clienRequest.latitudOrigen, clienRequest.longitudOrigen);
+    notificationsFirebase.sendNotification(latLng);
+  }
+
+  //Delete request
+  Future<void> deleteRequest(String idRequest) async {
+    String key = idRequest;
+    dbRef.reference().child(nameBranch).child(key);
+    DatabaseReference nodeToRemove =
+        dbRef.reference().child(nameBranch).child(key);
+    nodeToRemove.remove();
+
+    var clienRequest = (await FirebaseDatabase.instance
+            .reference()
+            .child("Request/$key")
+            .once())
+        .value;
+
+    if (clienRequest == null)
+      Navigator.pushNamed(context, 'ServiceFormMap');
+    else
+      print("existe");
   }
 
   Future<void> initUbicacion() async {

@@ -61,8 +61,8 @@ class Driver extends Person {
 
     String pictureBase64 = json['picture'] as String;
     picture = bytesFromBase64String(pictureBase64);
-    this.email = json['role'] as String;
-    this.email = json['email'] as String;
+    this.role = json['role'] as String;
+    // this.email = json['email'] as String;
     this.password = json['password'] as String;
   }
 
