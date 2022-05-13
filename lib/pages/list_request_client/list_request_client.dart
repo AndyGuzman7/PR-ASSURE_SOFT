@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:taxi_segurito_app/components/buttons/CustomButton.dart';
 import 'package:taxi_segurito_app/components/slider/slider.dart';
@@ -36,6 +37,7 @@ class _ListRequestClientState extends State<ListRequestClient> {
       onTap: () {
         ClienRequest clienRequest = new ClienRequest.updateRange(
             '-N19THZozQ9wurM6uzLF', customSlider.getValue());
+        Navigator.pop(context);
         listRequestClientFunctionality.update(clienRequest);
       },
       buttonText: "Actualizar rango",
@@ -46,45 +48,65 @@ class _ListRequestClientState extends State<ListRequestClient> {
       marginRight: 0,
       marginTop: 0,
     );
-    //rango
-    Container containerRange = new Container(
-      alignment: Alignment.centerLeft,
-      margin: new EdgeInsets.only(
-        top: 10.0,
-        bottom: 10.0,
-        left: 5.0,
-        right: 5.0,
-      ),
-      padding: EdgeInsets.all(13),
-      decoration: BoxDecoration(
-          border: Border.all(
-            color: Color.fromRGBO(203, 203, 203, 1),
-            width: 1,
-          ),
-          borderRadius: BorderRadius.circular(20)),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Container(
-            child: Text(
-              'Establecer nuevo rango: ',
+
+    showAlertDialog() {
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(25))),
+            titleTextStyle: TextStyle(
+                color: Colors.black, fontSize: 18, fontWeight: FontWeight.w700),
+            title: Text(
+              "text",
+              textAlign: TextAlign.center,
             ),
-            alignment: Alignment.topLeft,
-          ),
-          Container(
-            child: customSlider,
-            alignment: Alignment.topLeft,
-          ),
-          btnActualizar
-        ],
-      ),
-    );
+            backgroundColor: Colors.white,
+            content: Container(
+              alignment: Alignment.centerLeft,
+              margin: new EdgeInsets.only(
+                top: 10.0,
+                bottom: 10.0,
+                left: 5.0,
+                right: 5.0,
+              ),
+              padding: EdgeInsets.all(13),
+              decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Color.fromRGBO(203, 203, 203, 1),
+                    width: 1,
+                  ),
+                  borderRadius: BorderRadius.circular(20)),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    child: Text(
+                      'Establecer nuevo rango: ',
+                    ),
+                    alignment: Alignment.topLeft,
+                  ),
+                  Container(
+                    child: customSlider,
+                    alignment: Alignment.topLeft,
+                  ),
+                  btnActualizar
+                ],
+              ),
+            ),
+            actions: [btnActualizar],
+          );
+        },
+      );
+    }
 
     return Scaffold(
         body: Container(
-      child: containerRange,
+      child: Text("sss"),
     ));
   }
 }
