@@ -25,6 +25,7 @@ class SignUpService {
     );
 
     print(response);
+    print(response.body);
     final success = response.statusCode == 200;
     return success;
   }

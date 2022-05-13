@@ -22,9 +22,9 @@ class RequestListItemFunctionality {
         origenLatitud, origenLongitud, destinoLatitud, destinoLongitud);
 
     if (distanceDouble >= 1000) {
-      distanceString = (distanceDouble / 1000).toStringAsFixed(2) + " Km";
+      distanceString = (distanceDouble / 1000).toStringAsFixed(1) + " Km";
     } else {
-      distanceString = distanceDouble.toStringAsFixed(2) + " Km";
+      distanceString = distanceDouble.toStringAsFixed(1) + " m";
     }
     return distanceString;
   }

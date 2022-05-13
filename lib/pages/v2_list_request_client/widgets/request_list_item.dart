@@ -1,13 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:taxi_segurito_app/components/buttons/CustomButtonWithLinearBorder.dart';
 import 'package:taxi_segurito_app/models/client_request.dart';
-import 'package:taxi_segurito_app/models/company.dart';
-import 'package:taxi_segurito_app/pages/company_screen/company_edit_screen.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:taxi_segurito_app/pages/list_request_client/request_list_functionality.dart';
-import 'package:taxi_segurito_app/pages/list_request_client/widgets/request_list_item_functionality.dart';
+import 'package:taxi_segurito_app/pages/v2_list_request_client/widgets/request_list_item_functionality.dart';
 
 class RequestListItem extends StatefulWidget {
   void Function(ClienRequest clienRequest) callbackRequest;
