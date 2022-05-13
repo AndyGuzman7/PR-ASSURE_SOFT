@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart';
@@ -9,8 +10,11 @@ import 'package:location/location.dart';
 import 'package:taxi_segurito_app/models/client_request.dart';
 import 'package:taxi_segurito_app/services/notifications.dart';
 
+import '../list_request_driver/list_request_driver.dart';
+
 class TaxiRequestFunctionality {
   late final nameBranch = "Request";
+  late String key;
   late final dbRef;
   late Location location = new Location();
   late bool _serviceEnabled;
@@ -30,9 +34,24 @@ class TaxiRequestFunctionality {
   }
 
   Future<void> sendRequest(ClienRequest clienRequest) async {
-    String key = dbRef.reference().child(nameBranch).push().key.toString();
+    key = dbRef.reference().child(nameBranch).push().key.toString();
     clienRequest.iduserFirebase = key;
-    dbRef.reference().child(nameBranch).child(key).set(clienRequest.toJson());
+    dbRef
+        .reference()
+        .child(nameBranch)
+        .child(key)
+        .set(clienRequest.toJson())
+        .then((_) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ListRequestDriver(
+            idRequest: key,
+          ),
+        ),
+      );
+    });
+
     print(key);
     LatLng latLng =
         new LatLng(clienRequest.latitudOrigen, clienRequest.longitudOrigen);
@@ -40,24 +59,6 @@ class TaxiRequestFunctionality {
   }
 
   //Delete request
-  Future<void> deleteRequest(String idRequest) async {
-    String key = idRequest;
-    dbRef.reference().child(nameBranch).child(key);
-    DatabaseReference nodeToRemove =
-        dbRef.reference().child(nameBranch).child(key);
-    nodeToRemove.remove();
-
-    var clienRequest = (await FirebaseDatabase.instance
-            .reference()
-            .child("Request/$key")
-            .once())
-        .value;
-
-    if (clienRequest == null)
-      Navigator.pushNamed(context, 'ServiceFormMap');
-    else
-      print("existe");
-  }
 
   Future<void> initUbicacion() async {
     _serviceEnabled = await location.serviceEnabled();

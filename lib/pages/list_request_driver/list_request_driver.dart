@@ -1,11 +1,15 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:taxi_segurito_app/components/buttons/CustomButtonWithLinearBorder.dart';
 import 'package:taxi_segurito_app/models/driver_request.dart';
 import 'package:taxi_segurito_app/pages/list_request_driver/list_request_driver_functionality.dart';
 import 'package:taxi_segurito_app/pages/list_request_driver/widgets/request_list_driver.dart';
 
+import '../../components/buttons/CustomButton.dart';
+
 class ListRequestDriver extends StatefulWidget {
-  ListRequestDriver({Key? key}) : super(key: key);
+  String idRequest;
+  ListRequestDriver({Key? key, required this.idRequest}) : super(key: key);
 
   @override
   State<ListRequestDriver> createState() => _ListRequestDriverState();
@@ -30,6 +34,7 @@ class _ListRequestDriverState extends State<ListRequestDriver> {
   }
 
   AppBar appBar = new AppBar(
+    automaticallyImplyLeading: false,
     title: Container(
       alignment: Alignment.center,
       child: Text(
@@ -48,6 +53,7 @@ class _ListRequestDriverState extends State<ListRequestDriver> {
 
   @override
   Widget build(BuildContext context) {
+    listRequestDriverFunctionality.context = context;
     RequestListDriver requestList = RequestListDriver();
     requestList.listRequest = listRequest;
     requestList.callback = (value) {};
@@ -60,6 +66,20 @@ class _ListRequestDriverState extends State<ListRequestDriver> {
       });
     });
 
+    final btnCancel = new CustomButtonWithLinearBorder(
+      onTap: () {
+        listRequestDriverFunctionality.deleteRequest(widget.idRequest);
+      },
+      buttonText: "Cancelar Solicitud",
+      buttonColor: Color.fromRGBO(255, 193, 7, 1),
+      buttonTextColor: Colors.white,
+      marginBotton: 0,
+      buttonBorderColor: Color.fromRGBO(255, 193, 7, 1),
+      marginLeft: 5,
+      marginRight: 0,
+      marginTop: 0,
+    );
+
     return Scaffold(
         appBar: appBar,
         body: Container(
@@ -70,9 +90,14 @@ class _ListRequestDriverState extends State<ListRequestDriver> {
               children: [
                 title,
                 Expanded(
-                    child: Container(
-                  child: requestList,
-                ))
+                  child: Container(
+                    child: requestList,
+                  ),
+                ),
+                Container(
+                  child: btnCancel,
+                  margin: new EdgeInsets.fromLTRB(10, 10, 10, 10),
+                )
               ]),
         ));
   }

@@ -98,6 +98,7 @@ class _PruebaState extends State<ServiceFormMap> {
 
   @override
   Widget build(BuildContext context) {
+    taxiRequestFunctionality.context = context;
     final _formKey = GlobalKey<FormState>();
 
     bool registerRequest() {
@@ -161,6 +162,7 @@ class _PruebaState extends State<ServiceFormMap> {
 
     return Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: Text('Formulario de servicio'),
         ),
         body: Column(
