@@ -1,12 +1,10 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:taxi_segurito_app/components/buttons/CustomButtonWithLinearBorder.dart';
 import 'package:taxi_segurito_app/models/client_request.dart';
 import 'package:taxi_segurito_app/models/driver_request.dart';
-import 'package:taxi_segurito_app/pages/list_request_client/list_request_client_functionality.dart';
-import 'package:taxi_segurito_app/pages/list_request_driver/list_request_driver_functionality.dart';
-import 'package:taxi_segurito_app/pages/list_request_driver/widgets/request_list_driver.dart';
-import 'package:taxi_segurito_app/pages/taxi_request/taxi_request_functionality.dart';
+import 'package:taxi_segurito_app/pages/v2_list_request_driver/list_request_driver_functionality.dart';
+import 'package:taxi_segurito_app/pages/v2_list_request_driver/widgets/request_list_driver.dart';
+import 'package:taxi_segurito_app/pages/v2_taxi_request/taxi_request_functionality.dart';
 
 import '../../components/buttons/CustomButton.dart';
 import '../../components/slider/slider.dart';

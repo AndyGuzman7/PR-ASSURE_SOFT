@@ -1,9 +1,5 @@
-import 'dart:convert';
-
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:http/http.dart';
 import 'package:location/location.dart';
 import 'package:taxi_segurito_app/models/client_request.dart';
 
@@ -14,22 +10,26 @@ class ListRequestClientFunctionality {
   late Location location = new Location();
   late bool _serviceEnabled;
   late PermissionStatus _permissionGranted;
-  late LocationData _locationData;
+  late LocationData locationData;
 
   late double latitudTaxi;
   late double longitudTaxi;
 
-  Function(String)? updateData;
+  late Function(List<ClienRequest>) updateListRequest;
 
   ListRequestClientFunctionality();
   void initFirebase() {
-    print("dasdasd" + latitudTaxi.toString());
-    dbRef = FirebaseDatabase.instance.reference();
-    Stream<Event> streamBuilder = dbRef.child("Request").onValue;
-    streamBuilder.listen((event) {
-      DataSnapshot snapshot = event.snapshot;
-      getItemsFirebase(snapshot);
-    });
+    try {
+      dbRef = FirebaseDatabase.instance.reference();
+      Stream<Event> streamBuilder = dbRef.child(nameBranch).onValue;
+      streamBuilder.listen((event) {
+        DataSnapshot snapshot = event.snapshot;
+        print(snapshot.value);
+        getItemsFirebase(snapshot);
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 
   getItemsFirebase(DataSnapshot snapshot) {
@@ -40,6 +40,7 @@ class ListRequestClientFunctionality {
     if (extractedData != null)
       extractedData.forEach(
         (blogId, blogData) {
+          print(blogData);
           ClienRequest clienRequest = ClienRequest.fromJson(blogData);
           listRequestPreview.add(clienRequest);
         },
@@ -56,20 +57,12 @@ class ListRequestClientFunctionality {
         listRequest.add(item);
       }
     }
-
+    updateListRequest(listRequest);
     for (var item in listRequest) {
       print(item.rango.toString() +
           " sfsdfsdf " +
           item.numeroPasageros.toString());
     }
-  }
-
-  Future<void> update(ClienRequest clienRequest) async {
-    dbRef
-        .reference()
-        .child(nameBranch)
-        .child(clienRequest.iduserFirebase)
-        .update({'rango': clienRequest.rango});
   }
 
   Future<void> sendRequest(ClienRequest clienRequest) async {
@@ -108,7 +101,7 @@ class ListRequestClientFunctionality {
   }
 
   Future<LocationData> getUbication() async {
-    return _locationData = await location.getLocation();
+    return locationData = await location.getLocation();
   }
 
   void getInstance() {

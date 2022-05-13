@@ -5,19 +5,19 @@ import 'package:location/location.dart';
 import 'package:taxi_segurito_app/components/buttons/CustomButton.dart';
 import 'package:taxi_segurito_app/components/slider/slider.dart';
 import 'package:taxi_segurito_app/models/client_request.dart';
-import 'package:taxi_segurito_app/pages/taxi_request/taxi_request_functionality.dart';
+import 'package:taxi_segurito_app/pages/v2_taxi_request/taxi_request_functionality.dart';
 import 'package:taxi_segurito_app/services/sessions_service.dart';
 import '../../components/inputs/CustomTextField.dart';
 import '../../validators/TextFieldValidators.dart';
 
-class ServiceFormMap extends StatefulWidget {
-  ServiceFormMap({Key? key}) : super(key: key);
+class TaxiRequestPage extends StatefulWidget {
+  TaxiRequestPage({Key? key}) : super(key: key);
 
   @override
-  State<ServiceFormMap> createState() => _PruebaState();
+  State<TaxiRequestPage> createState() => _PruebaState();
 }
 
-class _PruebaState extends State<ServiceFormMap> {
+class _PruebaState extends State<TaxiRequestPage> {
   Map<MarkerId, Marker> _markers = {};
   Set<Marker> get markers => _markers.values.toSet();
   late CustomTextField fieldPassengers;
