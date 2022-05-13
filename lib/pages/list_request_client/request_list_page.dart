@@ -57,7 +57,7 @@ class _ListRequestClientState extends State<ListRequestClient> {
         onDismissed: (direction){
           var item = listRequest[index];
           showSnackBar(context, item, index);
-          removeItem(listRequest[index].idUser);   
+          removeItem(index);   
         },
         resizeDuration: new Duration(seconds:2),
         background: deleteItem(),
@@ -105,13 +105,13 @@ class _ListRequestClientState extends State<ListRequestClient> {
 
   undoDelete(index, item){
     setState(() {
-      requestList.listRequest!.insert(index, item);
+      listRequest.insert(index, item);
     });
   }
 
   removeItem(index){
     setState((){
-      requestList.listRequest!.removeAt(index);
+      listRequest.removeAt(index);
     });
   }
 
