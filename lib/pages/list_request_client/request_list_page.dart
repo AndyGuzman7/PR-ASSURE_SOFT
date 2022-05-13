@@ -53,19 +53,16 @@ class _ListRequestClientState extends State<ListRequestClient> {
       dynamic dinamycOb = requestList.listRequest![index];
       
       return Dismissible(
-        key: Key(requestList.listRequest![index].toString()),
+        key: Key(listRequest[index].toString()),
         onDismissed: (direction){
-          var item = requestList.listRequest![index];
+          var item = listRequest[index];
           showSnackBar(context, item, index);
-          removeItem(index);   
+          removeItem(listRequest[index].idUser);   
         },
         resizeDuration: new Duration(seconds:2),
         background: deleteItem(),
         
         child: Card(
-          /*child:ListTile(
-            title: Text(requestList.listRequest![index].toString()),
-          ),*/
           
           child: new RequestListItem(
             clientRequest: dinamycOb,
@@ -97,11 +94,6 @@ class _ListRequestClientState extends State<ListRequestClient> {
   }
 
   addRandomItem(){
-    //var nextItem = random.nextInt(200);
-    /*setState(() {
-      listRequest.add(nextItem);
-
-    });*/
     listRequestClientFunctionality.updateListRequest = ((value) {
       setState(() {
         listRequest = value;
