@@ -1,13 +1,6 @@
-import 'dart:convert';
-
-import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_geofence/geofence.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:http/http.dart';
 import 'package:location/location.dart';
-import 'package:taxi_segurito_app/models/client_request.dart';
-import 'package:taxi_segurito_app/pages/list_request_client/firebaseService.dart';
+import 'package:taxi_segurito_app/strategis/firebaseService.dart';
 
 class LocationService {
   var latitudeGlobal = 0.0; //= currentLocation.latitude;

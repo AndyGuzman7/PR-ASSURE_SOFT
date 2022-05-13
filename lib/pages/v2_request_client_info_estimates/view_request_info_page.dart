@@ -5,10 +5,11 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:taxi_segurito_app/components/buttons/CustomButton.dart';
 import 'package:taxi_segurito_app/components/inputs/CustomTextField.dart';
-import 'package:taxi_segurito_app/models/taxi_request.dart';
-import 'package:taxi_segurito_app/pages/request_client_info_estimates/view_request_map_functionality.dart';
+import 'package:taxi_segurito_app/models/estimate_taxi.dart';
+
+import 'package:taxi_segurito_app/strategis/convert_distance.dart';
+import 'package:taxi_segurito_app/pages/v2_request_client_info_estimates/view_request_info_functionality.dart';
 import 'package:taxi_segurito_app/validators/TextFieldValidators.dart';
-import 'package:taxi_segurito_app/pages/list_request_client/convert_distance.dart';
 
 import '../../models/client_request.dart';
 
@@ -125,12 +126,17 @@ class _RequestInfoState extends State<RequestInfo> {
       return false;
     }
 
-    final btnRegister = new CustomButton(
+    final btnSendEstimates = new CustomButton(
       onTap: () {
         if (registerRequest()) {
-          TaxiRequest taxiRequest = new TaxiRequest(1, '-N19THZozQ9wurM6uzLF',
-              '', double.parse(fieldPrice.getValue()));
-          taxiRequestFunctionality.sendRequest(taxiRequest);
+          taxiRequestFunctionality.sendEstiamtes(
+            double.parse(
+              fieldPrice.getValue(),
+            ),
+          );
+          /*  EstimateTaxi taxiRequest = new EstimateTaxi(1, '-N19THZozQ9wurM6uzLF',
+              '', double.parse(fieldPrice.getValue()));*/
+          // taxiRequestFunctionality.sendRequest(taxiRequest);
         }
       },
       buttonText: "Enviar",
@@ -307,7 +313,7 @@ class _RequestInfoState extends State<RequestInfo> {
                           children: [
                             Expanded(child: btnCancel),
                             Expanded(
-                              child: btnRegister,
+                              child: btnSendEstimates,
                             ),
                           ],
                         ),

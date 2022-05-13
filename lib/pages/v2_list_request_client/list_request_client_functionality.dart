@@ -1,12 +1,7 @@
-import 'dart:convert';
-
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:http/http.dart';
 import 'package:location/location.dart';
 import 'package:taxi_segurito_app/models/client_request.dart';
-import 'package:taxi_segurito_app/pages/list_request_client/location.dart';
 
 class ListRequestClientFunctionality {
   List<ClienRequest> listRequest = [];
@@ -24,12 +19,17 @@ class ListRequestClientFunctionality {
 
   ListRequestClientFunctionality();
   void initFirebase() {
-    dbRef = FirebaseDatabase.instance.reference();
-    Stream<Event> streamBuilder = dbRef.child(nameBranch).onValue;
-    streamBuilder.listen((event) {
-      DataSnapshot snapshot = event.snapshot;
-      getItemsFirebase(snapshot);
-    });
+    try {
+      dbRef = FirebaseDatabase.instance.reference();
+      Stream<Event> streamBuilder = dbRef.child(nameBranch).onValue;
+      streamBuilder.listen((event) {
+        DataSnapshot snapshot = event.snapshot;
+        print(snapshot.value);
+        getItemsFirebase(snapshot);
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 
   getItemsFirebase(DataSnapshot snapshot) {
@@ -40,6 +40,7 @@ class ListRequestClientFunctionality {
     if (extractedData != null)
       extractedData.forEach(
         (blogId, blogData) {
+          print(blogData);
           ClienRequest clienRequest = ClienRequest.fromJson(blogData);
           listRequestPreview.add(clienRequest);
         },
