@@ -14,6 +14,7 @@ import '../list_request_driver/list_request_driver.dart';
 
 class TaxiRequestFunctionality {
   late final nameBranch = "Request";
+  late String key;
   late final dbRef;
   late Location location = new Location();
   late bool _serviceEnabled;
@@ -33,7 +34,7 @@ class TaxiRequestFunctionality {
   }
 
   Future<void> sendRequest(ClienRequest clienRequest) async {
-    String key = dbRef.reference().child(nameBranch).push().key.toString();
+    key = dbRef.reference().child(nameBranch).push().key.toString();
     clienRequest.iduserFirebase = key;
     dbRef
         .reference()
@@ -44,7 +45,9 @@ class TaxiRequestFunctionality {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ListRequestDriver(),
+          builder: (context) => ListRequestDriver(
+            idRequest: key,
+          ),
         ),
       );
     });
@@ -56,24 +59,6 @@ class TaxiRequestFunctionality {
   }
 
   //Delete request
-  Future<void> deleteRequest(String idRequest) async {
-    String key = idRequest;
-    dbRef.reference().child(nameBranch).child(key);
-    DatabaseReference nodeToRemove =
-        dbRef.reference().child(nameBranch).child(key);
-    nodeToRemove.remove();
-
-    var clienRequest = (await FirebaseDatabase.instance
-            .reference()
-            .child("Request/$key")
-            .once())
-        .value;
-
-    if (clienRequest == null)
-      Navigator.pushNamed(context, 'ServiceFormMap');
-    else
-      print("existe");
-  }
 
   Future<void> initUbicacion() async {
     _serviceEnabled = await location.serviceEnabled();

@@ -9,7 +9,7 @@ import 'package:taxi_segurito_app/services/driver_service.dart';
 
 class ListRequestDriverFunctionality {
   List<DriverRequest> listDriverReq = [];
-
+  late BuildContext context;
   late final nameBranch = "RequestTaxi";
 
   late double latitudClient;
@@ -114,6 +114,26 @@ class ListRequestDriverFunctionality {
     _locationData = await location.getLocation();
     print(_locationData.toString() + "AAA");
     return _locationData;
+  }
+
+  Future<void> deleteRequest(String idRequest) async {
+    String nameBranchRequest = "Request";
+    String key = idRequest;
+    dbRef.reference().child(nameBranchRequest).child(key);
+    DatabaseReference nodeToRemove =
+        dbRef.reference().child(nameBranchRequest).child(key);
+    nodeToRemove.remove();
+
+    var clienRequest = (await FirebaseDatabase.instance
+            .reference()
+            .child("Request/$key")
+            .once())
+        .value;
+
+    if (clienRequest == null)
+      Navigator.pushNamed(context, 'serviceFormMap');
+    else
+      print("existe");
   }
 
   initServiceRequest() {

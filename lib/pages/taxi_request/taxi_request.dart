@@ -162,6 +162,7 @@ class _PruebaState extends State<ServiceFormMap> {
 
     return Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: Text('Formulario de servicio'),
         ),
         body: Column(
