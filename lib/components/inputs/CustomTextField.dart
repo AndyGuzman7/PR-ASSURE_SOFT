@@ -4,6 +4,7 @@ import 'package:form_field_validator/form_field_validator.dart';
 
 class CustomTextField extends StatefulWidget {
   void Function(String value)? assignValue;
+  TextInputType typeIput;
   String hint;
   String value;
   double marginLeft;
@@ -25,6 +26,7 @@ class CustomTextField extends StatefulWidget {
 
   CustomTextField({
     Key? key,
+    this.typeIput = TextInputType.text,
     this.hint = "Campo de text",
     this.marginLeft = 50,
     this.marginRight = 50,
@@ -88,6 +90,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           height: widget.heightNum,
           alignment: Alignment.bottomCenter,
           child: new TextFormField(
+            keyboardType: widget.typeIput,
             onChanged: widget.assignValue,
             obscureText: widget.obscureText,
             readOnly: widget.readOnly,

@@ -22,7 +22,7 @@ class ClienRequest {
   ClienRequest.updateRange(this.iduserFirebase, this.rango);
 
   ClienRequest.fromJson(Map<dynamic, dynamic> json)
-      : idUser = json['idUser'],
+      : idUser = json['idUser'] as int,
         iduserFirebase = json['iduserFirebase'],
         latitudOrigen = json['latitudOrigen'],
         longitudOrigen = json['longitudOrigen'],
