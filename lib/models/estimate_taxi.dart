@@ -22,8 +22,8 @@ class EstimateTaxi {
         idRequestUserFirebase = json['idRequestUserFirebase'],
         idRequestTaxiFirebase = json['idRequestTaxiFirebase'],
         estimacion = json['estimacion'],
-        latitud = json['latitudOrigen'],
-        longitud = json['longitudOrigen'],
+        latitud = json['latidud'],
+        longitud = json['longitud'],
         placa = json['placa'];
 
   Map<dynamic, dynamic> toJson() => <dynamic, dynamic>{

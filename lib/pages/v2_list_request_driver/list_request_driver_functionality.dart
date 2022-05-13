@@ -57,13 +57,13 @@ class ListRequestDriverFunctionality {
     for (EstimateTaxi item in list) {
       double latitudTaxi = item.latitud;
       double longitudTaxi = item.longitud;
-      estimacion = item.estimacion;
+      //estimacion = item.estimacion;
 
       double distance = clientFunctionality.getConvertKm(
           clientFunctionality.getDistance(
               latitudTaxi, longitudTaxi, latitudClient, longitudClient));
       item.distancia = distance;
-      if (item.idRequestUserFirebase == '-N19THZozQ9wurM6uzdF') {
+      if (item.idRequestUserFirebase == '-N1vLO9946XQ4MXqRkys') {
         listDriverReq.add(item);
       }
     }
@@ -125,7 +125,7 @@ class ListRequestDriverFunctionality {
         .value;
 
     if (clienRequest == null)
-      Navigator.pushNamed(context, 'serviceFormMap');
+      Navigator.pushNamed(context, 'taxiRequestScreen');
     else
       print("existe");
   }
