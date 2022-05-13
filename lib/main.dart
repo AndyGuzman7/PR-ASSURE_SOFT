@@ -5,21 +5,21 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:typed_data';
-import 'package:firebase_messaging/firebase_messaging.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_geofence/geofence.dart';
 import 'package:taxi_segurito_app/SRC/providers/push_notifications_provider.dart';
 import 'package:taxi_segurito_app/pages/contacList/list_contact.dart';
-import 'package:taxi_segurito_app/pages/list_request_client/request_list_page.dart';
-import 'package:taxi_segurito_app/pages/list_request_driver/list_request_driver.dart';
-import 'package:taxi_segurito_app/pages/request_client_info_estimates/view_request_map.dart';
 import 'package:taxi_segurito_app/pages/menu/driver_menu.dart';
+import 'package:taxi_segurito_app/pages/v2_list_request_client/list_request_client_page.dart';
+import 'package:taxi_segurito_app/pages/v2_list_request_driver/list_request_driver_page.dart';
+import 'package:taxi_segurito_app/pages/v2_request_client_info_estimates/view_request_info_page.dart';
+import 'package:taxi_segurito_app/pages/v2_taxi_request/taxi_request_page.dart';
 
 import 'package:taxi_segurito_app/pages/vehicle_screen/vehicle_edit_screen.dart';
 import 'package:taxi_segurito_app/pages/vehicle_screen/vehicle_register_screen.dart';
-import 'package:taxi_segurito_app/pages/taxi_request/taxi_request.dart';
+
 import './pages/driver_register/driver_register.dart';
 import './pages/main_window/main_window.dart';
 import './pages/log_in/log_in_page.dart';
@@ -37,10 +37,8 @@ import './pages/vehiclesList/VehiclesListPage.dart';
 import './pages/historyReview/HistoryReview.dart';
 import './models/vehicle.dart';
 import './models/providers/HttpProvider.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 void main() async {
@@ -149,13 +147,13 @@ class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
       title: "Taxi Segurito",
       theme: ThemeData(primarySwatch: Colors.amber),
       debugShowCheckedModeBanner: false,
-      home: ServiceFormMap(),
+      initialRoute: 'listRequestClient',
       routes: {
         'listRequestDriver': (BuildContext contextss) =>
             ListRequestDriver(idRequest: "-N1oqGSf7jtxDr7DEnjy"),
         'loginUser': (_) => UserLoginPage(),
         'listRequestClient': (_) => ListRequestClient(),
-        'serviceFormMap': (_) => ServiceFormMap(),
+        'taxiRequestScreen': (_) => TaxiRequestPage(),
         'registerScreen': (_) => RegisterPage(),
         'viewRequestInfo': (_) => RequestInfo(
               requestID: "-N1oqGSf7jtxDr7DEnjy",

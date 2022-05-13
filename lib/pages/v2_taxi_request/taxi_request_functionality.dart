@@ -1,16 +1,13 @@
-import 'dart:convert';
-
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
+
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:http/http.dart';
+
 import 'package:location/location.dart';
 import 'package:taxi_segurito_app/models/client_request.dart';
+import 'package:taxi_segurito_app/pages/v2_list_request_driver/list_request_driver_page.dart';
 import 'package:taxi_segurito_app/services/notifications.dart';
-
-import '../list_request_driver/list_request_driver.dart';
 
 class TaxiRequestFunctionality {
   late final nameBranch = "Request";
@@ -24,7 +21,9 @@ class TaxiRequestFunctionality {
   late BuildContext context;
   Function(String)? updateData;
 
-  TaxiRequestFunctionality();
+  TaxiRequestFunctionality() {
+    initFirebase();
+  }
   void initFirebase() {
     dbRef = FirebaseDatabase.instance.reference();
   }
@@ -56,6 +55,14 @@ class TaxiRequestFunctionality {
     LatLng latLng =
         new LatLng(clienRequest.latitudOrigen, clienRequest.longitudOrigen);
     notificationsFirebase.sendNotification(latLng);
+  }
+
+  Future<void> updateRequestRange(ClienRequest clienRequest) async {
+    dbRef
+        .reference()
+        .child(nameBranch)
+        .child(clienRequest.iduserFirebase)
+        .update({'rango': clienRequest.rango});
   }
 
   //Delete request

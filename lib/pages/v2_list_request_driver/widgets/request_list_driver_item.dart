@@ -1,30 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:taxi_segurito_app/components/buttons/CustomButtonWithLinearBorder.dart';
-import 'package:taxi_segurito_app/models/client_request.dart';
-import 'package:taxi_segurito_app/models/company.dart';
-import 'package:taxi_segurito_app/pages/company_screen/company_edit_screen.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:taxi_segurito_app/pages/list_request_client/request_list_functionality.dart';
-import 'package:taxi_segurito_app/pages/list_request_client/widgets/request_list_item_functionality.dart';
+import 'package:taxi_segurito_app/models/driver_request.dart';
 
-class RequestListItem extends StatefulWidget {
-  void Function(ClienRequest clienRequest) callbackRequest;
-  ClienRequest? clientRequest;
-  RequestListItem({Key? key, this.clientRequest, required this.callbackRequest})
+class RequestListItemDriver extends StatefulWidget {
+  void Function(DriverRequest driverRequest) callbackRequest;
+  DriverRequest? driverRequest;
+  RequestListItemDriver(
+      {Key? key, this.driverRequest, required this.callbackRequest})
       : super(key: key);
 
   @override
   _RequestListItemState createState() => _RequestListItemState();
 }
 
-class _RequestListItemState extends State<RequestListItem> {
+class _RequestListItemState extends State<RequestListItemDriver> {
   Color colorMain = Color.fromRGBO(255, 193, 7, 1);
   Color colorMainDanger = Color.fromRGBO(242, 78, 30, 1);
   Color colorMainNull = Color.fromRGBO(153, 153, 153, 1);
-  RequestListItemFunctionality requestListItemFunctionality =
-      new RequestListItemFunctionality();
+  //ListRequestDriverFunctionality listRequestDriverFunctionality = new ListRequestDriverFunctionality();
+  //RequestListItemFunctionality requestListItemFunctionality = new RequestListItemFunctionality();
 
   @override
   Widget build(BuildContext context) {
@@ -66,21 +59,14 @@ class _RequestListItemState extends State<RequestListItem> {
         children: [
           boxData(
             Text(
-              'Distancia: ' +
-                  requestListItemFunctionality
-                      .getDistance(widget.clientRequest!),
+              'Precio: ' + widget.driverRequest!.estimacion.toString(),
             ),
           ),
-          boxData(requestListItemFunctionality.getNameDirectionAddress(
-              'De: ',
-              widget.clientRequest!.latitudOrigen,
-              widget.clientRequest!.longitudOrigen)),
-          boxData(requestListItemFunctionality.getNameDirectionAddress(
-              'A: ',
-              widget.clientRequest!.latitudDestino,
-              widget.clientRequest!.longitudDestino)),
           boxData(Text(
-            "Pasajeros: " + widget.clientRequest!.numeroPasageros.toString(),
+            'Distancia: ' + widget.driverRequest!.distancia.toString() + ' Km',
+          )),
+          boxData(Text(
+            "Placa: " + widget.driverRequest!.placa.toString(),
           )),
         ],
       ),
@@ -130,7 +116,7 @@ class _RequestListItemState extends State<RequestListItem> {
       child: Material(
         child: InkWell(
           onTap: () {
-            widget.callbackRequest(widget.clientRequest!);
+            //widget.callbackRequest(widget.driverRequest!);
           },
           child: Container(
             margin: new EdgeInsets.only(

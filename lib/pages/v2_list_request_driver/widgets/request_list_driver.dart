@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:taxi_segurito_app/pages/list_request_driver/widgets/request_list_driver_item.dart';
+import 'package:taxi_segurito_app/pages/v2_list_request_driver/widgets/request_list_driver_item.dart';
 
 class RequestListDriver extends StatefulWidget {
   List<dynamic>? listRequest = [];
