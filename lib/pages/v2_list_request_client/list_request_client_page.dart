@@ -59,7 +59,7 @@ class _ListRequestClientState extends State<ListRequestClient> {
 
       resizeDuration: new Duration(seconds: 2),
       background: deleteItem(),
-      
+
       child: Card(
         child: new RequestListItem(
           clientRequest: dinamycOb,
@@ -176,7 +176,7 @@ class _ListRequestClientState extends State<ListRequestClient> {
                   child: showList(),
                   onRefresh: () async {
                     await refreshList();
-                  },
+                  },                 
                 ),
               ),
             ),
