@@ -56,8 +56,10 @@ class _ListRequestClientState extends State<ListRequestClient> {
         showSnackBar(context, item, index);
         removeItem(index);
       },
+
       resizeDuration: new Duration(seconds: 2),
       background: deleteItem(),
+      
       child: Card(
         child: new RequestListItem(
           clientRequest: dinamycOb,
