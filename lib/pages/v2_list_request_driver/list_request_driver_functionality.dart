@@ -1,14 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:taxi_segurito_app/models/driver.dart';
-import 'package:taxi_segurito_app/models/driver_request.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import 'package:location/location.dart';
+import 'package:taxi_segurito_app/models/estimate_taxi.dart';
 import 'package:taxi_segurito_app/pages/v2_list_request_client/list_request_client_functionality.dart';
 import 'package:taxi_segurito_app/services/driver_service.dart';
 
 class ListRequestDriverFunctionality {
-  List<DriverRequest> listDriverReq = [];
+  List<EstimateTaxi> listDriverReq = [];
   late BuildContext context;
   late final nameBranch = "RequestTaxi";
 
@@ -23,7 +23,7 @@ class ListRequestDriverFunctionality {
   late LocationData _locationData;
   ListRequestClientFunctionality clientFunctionality =
       ListRequestClientFunctionality();
-  late Function(List<DriverRequest>) updateListRequest;
+  late Function(List<EstimateTaxi>) updateListRequest;
   DriversService _driversService = DriversService();
   late Future<List<Driver>> drivers;
 
@@ -43,28 +43,27 @@ class ListRequestDriverFunctionality {
 
   void getItemsFirebase(DataSnapshot snapshot) {
     listDriverReq = [];
-    List<DriverRequest> list = [];
+    List<EstimateTaxi> list = [];
     print(snapshot.value);
     final request = snapshot.value;
     if (request != null) {
       request.forEach((blogId, blogData) {
-        print(DriverRequest.fromJson(blogData).rango);
-        DriverRequest driverRequest = DriverRequest.fromJson(blogData);
-        print(driverRequest.rango.toString() + "a");
+        EstimateTaxi driverRequest = EstimateTaxi.fromJson(blogData);
+
         list.add(driverRequest);
       });
     }
 
-    for (DriverRequest item in list) {
+    for (EstimateTaxi item in list) {
       double latitudTaxi = item.latitud;
       double longitudTaxi = item.longitud;
-      estimacion = item.estimacion;
+      //estimacion = item.estimacion;
 
       double distance = clientFunctionality.getConvertKm(
           clientFunctionality.getDistance(
               latitudTaxi, longitudTaxi, latitudClient, longitudClient));
       item.distancia = distance;
-      if (item.idRequestUserFirebase == '-N19THZozQ9wurM6uzdF') {
+      if (item.idRequestUserFirebase == '-N1vLO9946XQ4MXqRkys') {
         listDriverReq.add(item);
       }
     }
@@ -72,15 +71,10 @@ class ListRequestDriverFunctionality {
 
     for (var item in listDriverReq) {
       print('object');
-      print(item.rango.toString() +
-          " " +
-          item.latitud.toString() +
-          " " +
-          item.longitud.toString());
     }
   }
 
-  Future<void> sendRequest(DriverRequest driverRequest) async {
+  Future<void> sendRequest(EstimateTaxi driverRequest) async {
     dbRef.reference().child(nameBranch).push().set(driverRequest.toJson());
   }
 
@@ -131,7 +125,7 @@ class ListRequestDriverFunctionality {
         .value;
 
     if (clienRequest == null)
-      Navigator.pushNamed(context, 'serviceFormMap');
+      Navigator.pushNamed(context, 'taxiRequestScreen');
     else
       print("existe");
   }

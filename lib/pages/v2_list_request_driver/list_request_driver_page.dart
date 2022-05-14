@@ -1,48 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:taxi_segurito_app/components/buttons/CustomButtonWithLinearBorder.dart';
 import 'package:taxi_segurito_app/models/client_request.dart';
-import 'package:taxi_segurito_app/models/driver_request.dart';
+import 'package:taxi_segurito_app/models/estimate_taxi.dart';
+
 import 'package:taxi_segurito_app/pages/v2_list_request_driver/list_request_driver_functionality.dart';
 import 'package:taxi_segurito_app/pages/v2_list_request_driver/widgets/request_list_driver.dart';
 import 'package:taxi_segurito_app/pages/v2_taxi_request/taxi_request_functionality.dart';
 
 import '../../components/buttons/CustomButton.dart';
 import '../../components/slider/slider.dart';
-
-/*
-late CustomSlider customSlider;
-
-  @override
-  void initState() {
-    super.initState();
-    listRequestClientFunctionality.initUbicacion().then((value) {
-      if (value) {
-        listRequestClientFunctionality.initServiceRequest();
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    //rango
-    customSlider = new CustomSlider();
-
-    final btnActualizar = new CustomButton(
-      onTap: () {
-        ClienRequest clienRequest = new ClienRequest.updateRange(
-            '-N19THZozQ9wurM6uzLF', customSlider.getValue());
-        Navigator.pop(context);
-        listRequestClientFunctionality.update(clienRequest);
-      },
-      buttonText: "Actualizar rango",
-      buttonColor: Color.fromRGBO(255, 193, 7, 1),
-      buttonTextColor: Colors.white,
-      marginBotton: 0,
-      marginLeft: 5,
-      marginRight: 0,
-      marginTop: 0,
-    );
-*/
 
 class ListRequestDriver extends StatefulWidget {
   String idRequest;
@@ -53,7 +19,7 @@ class ListRequestDriver extends StatefulWidget {
 }
 
 class _ListRequestDriverState extends State<ListRequestDriver> {
-  List<DriverRequest> listRequest = [];
+  List<EstimateTaxi> listRequest = [];
 
   ListRequestDriverFunctionality listRequestDriverFunctionality =
       new ListRequestDriverFunctionality();
@@ -99,7 +65,7 @@ class _ListRequestDriverState extends State<ListRequestDriver> {
     final btnActualizar = new CustomButton(
       onTap: () {
         ClienRequest clienRequest = new ClienRequest.updateRange(
-            '-N1vDYQC_zgVjC3EGA7W', customSlider.getValue());
+            '-N1vLO9946XQ4MXqRkys', customSlider.getValue());
         Navigator.pop(context);
         TaxiRequestFunctionality().updateRequestRange(clienRequest);
       },

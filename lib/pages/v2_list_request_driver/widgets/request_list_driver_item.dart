@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:taxi_segurito_app/models/driver_request.dart';
+import 'package:taxi_segurito_app/models/estimate_taxi.dart';
 
 class RequestListItemDriver extends StatefulWidget {
-  void Function(DriverRequest driverRequest) callbackRequest;
-  DriverRequest? driverRequest;
+  void Function(EstimateTaxi estimateTaxi) callbackRequest;
+  EstimateTaxi? driverRequest;
   RequestListItemDriver(
       {Key? key, this.driverRequest, required this.callbackRequest})
       : super(key: key);

@@ -101,7 +101,7 @@ class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
   @override
   void initState() {
     super.initState();
-
+    PushNotificationService.initializedApp();
     PushNotificationService.subscribeToTopic();
 
     PushNotificationService.messageString.listen((event) {
@@ -147,10 +147,10 @@ class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
       title: "Taxi Segurito",
       theme: ThemeData(primarySwatch: Colors.amber),
       debugShowCheckedModeBanner: false,
-      initialRoute: 'listRequestClient',
+      initialRoute: "listRequestDriver",
       routes: {
         'listRequestDriver': (BuildContext contextss) =>
-            ListRequestDriver(idRequest: "-N1oqGSf7jtxDr7DEnjy"),
+            ListRequestDriver(idRequest: "-N1vLO9946XQ4MXqRkys"),
         'loginUser': (_) => UserLoginPage(),
         'listRequestClient': (_) => ListRequestClient(),
         'taxiRequestScreen': (_) => TaxiRequestPage(),
