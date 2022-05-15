@@ -27,6 +27,7 @@ class _RequestListItemState extends State<RequestListItemDriver> {
       "assets/images/user_default.png",
     );
 
+    //evento click para confirmar la cotizacion
     final btnConfirm = new CustomButtonWithLinearBorder(
       onTap: () {
         
@@ -41,6 +42,7 @@ class _RequestListItemState extends State<RequestListItemDriver> {
       marginTop: 0,
     );
 
+    //pantalla emergente para confirmar la cotizacion
     showAlertDialog() {
       showDialog(
         barrierDismissible: true,
