@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:taxi_segurito_app/components/buttons/CustomButtonWithLinearBorder.dart';
 import 'package:taxi_segurito_app/models/estimate_taxi.dart';
+import 'package:taxi_segurito_app/pages/v2_list_request_driver/widgets/request_list_driver_functionality.dart';
 
 class RequestListItemDriver extends StatefulWidget {
   void Function(EstimateTaxi estimateTaxi) callbackRequest;
@@ -17,13 +19,55 @@ class _RequestListItemState extends State<RequestListItemDriver> {
   Color colorMainDanger = Color.fromRGBO(242, 78, 30, 1);
   Color colorMainNull = Color.fromRGBO(153, 153, 153, 1);
   //ListRequestDriverFunctionality listRequestDriverFunctionality = new ListRequestDriverFunctionality();
-  //RequestListItemFunctionality requestListItemFunctionality = new RequestListItemFunctionality();
+  RequestListItemFunctionality requestListItemFunctionality = new RequestListItemFunctionality();
 
   @override
   Widget build(BuildContext context) {
     Image imagedefault = new Image.asset(
       "assets/images/user_default.png",
     );
+
+    final btnConfirm = new CustomButtonWithLinearBorder(
+      onTap: () {
+        
+      },
+      buttonText: "Aceptar Cotizacion",
+      buttonColor: Color.fromRGBO(255, 193, 7, 1),
+      buttonTextColor: Colors.white,
+      marginBotton: 0,
+      buttonBorderColor: Color.fromRGBO(255, 193, 7, 1),
+      marginLeft: 5,
+      marginRight: 0,
+      marginTop: 0,
+    );
+
+    showAlertDialog() {
+      showDialog(
+        barrierDismissible: true,
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(28))),
+            titleTextStyle: TextStyle(
+                color: Colors.black, fontSize: 18, fontWeight: FontWeight.w700),
+            title: Container(
+              child: Text(
+                'Confirmar Cotizacion',
+              ),
+              alignment: Alignment.topLeft,
+            ),
+            backgroundColor: Colors.white,
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              verticalDirection: VerticalDirection.down,
+              children: [btnConfirm],
+            ),
+          );
+        },
+      );
+    }
 
     Container columnOne = new Container(
       child: Align(
@@ -116,7 +160,7 @@ class _RequestListItemState extends State<RequestListItemDriver> {
       child: Material(
         child: InkWell(
           onTap: () {
-            //widget.callbackRequest(widget.driverRequest!);
+            showAlertDialog();
           },
           child: Container(
             margin: new EdgeInsets.only(

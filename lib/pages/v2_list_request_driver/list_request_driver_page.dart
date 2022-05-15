@@ -88,7 +88,7 @@ class _ListRequestDriverState extends State<ListRequestDriver> {
 
     showAlertDialog() {
       showDialog(
-        barrierDismissible: false,
+        barrierDismissible: true,
         context: context,
         builder: (context) {
           return AlertDialog(
@@ -109,10 +109,13 @@ class _ListRequestDriverState extends State<ListRequestDriver> {
               children: [customSlider],
             ),
             actions: [btnActualizar],
+
           );
         },
       );
     }
+
+
 
     final btnCancel = new CustomButtonWithLinearBorder(
       onTap: () {
