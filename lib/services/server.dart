@@ -1,6 +1,6 @@
 class Server {
   static const protocol = "http://";
-  static const host = "172.30.64.1:8080";
+  static const host = "172.29.160.1:8080";
   //static const host = "10.0.2.2:8080";
   // static const host = "da6d-186-2-94-223.ngrok.io";
   // static const host = "10.0.3.2:8086";

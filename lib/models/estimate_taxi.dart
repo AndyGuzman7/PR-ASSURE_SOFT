@@ -8,6 +8,7 @@ class EstimateTaxi {
 
   late String placa;
   late double distancia;
+  late int id;
 
   EstimateTaxi(
       this.idUserTaxi,
@@ -21,10 +22,11 @@ class EstimateTaxi {
       : idUserTaxi = json['idUserTaxi'],
         idRequestUserFirebase = json['idRequestUserFirebase'],
         idRequestTaxiFirebase = json['idRequestTaxiFirebase'],
-        estimacion = json['estimacion'],
+        estimacion = json['estimacion'].toDouble(),
         latitud = json['latidud'],
         longitud = json['longitud'],
-        placa = json['placa'];
+        placa = json['placa'],
+        id = json['id'];
 
   Map<dynamic, dynamic> toJson() => <dynamic, dynamic>{
         'idUserTaxi': idUserTaxi,
