@@ -33,6 +33,7 @@ class VehicleService {
 
     var response = await http.get(endpoint);
     if (response.statusCode == 200) {
+      print(response.body);
       return _jsonToList(response);
     }
     throw 'Unable to fetch vehicles data';
