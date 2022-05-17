@@ -6,6 +6,8 @@ import 'package:taxi_segurito_app/models/estimate_taxi.dart';
 import 'package:taxi_segurito_app/pages/v2_list_request_driver/list_request_driver_functionality.dart';
 import 'package:taxi_segurito_app/pages/v2_list_request_driver/widgets/request_list_driver.dart';
 import 'package:taxi_segurito_app/pages/v2_taxi_request/taxi_request_functionality.dart';
+import 'package:taxi_segurito_app/pages/v2_list_request_driver/widgets/request_list_driver_item.dart';
+
 
 import '../../components/buttons/CustomButton.dart';
 import '../../components/slider/slider.dart';
@@ -20,10 +22,11 @@ class ListRequestDriver extends StatefulWidget {
 
 class _ListRequestDriverState extends State<ListRequestDriver> {
   List<EstimateTaxi> listRequest = [];
-
+  RequestListDriver requestList = RequestListDriver();
   ListRequestDriverFunctionality listRequestDriverFunctionality =
       new ListRequestDriverFunctionality();
   late CustomSlider customSlider;
+  late GlobalKey<RefreshIndicatorState> refreshListKey;
   @override
   void initState() {
     super.initState();
@@ -34,6 +37,8 @@ class _ListRequestDriverState extends State<ListRequestDriver> {
         print('null aqui en linea 27');
       }
     });
+
+    refreshListKey = new GlobalKey<RefreshIndicatorState>();
   }
 
   AppBar appBar = new AppBar(
@@ -54,10 +59,100 @@ class _ListRequestDriverState extends State<ListRequestDriver> {
     textAlign: TextAlign.left,
   );
 
+  Widget showList() {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    return new Container(
+        height: height,
+        width: width,
+        child: ListView.builder(
+            padding: EdgeInsets.all(10),
+            itemCount: requestList.listRequest!.length,
+            itemBuilder: (BuildContext context, int index) {
+              return rowItem(context, index);
+            }));
+  }
+
+  Widget rowItem(context, index) {
+    dynamic dinamycOb = requestList.listRequest![index];
+
+    return Dismissible(
+      key: Key(listRequest[index].toString()),
+      onDismissed: (direction) {
+        var item = listRequest[index];
+        showSnackBar(context, item, index);
+        removeItem(index);
+      },
+
+      resizeDuration: new Duration(seconds: 2),
+      background: deleteItem(),
+
+      child: Card(
+        child: new RequestListItemDriver(
+          driverRequest: dinamycOb,
+          callbackRequest: (value) {
+            requestList.callback!(value);
+          },
+        ),
+      ),
+    );
+  }
+
+  showSnackBar(context, item, index) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text('$item removido de la lista'),
+      action: SnackBarAction(
+          label: "NO REMOVER SOLICITUD",
+          onPressed: () {
+            undoDelete(index, item);
+          }),
+    ));
+  }
+
+  Future<Null> refreshList() async {
+    await Future.delayed(Duration(seconds: 1));
+    addRandomItem();
+    return null;
+  }
+
+  addRandomItem() {
+
+    listRequestDriverFunctionality.updateListRequest = ((value) {
+      setState(() {
+        listRequest = value;
+        requestList.listRequest = listRequest;
+        requestList.listRequest!.add(listRequest);
+      });
+    });
+
+  }
+
+  undoDelete(index, item) {
+    setState(() {
+      listRequest.insert(index, item);
+    });
+  }
+
+  removeItem(index) {
+    setState(() {
+      listRequest.removeAt(index);
+    });
+  }
+
+  Widget deleteItem() {
+    return Container(
+      alignment: Alignment.centerRight,
+      padding: EdgeInsets.only(right: 20),
+      color: Colors.blue,
+      child: Icon(Icons.delete, color: Colors.white),
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     listRequestDriverFunctionality.context = context;
-    RequestListDriver requestList = RequestListDriver();
+    
     requestList.listRequest = listRequest;
     requestList.callback = (value) {};
     customSlider = new CustomSlider();
@@ -154,13 +249,20 @@ class _ListRequestDriverState extends State<ListRequestDriver> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             title,
+            
             Container(
               margin: new EdgeInsets.fromLTRB(10, 10, 10, 10),
               child: btnUpdateRange,
             ),
             Expanded(
               child: Container(
-                child: requestList,
+                child: RefreshIndicator(
+                  key: refreshListKey,
+                  child: showList(),
+                  onRefresh: () async {
+                    await refreshList();
+                  },                 
+                ),
               ),
             ),
             Container(
