@@ -102,7 +102,7 @@ class _ListRequestDriverState extends State<ListRequestDriver> {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text('Elemento removido de la lista'),
       action: SnackBarAction(
-          label: "NO REMOVER SOLICITUD",
+          label: "NO REMOVER COTIZACION",
           onPressed: () {
             undoDelete(index, item);
           }),
