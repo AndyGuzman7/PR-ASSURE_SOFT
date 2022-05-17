@@ -8,6 +8,7 @@ class EstimateTaxi {
 
   late String placa;
   late double distancia;
+  late bool confirmation = false;
 
   EstimateTaxi(
       this.idUserTaxi,
@@ -24,7 +25,8 @@ class EstimateTaxi {
         estimacion = json['estimacion'],
         latitud = json['latidud'],
         longitud = json['longitud'],
-        placa = json['placa'];
+        placa = json['placa'],
+        confirmation = json['confirmation'];
 
   Map<dynamic, dynamic> toJson() => <dynamic, dynamic>{
         'idUserTaxi': idUserTaxi,
@@ -34,5 +36,6 @@ class EstimateTaxi {
         'latidud': latitud,
         'longitud': longitud,
         'placa': placa,
+        'confirmation': confirmation
       };
 }
