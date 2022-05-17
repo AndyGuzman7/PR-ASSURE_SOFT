@@ -27,10 +27,70 @@ class _RequestListItemState extends State<RequestListItemDriver> {
       "assets/images/user_default.png",
     );
 
+    //evento donde se envia el mensaje de confirmado al taxista
+    final btnAceptar = new CustomButtonWithLinearBorder(
+      onTap: () {
+        
+      },
+      buttonText: "Si",
+      buttonColor: Color.fromRGBO(255, 193, 7, 1),
+      buttonTextColor: Colors.white,
+      marginBotton: 0,
+      buttonBorderColor: Color.fromRGBO(255, 193, 7, 1),
+      marginLeft: 5,
+      marginRight: 0,
+      marginTop: 0,
+    );
+
+    final btnRechazar = new CustomButtonWithLinearBorder(
+      onTap: () {
+        
+      },
+      buttonText: "No",
+      buttonColor: Color.fromRGBO(255, 193, 7, 1),
+      buttonTextColor: Colors.white,
+      marginBotton: 0,
+      buttonBorderColor: Color.fromRGBO(255, 193, 7, 1),
+      marginLeft: 5,
+      marginRight: 0,
+      marginTop: 0,
+    );
+
+    showMessage() {
+      showDialog(
+        barrierDismissible: true,
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(28))),
+            titleTextStyle: TextStyle(
+                color: Colors.black, fontSize: 18, fontWeight: FontWeight.w700),
+            title: Container(
+              child: Text(
+                'Estas seguro que aceptas esta cotizacion?',
+              ),
+              alignment: Alignment.topLeft,
+            ),
+            backgroundColor: Colors.white,
+            content: Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              verticalDirection: VerticalDirection.down,
+              children: [
+                btnAceptar,
+                btnRechazar,
+              ],
+            ),
+          );
+        },
+      );
+    }
+
     //evento click para confirmar la cotizacion
     final btnConfirm = new CustomButtonWithLinearBorder(
       onTap: () {
-        
+        showMessage();
       },
       buttonText: "Aceptar Cotizacion",
       buttonColor: Color.fromRGBO(255, 193, 7, 1),
@@ -42,6 +102,7 @@ class _RequestListItemState extends State<RequestListItemDriver> {
       marginTop: 0,
     );
 
+    
     //pantalla emergente para confirmar la cotizacion
     showAlertDialog() {
       showDialog(
