@@ -100,7 +100,7 @@ class _ListRequestDriverState extends State<ListRequestDriver> {
 
   showSnackBar(context, item, index) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text('$item removido de la lista'),
+      content: Text('Elemento removido de la lista'),
       action: SnackBarAction(
           label: "NO REMOVER SOLICITUD",
           onPressed: () {
@@ -116,7 +116,7 @@ class _ListRequestDriverState extends State<ListRequestDriver> {
   }
 
   addRandomItem() {
-
+    
     listRequestDriverFunctionality.updateListRequest = ((value) {
       setState(() {
         listRequest = value;

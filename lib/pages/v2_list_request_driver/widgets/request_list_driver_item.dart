@@ -78,8 +78,8 @@ class _RequestListItemState extends State<RequestListItemDriver> {
               crossAxisAlignment: CrossAxisAlignment.center,
               verticalDirection: VerticalDirection.down,
               children: [
-                btnAceptar,
-                btnRechazar,
+                Expanded(child: btnAceptar),
+                Expanded(child: btnRechazar)
               ],
             ),
           );
