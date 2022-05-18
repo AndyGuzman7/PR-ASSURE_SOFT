@@ -29,6 +29,7 @@ class _RequestListItemState extends State<RequestListItemDriver> {
       "assets/images/user_default.png",
     );
 
+   
     //evento donde se envia el mensaje de confirmado al taxista
     final btnAceptar = new CustomButtonWithLinearBorder(
       onTap: () {

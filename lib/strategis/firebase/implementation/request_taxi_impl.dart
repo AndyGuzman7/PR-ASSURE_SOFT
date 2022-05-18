@@ -10,6 +10,7 @@ class RequestTaxiImpl extends IRequestTaxi {
     connection = FirebaseConnection().initFirebase();
   }
 
+  
   @override
   Future<bool> updateNode(value) async {
     bool succes = false;

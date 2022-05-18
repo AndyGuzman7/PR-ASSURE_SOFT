@@ -38,6 +38,7 @@ class RequestListItemFunctionality {
   showSnackBar(contex) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text('Confirmacion Enviada'),
-    ));
+    ),);
   }
+ 
 }
