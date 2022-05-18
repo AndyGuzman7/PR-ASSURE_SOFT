@@ -10,6 +10,7 @@ class SignUpService {
     print(clientUser.fullName + clientUser.email + clientUser.cellphone);
     String path = Server.url + "/auth/auth_controller.php";
     print("Se hizo una pericion");
+    print(path);
     final response = await http.post(
       Uri.parse(path),
       headers: <String, String>{

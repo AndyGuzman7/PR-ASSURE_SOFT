@@ -3,14 +3,18 @@ import 'package:http/http.dart' as http;
 import 'package:taxi_segurito_app/models/driver.dart';
 import 'package:taxi_segurito_app/providers/ImageFromBase64Provider.dart';
 import 'package:taxi_segurito_app/services/auth_service.dart';
+import 'package:taxi_segurito_app/services/sessions_service.dart';
 import 'server.dart';
 
 class DriversService {
   AuthService _authService = AuthService();
+  SessionsService sessionsService = new SessionsService();
 
   Future<bool> insert(Driver driver) async {
-    final ownerId = await _authService.getCurrentId();
+    final ownerId = await sessionsService.getSessionValue("id");
     String path = '${Server.url}/driver/driver_controller.php';
+    print(path);
+    print(ownerId.toString() + "ID OWNER");
     final response = await http.post(
       Uri.parse(path),
       body: jsonEncode({

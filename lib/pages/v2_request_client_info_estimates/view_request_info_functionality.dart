@@ -2,8 +2,11 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:location/location.dart';
 import 'package:taxi_segurito_app/models/estimate_taxi.dart';
+import 'package:taxi_segurito_app/services/sessions_service.dart';
 
 class ViewRequestFunctionality {
+  var idTaxi;
+  SessionsService sessionsService = new SessionsService();
   late final nameBranch = "RequestTaxi";
   late final dbRef;
   late String key;
@@ -30,11 +33,24 @@ class ViewRequestFunctionality {
 
   Future<void> sendEstiamtes(double cotization) async {
     Position position = await Geolocator.getCurrentPosition();
-    EstimateTaxi estimateTaxi = new EstimateTaxi(1, key, "-N1vLO9946XQ4MXqRkys",
-        cotization, position.latitude, position.longitude, "");
+    getIdSessionIdTaxi();
+    idTaxi = await sessionsService.getSessionValue("id");
+    EstimateTaxi estimateTaxi = new EstimateTaxi(
+        int.parse(idTaxi),
+        key,
+        "-N1vLO9946XQ4MXqRkys",
+        cotization,
+        position.latitude,
+        position.longitude,
+        "");
 
     dbRef.reference().child(nameBranch).child(key).set(estimateTaxi.toJson());
     print(key);
+  }
+
+  Future<void> getIdSessionIdTaxi() async {
+    idTaxi = await sessionsService.getSessionValue("id");
+    print(idTaxi);
   }
 
   void getInstance() {

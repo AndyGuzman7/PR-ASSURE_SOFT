@@ -9,7 +9,7 @@ class DriverMenu extends MenuDriver {
       MenuDriverItem(
         text: 'Prestar servicio',
         iconPath: 'assets/icons/owner-menu.png',
-        pageRoute: 'userList',
+        pageRoute: 'listRequestClient',
       ),
       MenuDriverItem(
         text: 'Configuraciones',

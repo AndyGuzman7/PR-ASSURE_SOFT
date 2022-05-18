@@ -9,6 +9,7 @@ class EstimateTaxi {
   late String placa;
   late double distancia;
   late bool confirmation = false;
+  late int id;
 
   EstimateTaxi(
       this.idUserTaxi,
@@ -22,7 +23,7 @@ class EstimateTaxi {
       : idUserTaxi = json['idUserTaxi'],
         idRequestUserFirebase = json['idRequestUserFirebase'],
         idRequestTaxiFirebase = json['idRequestTaxiFirebase'],
-        estimacion = json['estimacion'],
+        estimacion = json['estimacion'].toDouble(),
         latitud = json['latidud'],
         longitud = json['longitud'],
         placa = json['placa'],
