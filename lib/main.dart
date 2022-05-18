@@ -147,7 +147,7 @@ class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
       title: "Taxi Segurito",
       theme: ThemeData(primarySwatch: Colors.amber),
       debugShowCheckedModeBanner: false,
-      initialRoute: "listRequestDriver",
+      initialRoute: routeInitial,
       routes: {
         'listRequestDriver': (BuildContext contextss) =>
             ListRequestDriver(idRequest: "-N1vLO9946XQ4MXqRkys"),

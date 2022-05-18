@@ -5,7 +5,9 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:location/location.dart';
 import 'package:taxi_segurito_app/models/estimate_taxi.dart';
 import 'package:taxi_segurito_app/pages/v2_list_request_client/list_request_client_functionality.dart';
+import 'package:taxi_segurito_app/services/auth_service.dart';
 import 'package:taxi_segurito_app/services/driver_service.dart';
+import 'package:taxi_segurito_app/services/sessions_service.dart';
 
 class ListRequestDriverFunctionality {
   List<EstimateTaxi> listDriverReq = [];
@@ -26,13 +28,14 @@ class ListRequestDriverFunctionality {
   late Function(List<EstimateTaxi>) updateListRequest;
   DriversService _driversService = DriversService();
   late Future<List<Driver>> drivers;
-
+  late SessionsService _sessionsService = new SessionsService();
   late final dbRef;
-
+  var ID;
   Function(String)? updateData;
 
   void initFirebase() {
     print("dasdasd" + latitudClient.toString());
+    getID();
     dbRef = FirebaseDatabase.instance.reference();
     Stream<Event> streamBuilder = dbRef.child("RequestTaxi").onValue;
     streamBuilder.listen((event) {
@@ -53,7 +56,7 @@ class ListRequestDriverFunctionality {
         list.add(driverRequest);
       });
     }
-
+    
     for (EstimateTaxi item in list) {
       double latitudTaxi = item.latitud;
       double longitudTaxi = item.longitud;
@@ -63,9 +66,13 @@ class ListRequestDriverFunctionality {
           clientFunctionality.getDistance(
               latitudTaxi, longitudTaxi, latitudClient, longitudClient));
       item.distancia = distance;
-      if (item.idRequestUserFirebase == '-N1vLO9946XQ4MXqRkys') {
-        listDriverReq.add(item);
+      
+      if(ID != null){
+        if (item.id == int.parse(ID.toString())) {
+          listDriverReq.add(item);
+        }
       }
+      
     }
     updateListRequest(listDriverReq);
 
@@ -141,5 +148,9 @@ class ListRequestDriverFunctionality {
 
   void getInstance() {
     return dbRef;
+  }
+
+  void getID() async{
+    ID = await _sessionsService.getSessionValue('id');
   }
 }
