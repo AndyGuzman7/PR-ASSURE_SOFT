@@ -121,6 +121,7 @@ class AuthService {
       "${Server.baseEndpoint}/auth/auth_controller.php",
       queryParams,
     );
+    print(endpoint);
 
     final response = await http.get(endpoint);
     log("response.body: " + response.body);

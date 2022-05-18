@@ -1,8 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:taxi_segurito_app/models/estimate_taxi.dart';
+import 'package:taxi_segurito_app/strategis/firebase/implementation/request_taxi_impl.dart';
 
 class RequestListItemFunctionality {
+  late BuildContext context;
   RequestListItemFunctionality();
 
   String getDistance(EstimateTaxi estimateTaxi, double latitudCliente,
@@ -23,4 +26,19 @@ class RequestListItemFunctionality {
     }
     return distanceString;
   }
+
+  confirmationEstimate(key) {
+    RequestTaxiImpl requestTaxiImpl = new RequestTaxiImpl();
+    requestTaxiImpl.updateNode(key).then((value) {
+      print(value);
+      if (value) showSnackBar(context);
+    });
+  }
+
+  showSnackBar(contex) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text('Confirmacion Enviada'),
+    ),);
+  }
+ 
 }
