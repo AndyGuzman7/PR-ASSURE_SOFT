@@ -86,8 +86,9 @@ class DriverVehicleService {
       '${Server.baseEndpoint}/driver_has_vehicle/driverhv_controller.php',
       queryParams,
     );
-
+    print(endpoint);
     Response response = await http.get(endpoint);
+    print(response.body);
     if (response.statusCode == 200) {
       final body = jsonDecode(response.body);
       return {
