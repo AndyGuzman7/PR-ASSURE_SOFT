@@ -37,10 +37,18 @@ class _TaxiServiceRequestListPageState
   void initState() {
     super.initState();
     requestDecisionFunctionality.initFirebase();
-
-    listRequestClientFunctionality.initUbicacion().then((value) {
+    requestList.listRequest = [];
+    listRequestClientFunctionality
+        .initServiceUbicationPermisson()
+        .then((value) {
       if (value) {
-        listRequestClientFunctionality.initServiceRequest();
+        listRequestClientFunctionality.initServiceUbication();
+        listRequestClientFunctionality.updateListRequest = ((value) {
+          setState(() {
+            listRequest = value;
+            requestList.listRequest = listRequest;
+          });
+        });
       }
     });
 
@@ -147,7 +155,7 @@ class _TaxiServiceRequestListPageState
       Future.delayed(Duration.zero, () => showAlert(context));
     }
 
-    requestList.listRequest = listRequest;
+    //requestList.listRequest = listRequest;
     requestList.setCallbak = (ClienRequest value) {
       print(value.idFirebase);
       Navigator.pushReplacement(
@@ -159,13 +167,6 @@ class _TaxiServiceRequestListPageState
         ),
       );
     };
-
-    listRequestClientFunctionality.updateListRequest = ((value) {
-      setState(() {
-        listRequest = value;
-        requestList.listRequest = listRequest;
-      });
-    });
 
     Text title = new Text(
       "Lista de Solicitudes",

@@ -92,6 +92,7 @@ class TaxiServiceRequestImpl extends ITaxiServiceRequest {
     DataSnapshot snapshot = event.snapshot;
     List<ClienRequest> listRequestPreview = [];
     final extractedData = snapshot.value;
+    print(extractedData);
     if (extractedData != null)
       extractedData.forEach(
         (blogId, blogData) {
@@ -99,6 +100,10 @@ class TaxiServiceRequestImpl extends ITaxiServiceRequest {
           listRequestPreview.add(clienRequest);
         },
       );
+
+    for (var i = 0; i < listRequestPreview.length; i++) {
+      print("Rango: " + listRequestPreview[i].numeroPasageros.toString());
+    }
     return listRequestPreview;
   }
 

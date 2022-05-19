@@ -13,11 +13,11 @@ class RequestDecisionFunctionality {
     dbRef = FirebaseDatabase.instance.reference();
     checkStatus('-N1vHdpBe2km7i6xJbkz');
 
-    Stream<Event> streamBuilder = dbRef.child("RequestTaxi").onValue;
+    /* Stream<Event> streamBuilder = dbRef.child("RequestTaxi").onValue;
     streamBuilder.listen((event) {
       DataSnapshot snapshot = event.snapshot;
       getItemsRequestFirebase(snapshot, 1);
-    });
+    });*/
   }
 
   //Check if the status is available
@@ -60,7 +60,7 @@ class RequestDecisionFunctionality {
   }
 
 //Get data from RequestTaxi node
-  getItemsRequestFirebase(DataSnapshot snapshot, int idTaxista) {
+  /*getItemsRequestFirebase(DataSnapshot snapshot, int idTaxista) {
     final extractedData = snapshot.value;
     if (extractedData != null) {
       statusRequest = false;
@@ -80,5 +80,5 @@ class RequestDecisionFunctionality {
     }
 
     updateStatus(statusRequest);
-  }
+  }*/
 }

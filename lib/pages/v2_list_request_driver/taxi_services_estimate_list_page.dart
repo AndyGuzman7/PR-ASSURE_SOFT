@@ -39,9 +39,9 @@ class _TaxiServicesEstimateListPageState
     });
     listRequestDriverFunctionality.initUbication().then((value) {
       if (value) {
-        listRequestDriverFunctionality.initServiceRequest();
-        listRequestDriverFunctionality
-            .initListenerNodeFirebase(widget.idRequest);
+        listRequestDriverFunctionality.initServiceRequest(widget.idRequest);
+        /*listRequestDriverFunctionality
+            .initListenerNodeFirebase(widget.idRequest);*/
       } else {
         print('null aqui en linea 27');
       }

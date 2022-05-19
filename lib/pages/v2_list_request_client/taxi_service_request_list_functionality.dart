@@ -4,50 +4,56 @@ import 'package:taxi_segurito_app/models/client_request.dart';
 import 'package:taxi_segurito_app/strategis/firebase/implementation/taxi_service_request_impl.dart';
 
 class TaxiServiceRequestListPageFunctionality {
-  List<ClienRequest> listRequest = [];
+  List<ClienRequest> listRequest2 = [];
 
   late Location location = new Location();
   late bool _serviceEnabled;
   late PermissionStatus _permissionGranted;
   late LocationData locationData;
-
+  TaxiServiceRequestImpl taxiServiceRequestImpl = new TaxiServiceRequestImpl();
   late double latitudTaxi;
   late double longitudTaxi;
   late Function(List<ClienRequest>) updateListRequest;
 
   TaxiServiceRequestListPageFunctionality();
+
   void initListenerNodeFirebase() {
     try {
-      TaxiServiceRequestImpl taxiServiceRequestImpl =
-          new TaxiServiceRequestImpl();
+      listRequest2 = [];
+
       taxiServiceRequestImpl.getNodeEvent().listen((event) {
-        listRequest = [];
-        listRequest = taxiServiceRequestImpl.convertJsonList(event);
-        listRequest = filtreRequestClientZoneRange(listRequest);
-        updateListRequest(listRequest);
+        //print(event.snapshot.value);
+        //listRequest2 =
+        listRequest2 = filtreRequestClientZoneRange(
+            taxiServiceRequestImpl.convertJsonList(event));
+        updateListRequest(listRequest2);
+        for (var item in listRequest2) {
+          print(item.idUser);
+        }
       });
     } catch (e) {
       print(e);
     }
   }
 
-  filtreRequestClientZoneRange(value) {
+  List<ClienRequest> filtreRequestClientZoneRange(List<ClienRequest> value) {
     List<ClienRequest> listRequest = [];
-    for (ClienRequest item in value) {
+
+    for (var item in value) {
       double latitudClient = item.latitudOrigen;
       double longitudClient = item.longitudOrigen;
 
       double distancia = getConvertKm(getDistance(
           latitudClient, longitudClient, latitudTaxi, longitudTaxi));
-
+      print("distancia:  " + distancia.toString());
       if (distancia <= item.rango) {
         listRequest.add(item);
       }
-      return listRequest;
     }
+    return listRequest;
   }
 
-  Future<bool> initUbicacion() async {
+  Future<bool> initServiceUbicationPermisson() async {
     _serviceEnabled = await location.serviceEnabled();
     if (!_serviceEnabled) {
       _serviceEnabled = await location.requestService();
@@ -65,7 +71,7 @@ class TaxiServiceRequestListPageFunctionality {
     return true;
   }
 
-  initServiceRequest() {
+  initServiceUbication() {
     getUbication().then((value) {
       latitudTaxi = value.latitude!;
       longitudTaxi = value.longitude!;

@@ -38,6 +38,7 @@ class ListRequestDriverFunctionality {
       ServiceRequestEstimatesImpl serviceRequestEstimatesImpl =
           new ServiceRequestEstimatesImpl();
       serviceRequestEstimatesImpl.getNodeEvent().listen((event) {
+        print(event.snapshot.value);
         listDriverReq = [];
         listDriverReq = serviceRequestEstimatesImpl.convertJsonList(event);
         listDriverReq =
@@ -56,12 +57,13 @@ class ListRequestDriverFunctionality {
           clientFunctionality.getDistance(
               item.latitud, item.longitud, latitudClient, longitudClient));
       item.distancia = distance;
+      print(item.idFirebase);
+      print(idRequestService.toString() + " idRequestService");
       if (item.idTaxiServiceRequest == idRequestService) {
         estimateTaxiList.add(item);
       }
-
-      return estimateTaxiList;
     }
+    return estimateTaxiList;
   }
 
   Future<bool> initUbication() async {
@@ -110,10 +112,11 @@ class ListRequestDriverFunctionality {
     });
   }
 
-  initServiceRequest() {
+  initServiceRequest(valu) {
     getUbication().then((value) {
       latitudClient = value.latitude!;
       longitudClient = value.longitude!;
+      initListenerNodeFirebase(valu);
     });
   }
 }
