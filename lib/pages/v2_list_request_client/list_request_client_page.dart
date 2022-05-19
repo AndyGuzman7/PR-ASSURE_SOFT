@@ -148,7 +148,7 @@ class _ListRequestClientState extends State<ListRequestClient> {
     requestList.listRequest = listRequest;
     requestList.setCallbak = (ClienRequest value) {
       print(value.iduserFirebase);
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => RequestInfo(
