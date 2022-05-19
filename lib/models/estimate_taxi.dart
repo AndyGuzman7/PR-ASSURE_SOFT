@@ -2,8 +2,8 @@ class EstimateTaxi {
   double latitud;
   double longitud;
   late int idUserTaxi;
-  late String idRequestUserFirebase;
-  late String idRequestTaxiFirebase;
+  late String idTaxiServiceRequest;
+  late String idFirebase;
   late double estimacion;
 
   late String placa;
@@ -11,18 +11,12 @@ class EstimateTaxi {
   late bool confirmation = false;
   late int id;
 
-  EstimateTaxi(
-      this.idUserTaxi,
-      this.idRequestTaxiFirebase,
-      this.idRequestUserFirebase,
-      this.estimacion,
-      this.latitud,
-      this.longitud,
-      this.placa);
+  EstimateTaxi(this.idUserTaxi, this.idFirebase, this.idTaxiServiceRequest,
+      this.estimacion, this.latitud, this.longitud, this.placa);
   EstimateTaxi.fromJson(Map<dynamic, dynamic> json)
       : idUserTaxi = json['idUserTaxi'],
-        idRequestUserFirebase = json['idRequestUserFirebase'],
-        idRequestTaxiFirebase = json['idRequestTaxiFirebase'],
+        idTaxiServiceRequest = json['idTaxiServiceRequest'],
+        idFirebase = json['idFirebase'],
         estimacion = json['estimacion'].toDouble(),
         latitud = json['latidud'],
         longitud = json['longitud'],
@@ -31,8 +25,8 @@ class EstimateTaxi {
 
   Map<dynamic, dynamic> toJson() => <dynamic, dynamic>{
         'idUserTaxi': idUserTaxi,
-        'idRequestUserFirebase': idRequestUserFirebase,
-        'idRequestTaxiFirebase': idRequestTaxiFirebase,
+        'idTaxiServiceRequest': idTaxiServiceRequest,
+        'idFirebase': idFirebase,
         'estimacion': estimacion,
         'latidud': latitud,
         'longitud': longitud,

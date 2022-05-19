@@ -1,12 +1,11 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:location/location.dart';
 import 'package:taxi_segurito_app/models/client_request.dart';
+import 'package:taxi_segurito_app/strategis/firebase/implementation/taxi_service_request_impl.dart';
 
-class ListRequestClientFunctionality {
+class TaxiServiceRequestListPageFunctionality {
   List<ClienRequest> listRequest = [];
-  late final nameBranch = "Request";
-  late final dbRef;
+
   late Location location = new Location();
   late bool _serviceEnabled;
   late PermissionStatus _permissionGranted;
@@ -14,39 +13,27 @@ class ListRequestClientFunctionality {
 
   late double latitudTaxi;
   late double longitudTaxi;
-
   late Function(List<ClienRequest>) updateListRequest;
 
-  ListRequestClientFunctionality();
-  void initFirebase() {
+  TaxiServiceRequestListPageFunctionality();
+  void initListenerNodeFirebase() {
     try {
-      dbRef = FirebaseDatabase.instance.reference();
-      Stream<Event> streamBuilder = dbRef.child(nameBranch).onValue;
-      streamBuilder.listen((event) {
-        DataSnapshot snapshot = event.snapshot;
-        print(snapshot.value);
-        getItemsFirebase(snapshot);
+      TaxiServiceRequestImpl taxiServiceRequestImpl =
+          new TaxiServiceRequestImpl();
+      taxiServiceRequestImpl.getNodeEvent().listen((event) {
+        listRequest = [];
+        listRequest = taxiServiceRequestImpl.convertJsonList(event);
+        listRequest = filtreRequestClientZoneRange(listRequest);
+        updateListRequest(listRequest);
       });
     } catch (e) {
       print(e);
     }
   }
 
-  getItemsFirebase(DataSnapshot snapshot) {
-    listRequest = [];
-    List<ClienRequest> listRequestPreview = [];
-
-    final extractedData = snapshot.value;
-    if (extractedData != null)
-      extractedData.forEach(
-        (blogId, blogData) {
-          print(blogData);
-          ClienRequest clienRequest = ClienRequest.fromJson(blogData);
-          listRequestPreview.add(clienRequest);
-        },
-      );
-
-    for (ClienRequest item in listRequestPreview) {
+  filtreRequestClientZoneRange(value) {
+    List<ClienRequest> listRequest = [];
+    for (ClienRequest item in value) {
       double latitudClient = item.latitudOrigen;
       double longitudClient = item.longitudOrigen;
 
@@ -56,21 +43,8 @@ class ListRequestClientFunctionality {
       if (distancia <= item.rango) {
         listRequest.add(item);
       }
+      return listRequest;
     }
-    updateListRequest(listRequest);
-    for (var item in listRequest) {
-      print(item.rango.toString() +
-          " sfsdfsdf " +
-          item.numeroPasageros.toString());
-    }
-  }
-
-  Future<void> sendRequest(ClienRequest clienRequest) async {
-    dbRef.reference().child(nameBranch).push().set(clienRequest.toJson());
-  }
-
-  Stream<Event> getEvent() {
-    return dbRef.child(nameBranch).onValue;
   }
 
   Future<bool> initUbicacion() async {
@@ -81,7 +55,6 @@ class ListRequestClientFunctionality {
         return false;
       }
     }
-
     _permissionGranted = await location.hasPermission();
     if (_permissionGranted == PermissionStatus.denied) {
       _permissionGranted = await location.requestPermission();
@@ -96,16 +69,12 @@ class ListRequestClientFunctionality {
     getUbication().then((value) {
       latitudTaxi = value.latitude!;
       longitudTaxi = value.longitude!;
-      initFirebase();
+      initListenerNodeFirebase();
     });
   }
 
   Future<LocationData> getUbication() async {
     return locationData = await location.getLocation();
-  }
-
-  void getInstance() {
-    return dbRef;
   }
 
   double getDistance(

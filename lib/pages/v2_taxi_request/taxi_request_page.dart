@@ -111,16 +111,17 @@ class _PruebaState extends State<TaxiRequestPage> {
     final btnRegister = new CustomButton(
       onTap: () {
         if (registerRequest()) {
+          print("se quire enviar");
           ClienRequest clienRequest = new ClienRequest(
-              1,
-              '',
+              0,
+              '0',
               latLngOrigen.latitude,
               latLngOrigen.longitude,
               int.parse(fieldPassengers.getValue()),
               latLngDestino.latitude,
               latLngDestino.longitude,
               customSlider.getValue());
-          taxiRequestFunctionality.sendRequest(clienRequest);
+          taxiRequestFunctionality.insertNodeTaxiRequest(clienRequest);
         }
       },
       buttonText: "Enviar Solicitud",

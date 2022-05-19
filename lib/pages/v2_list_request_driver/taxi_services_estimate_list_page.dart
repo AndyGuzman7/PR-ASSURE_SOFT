@@ -3,24 +3,26 @@ import 'package:taxi_segurito_app/components/buttons/CustomButtonWithLinearBorde
 import 'package:taxi_segurito_app/models/client_request.dart';
 import 'package:taxi_segurito_app/models/estimate_taxi.dart';
 
-import 'package:taxi_segurito_app/pages/v2_list_request_driver/list_request_driver_functionality.dart';
+import 'package:taxi_segurito_app/pages/v2_list_request_driver/taxi_services_estimate_list_functionality.dart';
 import 'package:taxi_segurito_app/pages/v2_list_request_driver/widgets/request_list_driver.dart';
 import 'package:taxi_segurito_app/pages/v2_taxi_request/taxi_request_functionality.dart';
 import 'package:taxi_segurito_app/pages/v2_list_request_driver/widgets/request_list_driver_item.dart';
 
-
 import '../../components/buttons/CustomButton.dart';
 import '../../components/slider/slider.dart';
 
-class ListRequestDriver extends StatefulWidget {
+class TaxiServicesEstimateListPage extends StatefulWidget {
   String idRequest;
-  ListRequestDriver({Key? key, required this.idRequest}) : super(key: key);
+  TaxiServicesEstimateListPage({Key? key, required this.idRequest})
+      : super(key: key);
 
   @override
-  State<ListRequestDriver> createState() => _ListRequestDriverState();
+  State<TaxiServicesEstimateListPage> createState() =>
+      _TaxiServicesEstimateListPageState();
 }
 
-class _ListRequestDriverState extends State<ListRequestDriver> {
+class _TaxiServicesEstimateListPageState
+    extends State<TaxiServicesEstimateListPage> {
   List<EstimateTaxi> listRequest = [];
   RequestListDriver requestList = RequestListDriver();
   ListRequestDriverFunctionality listRequestDriverFunctionality =
@@ -30,9 +32,16 @@ class _ListRequestDriverState extends State<ListRequestDriver> {
   @override
   void initState() {
     super.initState();
+    listRequestDriverFunctionality.updateListRequest = ((value) {
+      listRequest = value;
+      requestList.listRequest = listRequest;
+      requestList.listRequest!.add(listRequest);
+    });
     listRequestDriverFunctionality.initUbication().then((value) {
       if (value) {
         listRequestDriverFunctionality.initServiceRequest();
+        listRequestDriverFunctionality
+            .initListenerNodeFirebase(widget.idRequest);
       } else {
         print('null aqui en linea 27');
       }
@@ -83,10 +92,8 @@ class _ListRequestDriverState extends State<ListRequestDriver> {
         showSnackBar(context, item, index);
         removeItem(index);
       },
-
       resizeDuration: new Duration(seconds: 2),
       background: deleteItem(),
-
       child: Card(
         child: new RequestListItemDriver(
           driverRequest: dinamycOb,
@@ -116,7 +123,6 @@ class _ListRequestDriverState extends State<ListRequestDriver> {
   }
 
   addRandomItem() {
-    
     listRequestDriverFunctionality.updateListRequest = ((value) {
       setState(() {
         listRequest = value;
@@ -124,7 +130,6 @@ class _ListRequestDriverState extends State<ListRequestDriver> {
         requestList.listRequest!.add(listRequest);
       });
     });
-
   }
 
   undoDelete(index, item) {
@@ -148,11 +153,10 @@ class _ListRequestDriverState extends State<ListRequestDriver> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     listRequestDriverFunctionality.context = context;
-    
+
     requestList.listRequest = listRequest;
     requestList.callback = (value) {};
     customSlider = new CustomSlider();
@@ -160,9 +164,10 @@ class _ListRequestDriverState extends State<ListRequestDriver> {
     final btnActualizar = new CustomButton(
       onTap: () {
         ClienRequest clienRequest = new ClienRequest.updateRange(
-            '-N1vLO9946XQ4MXqRkys', customSlider.getValue());
+            widget.idRequest, customSlider.getValue());
+
+        listRequestDriverFunctionality.updateRangeRequestService(clienRequest);
         Navigator.pop(context);
-        TaxiRequestFunctionality().updateRequestRange(clienRequest);
       },
       buttonText: "Actualizar rango",
       buttonColor: Color.fromRGBO(255, 193, 7, 1),
@@ -204,17 +209,14 @@ class _ListRequestDriverState extends State<ListRequestDriver> {
               children: [customSlider],
             ),
             actions: [btnActualizar],
-
           );
         },
       );
     }
 
-
-
     final btnCancel = new CustomButtonWithLinearBorder(
       onTap: () {
-        listRequestDriverFunctionality.deleteRequest(widget.idRequest);
+        listRequestDriverFunctionality.deleteNodeService(widget.idRequest);
       },
       buttonText: "Cancelar Solicitud",
       buttonColor: Color.fromRGBO(255, 193, 7, 1),
@@ -249,7 +251,6 @@ class _ListRequestDriverState extends State<ListRequestDriver> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             title,
-            
             Container(
               margin: new EdgeInsets.fromLTRB(10, 10, 10, 10),
               child: btnUpdateRange,
@@ -261,7 +262,7 @@ class _ListRequestDriverState extends State<ListRequestDriver> {
                   child: showList(),
                   onRefresh: () async {
                     await refreshList();
-                  },                 
+                  },
                 ),
               ),
             ),

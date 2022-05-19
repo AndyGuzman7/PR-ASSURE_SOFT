@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 
 class ClienRequest {
   late int idUser;
-  late String iduserFirebase;
+  late String idFirebase;
   late double latitudOrigen;
   late double longitudOrigen;
   late int numeroPasageros;
@@ -11,7 +11,7 @@ class ClienRequest {
   late double longitudDestino;
   ClienRequest(
       this.idUser,
-      this.iduserFirebase,
+      this.idFirebase,
       this.latitudOrigen,
       this.longitudOrigen,
       this.numeroPasageros,
@@ -19,25 +19,27 @@ class ClienRequest {
       this.longitudDestino,
       this.rango);
 
-  ClienRequest.updateRange(this.iduserFirebase, this.rango);
+  ClienRequest.init();
+
+  ClienRequest.updateRange(this.idFirebase, this.rango);
 
   ClienRequest.fromJson(Map<dynamic, dynamic> json)
       : idUser = json['idUser'] as int,
-        iduserFirebase = json['iduserFirebase'],
+        idFirebase = json['idFirebase'],
         latitudOrigen = json['latitudOrigen'],
         longitudOrigen = json['longitudOrigen'],
         numeroPasageros = json['numeroPasajeros'],
-        rango = json['rango'] * 1.0,
+        rango = json['rangoBusqueda'] * 1.0,
         latitudDestino = json['latitudDestino'],
         longitudDestino = json['longitudDestino'];
 
   Map<dynamic, dynamic> toJson() => <dynamic, dynamic>{
         'idUser': idUser,
-        'iduserFirebase': iduserFirebase,
+        'idFirebase': idFirebase,
         'latitudOrigen': latitudOrigen,
         'longitudOrigen': longitudOrigen,
         'numeroPasajeros': numeroPasageros,
-        'rango': rango,
+        'rangoBusqueda': rango,
         'latitudDestino': latitudDestino,
         'longitudDestino': longitudDestino
       };

@@ -10,7 +10,7 @@ class RequestClientImpl implements IRequest {
   late final connection;
 
   RequestClientImpl() {
-    connection = FirebaseConnection().initFirebase();
+    connection = FirebaseConnection().getConnection();
     key = FirebaseConnection().getKey(NodeNameGallery.REQUESTCLIENT);
   }
 

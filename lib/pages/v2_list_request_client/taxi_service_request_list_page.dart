@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:taxi_segurito_app/components/buttons/CustomButtonWithLinearBorder.dart';
 import 'package:taxi_segurito_app/models/client_request.dart';
-import 'package:taxi_segurito_app/pages/v2_list_request_client/list_request_client_functionality.dart';
+import 'package:taxi_segurito_app/pages/v2_list_request_client/taxi_service_request_list_functionality.dart';
 import 'package:taxi_segurito_app/pages/v2_list_request_client/request_decision_functionality.dart';
 import 'package:taxi_segurito_app/pages/v2_list_request_client/widgets/request_list.dart';
 import 'package:taxi_segurito_app/pages/v2_list_request_client/widgets/request_list_item.dart';
-import 'package:taxi_segurito_app/pages/v2_request_client_info_estimates/view_request_info_page.dart';
+import 'package:taxi_segurito_app/pages/v2_request_client_info_estimates/client_service_request_information_page.dart';
 
-class ListRequestClient extends StatefulWidget {
-  ListRequestClient({Key? key}) : super(key: key);
+class TaxiServiceRequestListPage extends StatefulWidget {
+  TaxiServiceRequestListPage({Key? key}) : super(key: key);
 
   @override
-  State<ListRequestClient> createState() => _ListRequestClientState();
+  State<TaxiServiceRequestListPage> createState() =>
+      _TaxiServiceRequestListPageState();
 }
 
-class _ListRequestClientState extends State<ListRequestClient> {
+class _TaxiServiceRequestListPageState
+    extends State<TaxiServiceRequestListPage> {
   late List<ClienRequest> listRequest;
   late GlobalKey<RefreshIndicatorState> refreshListKey;
   RequestList requestList = new RequestList();
@@ -29,8 +31,8 @@ class _ListRequestClientState extends State<ListRequestClient> {
   Color colorMainDanger = Color.fromRGBO(242, 78, 30, 1);
   Color colorMainNull = Color.fromARGB(255, 244, 123, 123);
 
-  ListRequestClientFunctionality listRequestClientFunctionality =
-      new ListRequestClientFunctionality();
+  TaxiServiceRequestListPageFunctionality listRequestClientFunctionality =
+      new TaxiServiceRequestListPageFunctionality();
   @override
   void initState() {
     super.initState();
@@ -147,12 +149,12 @@ class _ListRequestClientState extends State<ListRequestClient> {
 
     requestList.listRequest = listRequest;
     requestList.setCallbak = (ClienRequest value) {
-      print(value.iduserFirebase);
+      print(value.idFirebase);
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => RequestInfo(
-            requestID: value.iduserFirebase,
+          builder: (context) => ClientServiceRequestInformationPage(
+            serviceRequestId: value.idFirebase,
           ),
         ),
       );
