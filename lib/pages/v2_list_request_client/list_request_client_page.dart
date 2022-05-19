@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:taxi_segurito_app/components/buttons/CustomButtonWithLinearBorder.dart';
 import 'package:taxi_segurito_app/models/client_request.dart';
 import 'package:taxi_segurito_app/pages/v2_list_request_client/list_request_client_functionality.dart';
+import 'package:taxi_segurito_app/pages/v2_list_request_client/request_decision_functionality.dart';
 import 'package:taxi_segurito_app/pages/v2_list_request_client/widgets/request_list.dart';
 import 'package:taxi_segurito_app/pages/v2_list_request_client/widgets/request_list_item.dart';
 import 'package:taxi_segurito_app/pages/v2_request_client_info_estimates/view_request_info_page.dart';
@@ -17,11 +19,23 @@ class _ListRequestClientState extends State<ListRequestClient> {
   late GlobalKey<RefreshIndicatorState> refreshListKey;
   RequestList requestList = new RequestList();
 
+  late String idUserTaxista = "-N1vHdpBe2km7i6xJbkz";
+  late bool estadoSolicitud = false;
+
+  RequestDecisionFunctionality requestDecisionFunctionality =
+      new RequestDecisionFunctionality();
+
+  Color colorMain = Color.fromRGBO(255, 193, 7, 1);
+  Color colorMainDanger = Color.fromRGBO(242, 78, 30, 1);
+  Color colorMainNull = Color.fromARGB(255, 244, 123, 123);
+
   ListRequestClientFunctionality listRequestClientFunctionality =
       new ListRequestClientFunctionality();
   @override
   void initState() {
     super.initState();
+    requestDecisionFunctionality.initFirebase();
+
     listRequestClientFunctionality.initUbicacion().then((value) {
       if (value) {
         listRequestClientFunctionality.initServiceRequest();
@@ -56,10 +70,8 @@ class _ListRequestClientState extends State<ListRequestClient> {
         showSnackBar(context, item, index);
         removeItem(index);
       },
-
       resizeDuration: new Duration(seconds: 2),
       background: deleteItem(),
-
       child: Card(
         child: new RequestListItem(
           clientRequest: dinamycOb,
@@ -89,7 +101,6 @@ class _ListRequestClientState extends State<ListRequestClient> {
   }
 
   addRandomItem() {
-    
     listRequestClientFunctionality.updateListRequest = ((value) {
       setState(() {
         listRequest = value;
@@ -122,10 +133,22 @@ class _ListRequestClientState extends State<ListRequestClient> {
 
   @override
   Widget build(BuildContext context) {
+    //check if you have requests from the customer user
+    requestDecisionFunctionality.updateStatus = ((value) {
+      setState(() {
+        estadoSolicitud = value;
+      });
+    });
+
+    //if available display the request confirmation notice
+    if (estadoSolicitud) {
+      Future.delayed(Duration.zero, () => showAlert(context));
+    }
+
     requestList.listRequest = listRequest;
     requestList.setCallbak = (ClienRequest value) {
       print(value.iduserFirebase);
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => RequestInfo(
@@ -176,9 +199,70 @@ class _ListRequestClientState extends State<ListRequestClient> {
                   child: showList(),
                   onRefresh: () async {
                     await refreshList();
-                  },                 
+                  },
                 ),
               ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+//AlertDialog confirm request
+  void showAlert(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(25),
+          ),
+        ),
+        titleTextStyle: TextStyle(
+          color: Colors.black,
+          fontSize: 18,
+          fontWeight: FontWeight.w700,
+        ),
+        title: Text(
+          "¿Quiere aceptar el servicio?",
+          textAlign: TextAlign.center,
+        ),
+        backgroundColor: Colors.white,
+        content: Row(
+          children: [
+            Expanded(
+              child: CustomButtonWithLinearBorder(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  buttonBorderColor: colorMainNull,
+                  marginBotton: 0,
+                  marginLeft: 0,
+                  marginRight: 0,
+                  marginTop: 0,
+                  buttonText: "Rechazar",
+                  buttonColor: Colors.white,
+                  buttonTextColor: colorMainNull),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Expanded(
+              child: CustomButtonWithLinearBorder(
+                  onTap: () {
+                    requestDecisionFunctionality
+                        .updateStatusRequest(idUserTaxista);
+                    Navigator.pop(context);
+                  },
+                  buttonBorderColor: colorMainDanger,
+                  marginBotton: 0,
+                  marginLeft: 0,
+                  marginRight: 0,
+                  marginTop: 0,
+                  buttonText: "Aceptar",
+                  buttonColor: Colors.white,
+                  buttonTextColor: colorMainDanger),
             ),
           ],
         ),
