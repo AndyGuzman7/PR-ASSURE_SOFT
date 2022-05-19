@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:taxi_segurito_app/components/sidemenu/side_menu_functionality.dart';
 import 'package:taxi_segurito_app/pages/forgetObjects/forgetObjectMain.dart';
+import 'package:taxi_segurito_app/pages/v2_taxi_request/taxi_request_page.dart';
 
 class SideMenu extends StatelessWidget {
   late Timer timer;
@@ -50,6 +51,18 @@ class SideMenu extends StatelessWidget {
                   ),
                 ],
               ),
+            ),
+            ListTile(
+              leading: Icon(Icons.emoji_objects),
+              title: Text("Servicio Taxi"),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TaxiRequestPage(),
+                  ),
+                );
+              },
             ),
             ListTile(
               leading: Icon(Icons.emoji_objects),
