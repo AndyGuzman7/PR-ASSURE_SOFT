@@ -6,6 +6,7 @@ import 'package:taxi_segurito_app/pages/v2_list_request_client/request_decision_
 import 'package:taxi_segurito_app/pages/v2_list_request_client/widgets/request_list.dart';
 import 'package:taxi_segurito_app/pages/v2_list_request_client/widgets/request_list_item.dart';
 import 'package:taxi_segurito_app/pages/v2_request_client_info_estimates/client_service_request_information_page.dart';
+import 'package:taxi_segurito_app/strategis/firebase/implementation/service_request_estimates_impl.dart';
 
 class TaxiServiceRequestListPage extends StatefulWidget {
   TaxiServiceRequestListPage({Key? key}) : super(key: key);
@@ -143,6 +144,13 @@ class _TaxiServiceRequestListPageState
 
   @override
   Widget build(BuildContext context) {
+    ServiceRequestEstimatesImpl serviceRequestEstimatesImpl =
+        new ServiceRequestEstimatesImpl();
+    serviceRequestEstimatesImpl
+        .getConfirmationEvent('-N2Q4-U3vODG1LSsM7_C')
+        .listen((event) {
+      print(event.snapshot.value);
+    });
     //check if you have requests from the customer user
     requestDecisionFunctionality.updateStatus = ((value) {
       setState(() {
@@ -152,13 +160,15 @@ class _TaxiServiceRequestListPageState
 
     //if available display the request confirmation notice
     if (estadoSolicitud) {
-      Future.delayed(Duration.zero, () => showAlert(context));
+      ///Future.delayed(Duration.zero, () => showAlert(context));
+      showAlert(context);
     }
 
     //requestList.listRequest = listRequest;
-    requestList.setCallbak = (ClienRequest value) {
+    requestList.setCallbak = (ClienRequest value) async {
       print(value.idFirebase);
-      Navigator.pushReplacement(
+
+      final result = await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => ClientServiceRequestInformationPage(
@@ -166,6 +176,8 @@ class _TaxiServiceRequestListPageState
           ),
         ),
       );
+
+      print(result);
     };
 
     Text title = new Text(
@@ -187,6 +199,9 @@ class _TaxiServiceRequestListPageState
       ),
     );
     return Scaffold(
+      floatingActionButton: FloatingActionButton(onPressed: () {
+        showAlert(context);
+      }),
       appBar: appbar,
       body: Container(
         color: Color.fromARGB(255, 248, 248, 248),

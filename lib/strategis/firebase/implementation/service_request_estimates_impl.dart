@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:ffi';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:taxi_segurito_app/models/estimate_taxi.dart';
@@ -56,5 +57,15 @@ class ServiceRequestEstimatesImpl extends IServiceRequestEstimates {
         },
       );
     return listEstimates;
+  }
+
+  @override
+  Stream<Event> getConfirmationEvent(idFirebase) {
+    return connection
+        .reference()
+        .child(NodeNameGallery.SERVICEREQUESTESTIMATELIST)
+        .child(idFirebase)
+        .child('confirmation')
+        .onValue;
   }
 }

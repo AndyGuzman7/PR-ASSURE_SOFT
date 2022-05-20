@@ -53,12 +53,7 @@ class ClientServiceRequestInformationFunctionality {
 
     serviceRequestEstimatesImpl.insertNode(estimateTaxi.toJson()).then((value) {
       if (value) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => TaxiServiceRequestListPage(),
-          ),
-        );
+        Navigator.pop(context, idServiceRequest);
       } else
         print("No se envio");
     });

@@ -16,7 +16,7 @@ class RequestTaxiImpl extends IRequestTaxi {
 
     await connection
         .reference()
-        .child(NodeNameGallery.REQUESTTAXI)
+        .child(NodeNameGallery.SERVICEREQUESTESTIMATELIST)
         .child(value)
         .update({'confirmation': true}).then((value) {
       succes = true;
