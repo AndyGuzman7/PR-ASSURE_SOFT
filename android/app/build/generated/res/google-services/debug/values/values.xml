@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_web_client_id" translatable="false">819041074761-vmrbab7dh895n3r6ls5ebjvnrovpvg7u.apps.googleusercontent.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">819041074761</string>
+    <string name="google_api_key" translatable="false">AIzaSyBzcU9YBI23DvXfgzjaScTD5oZ7nysNEuM</string>
+    <string name="google_app_id" translatable="false">1:819041074761:android:fae17dd84294cc74ddc998</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyBzcU9YBI23DvXfgzjaScTD5oZ7nysNEuM</string>
+    <string name="google_storage_bucket" translatable="false">prueba-taxi-segurito-4ecc4.appspot.com</string>
+    <string name="project_id" translatable="false">prueba-taxi-segurito-4ecc4</string>
+</resources>

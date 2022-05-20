@@ -9,6 +9,7 @@ import 'dart:typed_data';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:taxi_segurito_app/SRC/providers/push_notifications_provider.dart';
+import 'package:taxi_segurito_app/pages/alarm_manager/notification_alarm.dart';
 import 'package:taxi_segurito_app/pages/contacList/list_contact.dart';
 import 'package:taxi_segurito_app/pages/list_request_client/request_list_page.dart';
 import 'package:taxi_segurito_app/pages/menu/driver_menu.dart';
@@ -38,10 +39,55 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
+import 'package:workmanager/workmanager.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Firebase.initializeApp();
+
+  //configuraciones para las notificaciones
+  FlutterLocalNotificationsPlugin plugin = FlutterLocalNotificationsPlugin();
+  const AndroidInitializationSettings settings = AndroidInitializationSettings('@mipmap/ic_launcher');
+  final IOSInitializationSettings iosSettings = IOSInitializationSettings();
+  final MacOSInitializationSettings macSettings = MacOSInitializationSettings();
+  final InitializationSettings initialization = InitializationSettings(
+    android: settings,
+    iOS: iosSettings,
+    macOS: macSettings
+    
+  );
+
+  await plugin.initialize(
+    initialization,
+    onSelectNotification: selectNotification
+  );
+
+  Workmanager().initialize(
+    callBackTask,
+    isInDebugMode: true,
+    
+  );
+
+  Workmanager().registerPeriodicTask(
+    "10",
+    "Key",
+    frequency: Duration(minutes: 10),
+    
+  );
+
+
+
+  AndroidAlarmManager.initialize();
+  AndroidAlarmManager.periodic(
+    Duration(seconds: 5), 
+    1, 
+    notificacion, 
+    exact: true, 
+    wakeup: true, 
+    rescheduleOnReboot: true,
+  );
 
   HttpOverrides.global = new HttpProvider();
   SessionsService sessions = SessionsService();
@@ -72,6 +118,77 @@ void main() async {
     }
   }
   runApp(app);
+}
+
+void notificacion() async {
+  print("Alarma: ${DateTime.now()}");
+  final FlutterLocalNotificationsPlugin notificacion = FlutterLocalNotificationsPlugin();
+
+      const AndroidNotificationDetails notificationDetails = AndroidNotificationDetails(
+        'id',
+        'Notificacion1',
+        channelDescription: 'Notificacion ejemplo',
+        importance: Importance.max,
+        priority: Priority.high,
+        showProgress: true,
+        showWhen: false,
+      
+      );
+
+      const NotificationDetails details = NotificationDetails(
+        android: notificationDetails
+      );
+
+      await notificacion.show(
+        1,
+        'Simulacion',
+        'Es una simulacion con android alert manager',
+        details,
+        payload: 'Item1'
+      );
+}
+
+//envio de notificacion
+Future selectNotification(payload) async {
+  if (payload!=null){
+    debugPrint("Notificacion: $payload");
+    print("Notificacion Envio: ${DateTime.now()}");
+  }
+}
+
+//metodo para enviar notificaciones mediante workmanager
+void callBackTask(){
+  Workmanager().executeTask((tarea, datos) async {
+    if(tarea=="Key")
+    {
+      final FlutterLocalNotificationsPlugin notificacion = FlutterLocalNotificationsPlugin();
+
+      const AndroidNotificationDetails notificationDetails = AndroidNotificationDetails(
+        'id',
+        'Notificacion1',
+        channelDescription: 'Notificacion ejemplo',
+        importance: Importance.max,
+        priority: Priority.high,
+        showProgress: true,
+        showWhen: false,
+      
+      );
+
+      const NotificationDetails details = NotificationDetails(
+        android: notificationDetails
+      );
+
+      await notificacion.show(
+        1,
+        'Envio Simulacion',
+        'Es una simulacion work manager',
+        details,
+        payload: 'Item1'
+      );
+    }
+    return Future.value(true);
+    
+  });
 }
 
 class AppTaxiSegurito extends StatefulWidget {
@@ -111,9 +228,10 @@ class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
       title: "Taxi Segurito",
       theme: ThemeData(primarySwatch: Colors.amber),
       debugShowCheckedModeBanner: false,
-      initialRoute: 'listRequestClient',
+      initialRoute: 'Notification1',
       routes: {
         'loginUser': (_) => UserLoginPage(),
+        'Notification1': (_) => Notification1(),
         'listRequestClient': (_) => ListRequestClient(),
         'serviceFormMap': (_) => ServiceFormMap(),
         'registerScreen': (_) => RegisterPage(),
