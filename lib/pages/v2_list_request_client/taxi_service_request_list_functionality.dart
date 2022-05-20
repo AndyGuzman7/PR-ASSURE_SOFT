@@ -1,79 +1,59 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:location/location.dart';
 import 'package:taxi_segurito_app/models/client_request.dart';
+import 'package:taxi_segurito_app/strategis/firebase/implementation/taxi_service_request_impl.dart';
 
-class ListRequestClientFunctionality {
-  List<ClienRequest> listRequest = [];
-  late final nameBranch = "Request";
-  late final dbRef;
+class TaxiServiceRequestListPageFunctionality {
+  List<ClienRequest> listRequest2 = [];
+
   late Location location = new Location();
   late bool _serviceEnabled;
   late PermissionStatus _permissionGranted;
   late LocationData locationData;
-
+  TaxiServiceRequestImpl taxiServiceRequestImpl = new TaxiServiceRequestImpl();
   late double latitudTaxi;
   late double longitudTaxi;
-
   late Function(List<ClienRequest>) updateListRequest;
 
-  ListRequestClientFunctionality();
-  void initFirebase() {
+  TaxiServiceRequestListPageFunctionality();
+
+  void initListenerNodeFirebase() {
     try {
-      dbRef = FirebaseDatabase.instance.reference();
-      Stream<Event> streamBuilder = dbRef.child(nameBranch).onValue;
-      streamBuilder.listen((event) {
-        DataSnapshot snapshot = event.snapshot;
-        print(snapshot.value);
-        getItemsFirebase(snapshot);
+      listRequest2 = [];
+
+      taxiServiceRequestImpl.getNodeEvent().listen((event) {
+        //print(event.snapshot.value);
+        //listRequest2 =
+        listRequest2 = filtreRequestClientZoneRange(
+            taxiServiceRequestImpl.convertJsonList(event));
+        updateListRequest(listRequest2);
+        for (var item in listRequest2) {
+          print(item.idUser);
+        }
       });
     } catch (e) {
       print(e);
     }
   }
 
-  getItemsFirebase(DataSnapshot snapshot) {
-    listRequest = [];
-    List<ClienRequest> listRequestPreview = [];
+  List<ClienRequest> filtreRequestClientZoneRange(List<ClienRequest> value) {
+    List<ClienRequest> listRequest = [];
 
-    final extractedData = snapshot.value;
-    if (extractedData != null)
-      extractedData.forEach(
-        (blogId, blogData) {
-          print(blogData);
-          ClienRequest clienRequest = ClienRequest.fromJson(blogData);
-          listRequestPreview.add(clienRequest);
-        },
-      );
-
-    for (ClienRequest item in listRequestPreview) {
+    for (var item in value) {
       double latitudClient = item.latitudOrigen;
       double longitudClient = item.longitudOrigen;
 
       double distancia = getConvertKm(getDistance(
           latitudClient, longitudClient, latitudTaxi, longitudTaxi));
-
+      print("distancia:  " + distancia.toString());
       if (distancia <= item.rango) {
         listRequest.add(item);
       }
     }
-    updateListRequest(listRequest);
-    for (var item in listRequest) {
-      print(item.rango.toString() +
-          " sfsdfsdf " +
-          item.numeroPasageros.toString());
-    }
+    return listRequest;
   }
 
-  Future<void> sendRequest(ClienRequest clienRequest) async {
-    dbRef.reference().child(nameBranch).push().set(clienRequest.toJson());
-  }
-
-  Stream<Event> getEvent() {
-    return dbRef.child(nameBranch).onValue;
-  }
-
-  Future<bool> initUbicacion() async {
+  Future<bool> initServiceUbicationPermisson() async {
     _serviceEnabled = await location.serviceEnabled();
     if (!_serviceEnabled) {
       _serviceEnabled = await location.requestService();
@@ -81,7 +61,6 @@ class ListRequestClientFunctionality {
         return false;
       }
     }
-
     _permissionGranted = await location.hasPermission();
     if (_permissionGranted == PermissionStatus.denied) {
       _permissionGranted = await location.requestPermission();
@@ -92,20 +71,16 @@ class ListRequestClientFunctionality {
     return true;
   }
 
-  initServiceRequest() {
+  initServiceUbication() {
     getUbication().then((value) {
       latitudTaxi = value.latitude!;
       longitudTaxi = value.longitude!;
-      initFirebase();
+      initListenerNodeFirebase();
     });
   }
 
   Future<LocationData> getUbication() async {
     return locationData = await location.getLocation();
-  }
-
-  void getInstance() {
-    return dbRef;
   }
 
   double getDistance(

@@ -1,20 +1,26 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:location/location.dart';
 import 'package:taxi_segurito_app/models/estimate_taxi.dart';
+import 'package:taxi_segurito_app/pages/v2_list_request_client/taxi_service_request_list_page.dart';
+import 'package:taxi_segurito_app/pages/v2_list_request_driver/taxi_services_estimate_list_page.dart';
 import 'package:taxi_segurito_app/services/sessions_service.dart';
+import 'package:taxi_segurito_app/strategis/firebase/implementation/service_request_estimates_impl.dart';
 
-class ViewRequestFunctionality {
+class ClientServiceRequestInformationFunctionality {
   var idTaxi;
   SessionsService sessionsService = new SessionsService();
   late final nameBranch = "RequestTaxi";
   late final dbRef;
   late String key;
   late Location location = new Location();
+  late BuildContext context;
 
   Function(String)? updateData;
 
-  ViewRequestFunctionality();
+  ClientServiceRequestInformationFunctionality();
   void initFirebase() {
     dbRef = FirebaseDatabase.instance.reference();
 
@@ -26,9 +32,36 @@ class ViewRequestFunctionality {
   }
 
   Future<void> sendRequest(EstimateTaxi taxiRequest) async {
-    taxiRequest.idRequestTaxiFirebase = key;
+    taxiRequest.idFirebase = key;
     dbRef.reference().child(nameBranch).child(key).set(taxiRequest.toJson());
     print(key);
+  }
+
+  insertNodeEstimates(estimate, idServiceRequest) async {
+    ServiceRequestEstimatesImpl serviceRequestEstimatesImpl =
+        new ServiceRequestEstimatesImpl();
+    Position position = await Geolocator.getCurrentPosition();
+    var idUser = await sessionsService.getSessionValue('id');
+    EstimateTaxi estimateTaxi = new EstimateTaxi(
+        int.parse(idUser),
+        serviceRequestEstimatesImpl.key,
+        idServiceRequest,
+        estimate,
+        position.latitude,
+        position.longitude,
+        "");
+
+    serviceRequestEstimatesImpl.insertNode(estimateTaxi.toJson()).then((value) {
+      if (value) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => TaxiServiceRequestListPage(),
+          ),
+        );
+      } else
+        print("No se envio");
+    });
   }
 
   Future<void> sendEstiamtes(double cotization) async {
