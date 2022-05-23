@@ -12,7 +12,7 @@ class DialogReason extends StatefulWidget {
 }
 
 class _DialogReasonState extends State<DialogReason> {
-  late String value = "";
+  late String values = "";
   late bool _isVisible = false;
 
   Color colorMain = Color.fromRGBO(255, 193, 7, 1);
@@ -21,12 +21,6 @@ class _DialogReasonState extends State<DialogReason> {
   final _formKey = GlobalKey<FormState>();
   late ViewTaxiRequestFunctionality viewTaxiRequestFunctionality =
       new ViewTaxiRequestFunctionality();
-
-  @override
-  void initState() {
-    super.initState();
-    viewTaxiRequestFunctionality.initFirebase();
-  }
 
   _setRcVisible(bool status) {
     this.setState(() {
@@ -41,14 +35,14 @@ class _DialogReasonState extends State<DialogReason> {
 
     final btnRegister = new CustomButtonWithLinearBorder(
       onTap: () {
-        if (value == "4") {
+        if (values == "4") {
           if (_formKey.currentState!.validate()) {
             viewTaxiRequestFunctionality.sendReasonCancel(reason);
             Navigator.pop(context);
           }
         } else {
           String reasonR = "Accidente";
-          switch (value) {
+          switch (values) {
             case "1":
               reasonR = "Accidente";
               break;
@@ -144,8 +138,8 @@ class _DialogReasonState extends State<DialogReason> {
                   buttonValues: ["1", "2", "3", "4"],
                   defaultSelected: "1",
                   radioButtonValue: (value) {
-                    value = value.toString();
-                    if (value.toString() == "4") {
+                    values = value.toString();
+                    if (values.toString() == "4") {
                       statusRd = true;
                     } else {
                       statusRd = false;
