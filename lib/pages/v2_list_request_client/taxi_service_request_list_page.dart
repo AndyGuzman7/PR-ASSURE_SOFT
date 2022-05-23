@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:taxi_segurito_app/components/buttons/CustomButtonWithLinearBorder.dart';
 import 'package:taxi_segurito_app/models/client_request.dart';
+import 'package:taxi_segurito_app/models/estimate_taxi.dart';
 import 'package:taxi_segurito_app/pages/v2_list_request_client/taxi_service_request_list_functionality.dart';
 import 'package:taxi_segurito_app/pages/v2_list_request_client/request_decision_functionality.dart';
 import 'package:taxi_segurito_app/pages/v2_list_request_client/widgets/request_list.dart';
@@ -19,6 +20,7 @@ class TaxiServiceRequestListPage extends StatefulWidget {
 class _TaxiServiceRequestListPageState
     extends State<TaxiServiceRequestListPage> {
   late List<ClienRequest> listRequest;
+  late List<EstimateTaxi> listEstimates = [];
   late GlobalKey<RefreshIndicatorState> refreshListKey;
   RequestList requestList = new RequestList();
 
@@ -146,25 +148,10 @@ class _TaxiServiceRequestListPageState
   Widget build(BuildContext context) {
     ServiceRequestEstimatesImpl serviceRequestEstimatesImpl =
         new ServiceRequestEstimatesImpl();
-    serviceRequestEstimatesImpl
-        .getConfirmationEvent('-N2Q4-U3vODG1LSsM7_C')
-        .listen((event) {
-      print(event.snapshot.value);
-    });
-    //check if you have requests from the customer user
-    requestDecisionFunctionality.updateStatus = ((value) {
-      setState(() {
-        estadoSolicitud = value;
-      });
-    });
+    listRequestClientFunctionality.showConfirmation = (value) {
+      showAlert(value);
+    };
 
-    //if available display the request confirmation notice
-    if (estadoSolicitud) {
-      ///Future.delayed(Duration.zero, () => showAlert(context));
-      showAlert(context);
-    }
-
-    //requestList.listRequest = listRequest;
     requestList.setCallbak = (ClienRequest value) async {
       print(value.idFirebase);
 
@@ -177,7 +164,8 @@ class _TaxiServiceRequestListPageState
         ),
       );
 
-      print(result);
+      listEstimates.add(result);
+      listRequestClientFunctionality.listenConfirmationClient(listEstimates);
     };
 
     Text title = new Text(
@@ -200,7 +188,7 @@ class _TaxiServiceRequestListPageState
     );
     return Scaffold(
       floatingActionButton: FloatingActionButton(onPressed: () {
-        showAlert(context);
+        //showAlert(context);
       }),
       appBar: appbar,
       body: Container(
@@ -227,64 +215,84 @@ class _TaxiServiceRequestListPageState
     );
   }
 
+  boxData(value) {
+    return new Container(
+      alignment: Alignment.centerLeft,
+      child: value,
+    );
+  }
+
 //AlertDialog confirm request
-  void showAlert(BuildContext context) {
+  void showAlert(EstimateTaxi estimateTaxi) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(25),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(25),
+            ),
           ),
-        ),
-        titleTextStyle: TextStyle(
-          color: Colors.black,
-          fontSize: 18,
-          fontWeight: FontWeight.w700,
-        ),
-        title: Text(
-          "¿Quiere aceptar el servicio?",
-          textAlign: TextAlign.center,
-        ),
-        backgroundColor: Colors.white,
-        content: Row(
-          children: [
-            Expanded(
-              child: CustomButtonWithLinearBorder(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  buttonBorderColor: colorMainNull,
-                  marginBotton: 0,
-                  marginLeft: 0,
-                  marginRight: 0,
-                  marginTop: 0,
-                  buttonText: "Rechazar",
-                  buttonColor: Colors.white,
-                  buttonTextColor: colorMainNull),
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            Expanded(
-              child: CustomButtonWithLinearBorder(
-                  onTap: () {
-                    requestDecisionFunctionality
-                        .updateStatusRequest(idUserTaxista);
-                    Navigator.pop(context);
-                  },
-                  buttonBorderColor: colorMainDanger,
-                  marginBotton: 0,
-                  marginLeft: 0,
-                  marginRight: 0,
-                  marginTop: 0,
-                  buttonText: "Aceptar",
-                  buttonColor: Colors.white,
-                  buttonTextColor: colorMainDanger),
-            ),
-          ],
-        ),
-      ),
+          titleTextStyle: TextStyle(
+            color: Colors.black,
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+          ),
+          title: Text(
+            "Se acepto la cotizacion",
+            textAlign: TextAlign.center,
+          ),
+          backgroundColor: Colors.white,
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              boxData(
+                Text(
+                  'Estimacion: ' + estimateTaxi.estimacion.toString(),
+                ),
+              ),
+              boxData(Text(
+                'Distancia: ' + "23" + ' Km',
+              )),
+              Row(
+                children: [
+                  Expanded(
+                    child: CustomButtonWithLinearBorder(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        buttonBorderColor: colorMainNull,
+                        marginBotton: 0,
+                        marginLeft: 0,
+                        marginRight: 0,
+                        marginTop: 0,
+                        buttonText: "Rechazar",
+                        buttonColor: Colors.white,
+                        buttonTextColor: colorMainNull),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    child: CustomButtonWithLinearBorder(
+                        onTap: () {
+                          requestDecisionFunctionality
+                              .updateStatusRequest(idUserTaxista);
+                          Navigator.pop(context);
+                        },
+                        buttonBorderColor: colorMainDanger,
+                        marginBotton: 0,
+                        marginLeft: 0,
+                        marginRight: 0,
+                        marginTop: 0,
+                        buttonText: "Aceptar",
+                        buttonColor: Colors.white,
+                        buttonTextColor: colorMainDanger),
+                  ),
+                ],
+              ),
+            ],
+          )),
     );
   }
 }
