@@ -122,11 +122,11 @@ class _ClientServiceRequestInformationPageState
       onTap: () {
         if (registerRequest()) {
           FocusScope.of(context).unfocus();
-          taxiRequestFunctionality.insertNodeEstimates(
+          /*taxiRequestFunctionality.insertNodeEstimates(
               double.parse(
                 fieldPrice.getValue(),
               ),
-              widget.serviceRequestId);
+              widget.serviceRequestId);*/
         }
       },
       buttonText: "Enviar",
