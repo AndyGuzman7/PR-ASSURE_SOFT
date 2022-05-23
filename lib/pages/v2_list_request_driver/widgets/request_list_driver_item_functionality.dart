@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:taxi_segurito_app/models/estimate_taxi.dart';
+import 'package:taxi_segurito_app/pages/v2_request_client_info_estimates/nameGalleryStateConfirmation.dart';
 import 'package:taxi_segurito_app/strategis/firebase/implementation/request_taxi_impl.dart';
+import 'package:taxi_segurito_app/strategis/firebase/implementation/service_request_estimates_impl.dart';
 
 class RequestListItemFunctionality {
   late BuildContext context;
@@ -28,17 +30,21 @@ class RequestListItemFunctionality {
   }
 
   confirmationEstimate(key) {
-    RequestTaxiImpl requestTaxiImpl = new RequestTaxiImpl();
-    requestTaxiImpl.updateNode(key).then((value) {
+    ServiceRequestEstimatesImpl serviceRequestEstimatesImpl =
+        new ServiceRequestEstimatesImpl();
+    serviceRequestEstimatesImpl
+        .confirmateEstimate(key, NameGalleryStateConfirmation.CONFIRMADO)
+        .then((value) {
       print(value);
       if (value) showSnackBar(context);
     });
   }
 
   showSnackBar(contex) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text('Confirmacion Enviada'),
-    ),);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Confirmacion Enviada'),
+      ),
+    );
   }
- 
 }

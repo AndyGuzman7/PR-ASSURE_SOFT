@@ -121,6 +121,7 @@ class _ClientServiceRequestInformationPageState
     final btnSendEstimates = new CustomButton(
       onTap: () {
         if (registerRequest()) {
+          FocusScope.of(context).unfocus();
           taxiRequestFunctionality.insertNodeEstimates(
               double.parse(
                 fieldPrice.getValue(),

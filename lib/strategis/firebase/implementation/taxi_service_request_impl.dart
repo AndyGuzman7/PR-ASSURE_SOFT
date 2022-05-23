@@ -49,7 +49,7 @@ class TaxiServiceRequestImpl extends ITaxiServiceRequest {
                   .reference()
                   .child(NodeNameGallery.TAXISERVICEREQUESTLIST + "/$key")
                   .once())
-              .value;
+              .values;
 
           if (clienRequest == null) success = true;
         },

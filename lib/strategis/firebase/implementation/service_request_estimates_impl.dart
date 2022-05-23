@@ -57,4 +57,54 @@ class ServiceRequestEstimatesImpl extends IServiceRequestEstimates {
       );
     return listEstimates;
   }
+
+  @override
+  Stream<Event> getConfirmationEvent(idFirebase) {
+    return connection
+        .reference()
+        .child(NodeNameGallery.SERVICEREQUESTESTIMATELIST)
+        .child(idFirebase)
+        .child('estado')
+        .onValue;
+  }
+
+  @override
+  Future<bool> cancelEstimate(value, motivo, status) async {
+    bool success = false;
+    try {
+      await connection
+          .reference()
+          .child(NodeNameGallery.SERVICEREQUESTESTIMATELIST)
+          .child(value)
+          .update({'estado': status, 'motivoCancelacion': motivo}).then(
+        (_) async {
+          success = true;
+        },
+      );
+      return success;
+    } catch (e) {
+      log(e.toString());
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> confirmateEstimate(value, status) async {
+    bool success = false;
+    try {
+      await connection
+          .reference()
+          .child(NodeNameGallery.SERVICEREQUESTESTIMATELIST)
+          .child(value)
+          .update({'estado': status}).then(
+        (_) async {
+          success = true;
+        },
+      );
+      return success;
+    } catch (e) {
+      log(e.toString());
+      return false;
+    }
+  }
 }

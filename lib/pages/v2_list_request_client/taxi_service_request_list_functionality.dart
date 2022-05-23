@@ -1,6 +1,10 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:location/location.dart';
 import 'package:taxi_segurito_app/models/client_request.dart';
+import 'package:taxi_segurito_app/models/estimate_taxi.dart';
+import 'package:taxi_segurito_app/pages/v2_request_client_info_estimates/nameGalleryStateConfirmation.dart';
+import 'package:taxi_segurito_app/strategis/firebase/implementation/service_request_estimates_impl.dart';
 import 'package:taxi_segurito_app/strategis/firebase/implementation/taxi_service_request_impl.dart';
 
 class TaxiServiceRequestListPageFunctionality {
@@ -11,9 +15,12 @@ class TaxiServiceRequestListPageFunctionality {
   late PermissionStatus _permissionGranted;
   late LocationData locationData;
   TaxiServiceRequestImpl taxiServiceRequestImpl = new TaxiServiceRequestImpl();
+  ServiceRequestEstimatesImpl serviceRequestEstimatesImpl =
+      new ServiceRequestEstimatesImpl();
   late double latitudTaxi;
   late double longitudTaxi;
   late Function(List<ClienRequest>) updateListRequest;
+  late Function(EstimateTaxi) showConfirmation;
 
   TaxiServiceRequestListPageFunctionality();
 
@@ -22,8 +29,6 @@ class TaxiServiceRequestListPageFunctionality {
       listRequest2 = [];
 
       taxiServiceRequestImpl.getNodeEvent().listen((event) {
-        //print(event.snapshot.value);
-        //listRequest2 =
         listRequest2 = filtreRequestClientZoneRange(
             taxiServiceRequestImpl.convertJsonList(event));
         updateListRequest(listRequest2);
@@ -33,6 +38,24 @@ class TaxiServiceRequestListPageFunctionality {
       });
     } catch (e) {
       print(e);
+    }
+  }
+
+  void listenConfirmationClient(list) {
+    for (EstimateTaxi item in list) {
+      serviceRequestEstimatesImpl = new ServiceRequestEstimatesImpl();
+      serviceRequestEstimatesImpl
+          .getConfirmationEvent(item.idFirebase)
+          .listen((event) {
+        listenEvent(event, item);
+      });
+    }
+  }
+
+  listenEvent(event, EstimateTaxi estimateTaxi) {
+    DataSnapshot snapshot = event.snapshot;
+    if (snapshot.value == NameGalleryStateConfirmation.CONFIRMADO) {
+      showConfirmation(estimateTaxi);
     }
   }
 
