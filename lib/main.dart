@@ -1,14 +1,11 @@
 //import 'dart:html';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:async';
-import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_geofence/geofence.dart';
 import 'package:taxi_segurito_app/SRC/providers/push_notifications_provider.dart';
 import 'package:taxi_segurito_app/pages/contacList/list_contact.dart';
 import 'package:taxi_segurito_app/pages/menu/driver_menu.dart';
@@ -16,6 +13,7 @@ import 'package:taxi_segurito_app/pages/v2_list_request_client/taxi_service_requ
 import 'package:taxi_segurito_app/pages/v2_list_request_driver/taxi_services_estimate_list_page.dart';
 import 'package:taxi_segurito_app/pages/v2_request_client_info_estimates/client_service_request_information_page.dart';
 import 'package:taxi_segurito_app/pages/v2_taxi_request/taxi_request_page.dart';
+import 'package:taxi_segurito_app/pages/v2_view_taxi_request/dialog_reason.dart';
 
 import 'package:taxi_segurito_app/pages/vehicle_screen/vehicle_edit_screen.dart';
 import 'package:taxi_segurito_app/pages/vehicle_screen/vehicle_register_screen.dart';
@@ -37,9 +35,6 @@ import './pages/vehiclesList/VehiclesListPage.dart';
 import './pages/historyReview/HistoryReview.dart';
 import './models/vehicle.dart';
 import './models/providers/HttpProvider.dart';
-import 'package:firebase_database/firebase_database.dart';
-
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -103,6 +98,7 @@ class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
         'taxiServicesEstimateListPage': (BuildContext contextss) =>
             TaxiServicesEstimateListPage(idRequest: "-N1vLO9946XQ4MXqRkys"),
         'loginUser': (_) => UserLoginPage(),
+        'dialogReason': (_) => DialogReason(),
         'listRequestClient': (_) => TaxiServiceRequestListPage(),
         'taxiRequestScreen': (_) => TaxiRequestPage(),
         'registerScreen': (_) => RegisterPage(),

@@ -10,12 +10,10 @@ class ViewTaxiRequestFunctionality {
   }
 
   //Update data status Request
-  Future<void> updateStatusRequest(String idRequest, String reason) async {
-    dbRef
-        .reference()
-        .child("RequestPruebas")
-        .child(idRequest)
-        .update({'estado': 'cancelado', 'motivo': reason});
+  Future<void> updateStatusRequest(String reason) async {
+    dbRef.reference().child("RequestPruebas").child(key).update(
+      {'estado': 'cancelado', 'motivo': reason},
+    );
   }
 
   void getInstance() {

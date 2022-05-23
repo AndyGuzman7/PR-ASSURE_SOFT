@@ -12,14 +12,14 @@ class DialogReason extends StatefulWidget {
 }
 
 class _DialogReasonState extends State<DialogReason> {
-  String val = "";
-  bool _isVisible = false;
+  late String value = "";
+  late bool _isVisible = false;
 
   Color colorMain = Color.fromRGBO(255, 193, 7, 1);
   Color colorMainDanger = Color.fromRGBO(242, 78, 30, 1);
 
   final _formKey = GlobalKey<FormState>();
-  ViewTaxiRequestFunctionality viewTaxiRequestFunctionality =
+  late ViewTaxiRequestFunctionality viewTaxiRequestFunctionality =
       new ViewTaxiRequestFunctionality();
 
   @override
@@ -41,16 +41,14 @@ class _DialogReasonState extends State<DialogReason> {
 
     final btnRegister = new CustomButtonWithLinearBorder(
       onTap: () {
-        if (val == "4") {
+        if (value == "4") {
           if (_formKey.currentState!.validate()) {
-            print('Motivo: $reason');
-            viewTaxiRequestFunctionality.updateStatusRequest(
-                "-N27OwQkl7LCbHRrytzz", reason);
+            viewTaxiRequestFunctionality.updateStatusRequest(reason);
             Navigator.pop(context);
           }
         } else {
           String reasonR = "Accidente";
-          switch (val) {
+          switch (value) {
             case "1":
               reasonR = "Accidente";
               break;
@@ -61,9 +59,8 @@ class _DialogReasonState extends State<DialogReason> {
               reasonR = "Sin combustible";
               break;
           }
-          print('Motivo: $reasonR');
-          viewTaxiRequestFunctionality.updateStatusRequest(
-              "-N27OwQkl7LCbHRrytzz", reasonR);
+
+          viewTaxiRequestFunctionality.updateStatusRequest(reasonR);
           Navigator.pop(context);
         }
       },
@@ -147,7 +144,7 @@ class _DialogReasonState extends State<DialogReason> {
                   buttonValues: ["1", "2", "3", "4"],
                   defaultSelected: "1",
                   radioButtonValue: (value) {
-                    val = value.toString();
+                    value = value.toString();
                     if (value.toString() == "4") {
                       statusRd = true;
                     } else {
@@ -156,7 +153,6 @@ class _DialogReasonState extends State<DialogReason> {
                     setState(() {
                       _setRcVisible(statusRd);
                     });
-                    print(val);
                   },
                   selectedColor: colorMain,
                   selectedBorderColor: colorMain,
