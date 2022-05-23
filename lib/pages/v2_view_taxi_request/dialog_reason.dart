@@ -43,7 +43,7 @@ class _DialogReasonState extends State<DialogReason> {
       onTap: () {
         if (value == "4") {
           if (_formKey.currentState!.validate()) {
-            viewTaxiRequestFunctionality.updateStatusRequest(reason);
+            viewTaxiRequestFunctionality.sendReasonCancel(reason);
             Navigator.pop(context);
           }
         } else {
@@ -60,7 +60,7 @@ class _DialogReasonState extends State<DialogReason> {
               break;
           }
 
-          viewTaxiRequestFunctionality.updateStatusRequest(reasonR);
+          viewTaxiRequestFunctionality.sendReasonCancel(reasonR);
           Navigator.pop(context);
         }
       },
