@@ -45,7 +45,7 @@ class _DialogReasonState extends State<DialogReason> {
         if (val == "4") {
           if (_formKey.currentState!.validate()) {
             print('Motivo: $reason');
-            viewTaxiRequestFunctionality.updateStatusRequest(
+            viewTaxiRequestFunctionality.sendReasonCancel(
                 "-N27OwQkl7LCbHRrytzz", reason);
             Navigator.pop(context);
           }
@@ -63,7 +63,7 @@ class _DialogReasonState extends State<DialogReason> {
               break;
           }
           print('Motivo: $reasonR');
-          viewTaxiRequestFunctionality.updateStatusRequest(
+          viewTaxiRequestFunctionality.sendReasonCancel(
               "-N27OwQkl7LCbHRrytzz", reasonR);
           Navigator.pop(context);
         }
