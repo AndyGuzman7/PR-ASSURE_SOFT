@@ -9,8 +9,8 @@ class ViewTaxiRequestFunctionality {
     dbRef = FirebaseDatabase.instance.reference();
   }
 
-  //Update data status Request
-  Future<void> updateStatusRequest(String idRequest, String reason) async {
+  //Send data reason cancel
+  Future<void> sendReasonCancel(String idRequest, String reason) async {
     dbRef
         .reference()
         .child("RequestPruebas")

@@ -39,6 +39,7 @@ class _DialogReasonState extends State<DialogReason> {
     bool statusRd = false;
     String reason = "";
 
+    //Send reason to Firebase
     final btnRegister = new CustomButtonWithLinearBorder(
       onTap: () {
         if (val == "4") {
@@ -77,6 +78,7 @@ class _DialogReasonState extends State<DialogReason> {
       marginTop: 10,
     );
 
+    //Text Reason
     TextFormField textFormField = TextFormField(
       maxLines: null, //wrap text
       maxLength: 70,
@@ -103,6 +105,7 @@ class _DialogReasonState extends State<DialogReason> {
       ),
     );
 
+    //Dialog to cancel the service
     return Dialog(
       child: SingleChildScrollView(
         child: Padding(
