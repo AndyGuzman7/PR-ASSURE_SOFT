@@ -1,37 +1,20 @@
-import 'package:firebase_database/firebase_database.dart';
+import 'package:taxi_segurito_app/pages/v2_request_client_info_estimates/nameGalleryStateConfirmation.dart';
 import 'package:taxi_segurito_app/strategis/firebase/implementation/service_request_estimates_impl.dart';
 
 class ViewTaxiRequestFunctionality {
-  late final dbRef;
-  late String key;
   ServiceRequestEstimatesImpl serviceRequestEstimatesImpl =
       new ServiceRequestEstimatesImpl();
   ViewTaxiRequestFunctionality();
-  void initFirebase() {
-    dbRef = FirebaseDatabase.instance.reference();
-  }
 
-  void sendReasonCancel(motivo) {
+  void sendReasonCancel(idFirebase, motivo) {
     //value, motivo, status
     serviceRequestEstimatesImpl
-        .updateStatus("-N2Q6GQdFTS1ssytbuBj", motivo, "cancelado")
+        .cancelEstimate(
+            idFirebase, motivo, NameGalleryStateConfirmation.CANCELADO)
         .then(
           (value) => {
             print("Se inserto con exito"),
           },
         );
-  }
-
-  //Send data reason cancel
-  /*Future<void> sendReasonCancel(String reason) async {
-    dbRef
-        .reference()
-        .child("RequestPruebas")
-        .child(key)
-        .update({'estado': 'cancelado', 'motivo': reason});
-  }*/
-
-  void getInstance() {
-    return dbRef;
   }
 }

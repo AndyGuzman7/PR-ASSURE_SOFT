@@ -5,7 +5,8 @@ import 'package:taxi_segurito_app/components/buttons/CustomButtonWithLinearBorde
 import 'package:taxi_segurito_app/pages/v2_view_taxi_request/view_taxi_request_functionality.dart';
 
 class DialogReason extends StatefulWidget {
-  const DialogReason({Key? key}) : super(key: key);
+  String idFirebase;
+  DialogReason({Key? key, required this.idFirebase}) : super(key: key);
 
   @override
   _DialogReasonState createState() => _DialogReasonState();
@@ -37,7 +38,8 @@ class _DialogReasonState extends State<DialogReason> {
       onTap: () {
         if (values == "4") {
           if (_formKey.currentState!.validate()) {
-            viewTaxiRequestFunctionality.sendReasonCancel(reason);
+            viewTaxiRequestFunctionality.sendReasonCancel(
+                widget.idFirebase, reason);
             Navigator.pop(context);
           }
         } else {
@@ -54,7 +56,8 @@ class _DialogReasonState extends State<DialogReason> {
               break;
           }
 
-          viewTaxiRequestFunctionality.sendReasonCancel(reasonR);
+          viewTaxiRequestFunctionality.sendReasonCancel(
+              widget.idFirebase, reasonR);
           Navigator.pop(context);
         }
       },

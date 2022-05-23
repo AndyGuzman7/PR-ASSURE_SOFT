@@ -6,36 +6,20 @@ import 'package:location/location.dart';
 import 'package:taxi_segurito_app/models/estimate_taxi.dart';
 import 'package:taxi_segurito_app/pages/v2_list_request_client/taxi_service_request_list_page.dart';
 import 'package:taxi_segurito_app/pages/v2_list_request_driver/taxi_services_estimate_list_page.dart';
+import 'package:taxi_segurito_app/pages/v2_request_client_info_estimates/nameGalleryStateConfirmation.dart';
 import 'package:taxi_segurito_app/services/sessions_service.dart';
 import 'package:taxi_segurito_app/strategis/firebase/implementation/service_request_estimates_impl.dart';
 
 class ClientServiceRequestInformationFunctionality {
   var idTaxi;
   SessionsService sessionsService = new SessionsService();
-  late final nameBranch = "RequestTaxi";
-  late final dbRef;
-  late String key;
+
   late Location location = new Location();
   late BuildContext context;
 
   Function(String)? updateData;
 
   ClientServiceRequestInformationFunctionality();
-  void initFirebase() {
-    dbRef = FirebaseDatabase.instance.reference();
-
-    key = dbRef.reference().child(nameBranch).push().key.toString();
-  }
-
-  void update(value) {
-    updateData!(value);
-  }
-
-  Future<void> sendRequest(EstimateTaxi taxiRequest) async {
-    taxiRequest.idFirebase = key;
-    dbRef.reference().child(nameBranch).child(key).set(taxiRequest.toJson());
-    print(key);
-  }
 
   insertNodeEstimates(estimate, idServiceRequest) async {
     ServiceRequestEstimatesImpl serviceRequestEstimatesImpl =
@@ -44,6 +28,7 @@ class ClientServiceRequestInformationFunctionality {
     var idUser = await sessionsService.getSessionValue('id');
     EstimateTaxi estimateTaxi = new EstimateTaxi(
         int.parse(idUser),
+        NameGalleryStateConfirmation.SINCONFIRMAR,
         serviceRequestEstimatesImpl.key,
         idServiceRequest,
         estimate,
@@ -53,40 +38,14 @@ class ClientServiceRequestInformationFunctionality {
 
     serviceRequestEstimatesImpl.insertNode(estimateTaxi.toJson()).then((value) {
       if (value) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => TaxiServiceRequestListPage(),
-          ),
-        );
+        Navigator.pop(context, estimateTaxi);
       } else
         print("No se envio");
     });
   }
 
-  Future<void> sendEstiamtes(double cotization) async {
-    Position position = await Geolocator.getCurrentPosition();
-    getIdSessionIdTaxi();
-    idTaxi = await sessionsService.getSessionValue("id");
-    EstimateTaxi estimateTaxi = new EstimateTaxi(
-        int.parse(idTaxi),
-        key,
-        "-N1vLO9946XQ4MXqRkys",
-        cotization,
-        position.latitude,
-        position.longitude,
-        "");
-
-    dbRef.reference().child(nameBranch).child(key).set(estimateTaxi.toJson());
-    //print(key);
-  }
-
   Future<void> getIdSessionIdTaxi() async {
     idTaxi = await sessionsService.getSessionValue("id");
     print(idTaxi);
-  }
-
-  void getInstance() {
-    return dbRef;
   }
 }
