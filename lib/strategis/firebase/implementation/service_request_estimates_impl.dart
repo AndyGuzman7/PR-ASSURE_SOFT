@@ -57,4 +57,32 @@ class ServiceRequestEstimatesImpl extends IServiceRequestEstimates {
       );
     return listEstimates;
   }
+
+/**
+ *  dbRef
+        .reference()
+        .child("RequestPruebas")
+        .child(key)
+        .update({'estado': 'cancelado', 'motivo': reason});
+ */
+
+  @override
+  Future<bool> updateStatus(value, motivo, status) async {
+    bool success = false;
+    try {
+      await connection
+          .reference()
+          .child(NodeNameGallery.SERVICEREQUESTESTIMATELIST)
+          .child(value)
+          .update({'estado': status, 'motivo': motivo}).then(
+        (_) async {
+          success = true;
+        },
+      );
+      return success;
+    } catch (e) {
+      log(e.toString());
+      return false;
+    }
+  }
 }

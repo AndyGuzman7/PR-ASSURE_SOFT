@@ -15,27 +15,28 @@ class CustomTextFieldArea extends StatefulWidget {
   double marginBotton;
   double marginTop;
   MultiValidator? multiValidator;
-  
+
   int maxLines;
   //MultiValidator multiValidator;
   double heightNum;
   bool obscureText;
-  _CustomTextFieldAreaState _customTextFieldState = new _CustomTextFieldAreaState();
-  CustomTextFieldArea({
-    Key? key,
-    this.hint = "Campo de text",
-    this.marginLeft = 50,
-    this.marginRight = 50,
-    this.marginTop = 5,
-    this.marginBotton = 5,
-    this.heightNum = 35,
-    this.obscureText = false,
-    this.maxLines = 1,
-    this.multiValidator
+  _CustomTextFieldAreaState _customTextFieldState =
+      new _CustomTextFieldAreaState();
+  CustomTextFieldArea(
+      {Key? key,
+      this.hint = "Campo de texto",
+      this.marginLeft = 50,
+      this.marginRight = 50,
+      this.marginTop = 5,
+      this.marginBotton = 5,
+      this.heightNum = 35,
+      this.obscureText = false,
+      this.maxLines = 1,
+      this.multiValidator
 
-    
-    //required this.multiValidator,
-  }) : super(key: key);
+      //required this.multiValidator,
+      })
+      : super(key: key);
 
   @override
   State<CustomTextFieldArea> createState() {
@@ -80,11 +81,9 @@ class _CustomTextFieldAreaState extends State<CustomTextFieldArea> {
                   changeHeightTextField(5);
                   return validator.errorText;
                 } else {
-                  
                   return null;
                 }
               }
-            
             },
             textAlignVertical: TextAlignVertical.center,
             controller: valueController,
