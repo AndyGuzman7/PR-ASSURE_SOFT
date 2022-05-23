@@ -21,6 +21,7 @@ environment:
   sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
+  custom_radio_grouped_button: any
   google_sign_in: ^5.1.0
   google_maps_flutter:
   firebase_messaging:
