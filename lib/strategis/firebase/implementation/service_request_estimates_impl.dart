@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'dart:ffi';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:taxi_segurito_app/models/estimate_taxi.dart';
@@ -70,7 +69,7 @@ class ServiceRequestEstimatesImpl extends IServiceRequestEstimates {
   }
 
   @override
-  Future<bool> updateStatus(value, motivo, status) async {
+  Future<bool> cancelEstimate(value, motivo, status) async {
     bool success = false;
     try {
       await connection
@@ -78,6 +77,26 @@ class ServiceRequestEstimatesImpl extends IServiceRequestEstimates {
           .child(NodeNameGallery.SERVICEREQUESTESTIMATELIST)
           .child(value)
           .update({'estado': status, 'motivoCancelacion': motivo}).then(
+        (_) async {
+          success = true;
+        },
+      );
+      return success;
+    } catch (e) {
+      log(e.toString());
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> confirmateEstimate(value, status) async {
+    bool success = false;
+    try {
+      await connection
+          .reference()
+          .child(NodeNameGallery.SERVICEREQUESTESTIMATELIST)
+          .child(value)
+          .update({'estado': status}).then(
         (_) async {
           success = true;
         },
