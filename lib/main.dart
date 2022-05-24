@@ -45,6 +45,17 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Firebase.initializeApp();
 
+  FlutterLocalNotificationsPlugin plugin = FlutterLocalNotificationsPlugin();
+  const AndroidInitializationSettings settings = AndroidInitializationSettings('@mipmap/ic_launcher');
+  final IOSInitializationSettings iosSettings = IOSInitializationSettings();
+  final MacOSInitializationSettings macSettings = MacOSInitializationSettings();
+  final InitializationSettings initialization = InitializationSettings(
+    android: settings,
+    iOS: iosSettings,
+    macOS: macSettings
+    
+  );
+  
   HttpOverrides.global = new HttpProvider();
   SessionsService sessions = SessionsService();
   bool idsession = await sessions.verificationSession('id');

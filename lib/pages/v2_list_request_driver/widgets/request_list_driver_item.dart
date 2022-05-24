@@ -33,8 +33,7 @@ class _RequestListItemState extends State<RequestListItemDriver> {
     //evento donde se envia el mensaje de confirmado al taxista
     final btnAceptar = new CustomButtonWithLinearBorder(
       onTap: () {
-        requestListItemFunctionality
-            .confirmationEstimate(widget.driverRequest!.idRequestTaxiFirebase);
+        requestListItemFunctionality.confirmationEstimate(widget.driverRequest!.idRequestTaxiFirebase);
         Navigator.pop(context);
       },
       buttonText: "Si",
