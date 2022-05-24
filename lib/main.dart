@@ -19,6 +19,7 @@ import 'package:taxi_segurito_app/pages/v2_taxi_request/taxi_request_page.dart';
 
 import 'package:taxi_segurito_app/pages/vehicle_screen/vehicle_edit_screen.dart';
 import 'package:taxi_segurito_app/pages/vehicle_screen/vehicle_register_screen.dart';
+import 'package:workmanager/workmanager.dart';
 
 import './pages/driver_register/driver_register.dart';
 import './pages/main_window/main_window.dart';
@@ -38,8 +39,8 @@ import './pages/historyReview/HistoryReview.dart';
 import './models/vehicle.dart';
 import './models/providers/HttpProvider.dart';
 import 'package:firebase_database/firebase_database.dart';
-
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -55,7 +56,26 @@ void main() async {
     macOS: macSettings
     
   );
-  
+
+  await plugin.initialize(
+    initialization,
+    onSelectNotification: selectNotification
+  );
+
+  Workmanager().initialize(
+    callBackTask,
+    isInDebugMode: true,
+    
+  );
+
+  Workmanager().registerPeriodicTask(
+    "10",
+    "Key",
+    frequency: Duration(minutes: 10),
+    
+  );
+
+
   HttpOverrides.global = new HttpProvider();
   SessionsService sessions = SessionsService();
   bool idsession = await sessions.verificationSession('id');
@@ -77,6 +97,50 @@ void main() async {
     }
   }
   runApp(app);
+}
+
+//metodo para enviar notificaciones mediante workmanager
+void callBackTask(){
+  Workmanager().executeTask((tarea, datos) async {
+    if(tarea=="Key")
+    {
+      final FlutterLocalNotificationsPlugin notificacion = FlutterLocalNotificationsPlugin();
+
+      const AndroidNotificationDetails notificationDetails = AndroidNotificationDetails(
+        'id',
+        'Notificacion1',
+        channelDescription: 'Notificacion ejemplo',
+        importance: Importance.max,
+        priority: Priority.high,
+        showProgress: true,
+        showWhen: false,
+      
+      );
+
+      const NotificationDetails details = NotificationDetails(
+        android: notificationDetails
+      );
+
+      await notificacion.show(
+        1,
+        'Envio Simulacion',
+        'Es una simulacion work manager',
+        details,
+        payload: 'Mensaje'
+      );
+    }
+    return Future.value(true);
+    
+  });
+}
+
+//envio de notificacion
+Future selectNotification(payload) async {
+  if (payload!=null){
+    debugPrint("Notificacion: $payload");
+    print("Notificacion Envio: ${DateTime.now()}" + " " + payload);
+
+  }
 }
 
 class AppTaxiSegurito extends StatefulWidget {
