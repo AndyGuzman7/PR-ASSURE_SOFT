@@ -3,9 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:location/location.dart';
-import 'package:sms_advanced/sms_advanced.dart';
 
-import '../../strategis/firebase/implementation/send_ubication_driver.dart';
+import '../../../strategis/firebase/implementation/send_ubication_driver.dart';
 
 class SendMyUbication extends StatefulWidget {
   @override
@@ -17,13 +16,16 @@ class _SendMyUbication extends State<SendMyUbication>
   SendLocationDriver sendLocation = SendLocationDriver();
   var locationMess = "";
   final Location location = Location();
-
+  SendLocationDriver sendLocationDriver = new SendLocationDriver();
   StreamSubscription<LocationData>? _locationSubs;
 
+  //GetLocation obtains the location of the taxi driver 
+  //requesting the corresponding permits
   _getLocation() async {
     bool _serviceEnabled;
     PermissionStatus _permissionGranted;
 
+    //Permits getting
     _serviceEnabled = await location.serviceEnabled();
     if (!_serviceEnabled) {
       _serviceEnabled = await location.requestService();
@@ -39,8 +41,9 @@ class _SendMyUbication extends State<SendMyUbication>
         return;
       }
     }
+
+    //Result It is assigned to variable string locationMess
     final LocationData _locResult = await location.getLocation();
-    //sendLocation.insertNode(currentLocation.altitude);
     setState(() {
       locationMess = _locResult.latitude.toString() +
           " \n" +
@@ -48,13 +51,20 @@ class _SendMyUbication extends State<SendMyUbication>
     });
   }
 
+  //Future<void> _listenLocation()
+  //listen to the location of the taxi driver 
+  //and then transfer the data to firebase and 
+  //can be consumed elsewhere
   Future<void> _listenLocation() async {
+
+    //activate Background mode, if the user exit the application
     location.enableBackgroundMode(enable: true);
+    //IN CASE AN ERROR OCCURS
     _locationSubs = location.onLocationChanged.handleError((onError) {
       _locationSubs?.cancel();
       setState(() {
         _locationSubs = null;
-      });
+      }); //ELSE
     }).listen((LocationData currentLocation) async {
       setState(() {
         print(currentLocation.latitude.toString() +
@@ -64,10 +74,15 @@ class _SendMyUbication extends State<SendMyUbication>
         locationMess = currentLocation.latitude.toString() +
             " \n" +
             currentLocation.longitude.toString();
+        sendLocationDriver
+            .insertNode(currentLocation)
+            .then((value) => print(value));
       });
     });
   }
 
+  //StopListening():
+  //stopping the service once the taxi driver's service is finished
   _stopListening() {
     _locationSubs?.cancel();
     location.enableBackgroundMode(enable: false);
@@ -77,31 +92,25 @@ class _SendMyUbication extends State<SendMyUbication>
     });
   }
 
+  
+  //when initialize the widget
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    //Controls for clycle life
     WidgetsBinding.instance!.addObserver(this);
-
     _getLocation();
   }
-
-  @override
-  void deactivate() {
-    super.deactivate();
-    print('Se salio :v 2');
-  }
-
+  //when close the widget
   @override
   void dispose() {
-    // TODO: implement dispose
 
     super.dispose();
-    print('Se salio :v');
-
-    //WidgetsBinding.instance!.removeObserver(this);
+    print('Salir');
+    //remove the controls for clycle life
+    WidgetsBinding.instance!.removeObserver(this);
   }
-
+  //Events for controls of widget cycle life
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     print("Location: " + state.name.toString());
@@ -113,12 +122,7 @@ class _SendMyUbication extends State<SendMyUbication>
     }
     if (state == AppLifecycleState.resumed) {
       // GeofenceService.instance.setup(...);
-      print('nuevamente');
-    }
-    if (state == AppLifecycleState.detached) {
-      //GeofenceService.instance.setup(...);
-      print('se detuvo2');
-      //_listenLocation();
+      print('vuelve a entrar a la aplicacion');
     }
   }
 
@@ -140,7 +144,7 @@ class _SendMyUbication extends State<SendMyUbication>
                 onPressed: () {
                   _stopListening();
                 },
-                child: Text('STOP'))
+                child: Text('STOP')),
           ],
         ),
       ),

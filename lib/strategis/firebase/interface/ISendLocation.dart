@@ -1,5 +1,7 @@
+import 'package:location/location.dart';
+
 abstract class ISendLocation {
-  bool insertNode(value);
+  Future<bool> insertNode(LocationData current);
 
   Future<bool> updateNode(value);
 }

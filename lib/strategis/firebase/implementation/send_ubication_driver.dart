@@ -1,9 +1,8 @@
+import 'package:location/location.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:taxi_segurito_app/strategis/firebase/implementation/firebaseConnection.dart';
 import 'package:taxi_segurito_app/strategis/firebase/interface/ISendLocation.dart';
 import 'package:taxi_segurito_app/strategis/firebase/nodeNameGallery.dart';
-
-
 
 class SendLocationDriver implements ISendLocation {
   late String key;
@@ -15,27 +14,27 @@ class SendLocationDriver implements ISendLocation {
   }
 
   @override
-  bool insertNode(value) {
-    // TODO: implement insertNode
-    bool success = false;
+  Future<bool> updateNode(value) {
+    // TODO: implement updateNode
+    throw UnimplementedError();
+  }
 
+  @override
+  Future<bool> insertNode(LocationData current) async {
+    bool success = false;
     try {
-      connection
-          .referen()
+      await connection
+          .reference()
           .child(NodeNameGallery.SENDMYUBICATIONDRIVER)
           .child(key)
-          .set(value)
-          .then((data) => {success = true});
+          .set({
+        'latitude': current.latitude,
+        'longitude': current.longitude
+      }).then((data) => {success = true});
       return success;
     } catch (ex) {
       print(ex);
       return false;
     }
-  }
-
-  @override
-  Future<bool> updateNode(value) {
-    // TODO: implement updateNode
-    throw UnimplementedError();
   }
 }
