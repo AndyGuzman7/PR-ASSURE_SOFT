@@ -40,6 +40,8 @@ import 'package:firebase_database/firebase_database.dart';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+import 'pages/menu/menu_client.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Firebase.initializeApp();
@@ -97,7 +99,7 @@ class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
       title: "Taxi Segurito",
       theme: ThemeData(primarySwatch: Colors.amber),
       debugShowCheckedModeBanner: false,
-      initialRoute: routeInitial,
+      initialRoute: 'clientMenu',
       routes: {
         'taxiServicesEstimateListPage': (BuildContext contextss) =>
             TaxiServicesEstimateListPage(
@@ -112,6 +114,7 @@ class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
         'firstScreen': (_) => MainWindow(),
         'scannerQr': (_) => ScannerQrPage(name: this.sessionName),
         'ownerMenu': (_) => OwnerMenu(name: this.sessionName),
+        'clientMenu': (_) => ClientMenu(name: this.sessionName),
         'adminMenu': (_) => AdminMenu(name: this.sessionName),
         'driverMenu': (_) => DriverMenu(name: this.sessionName),
         'driverList': (_) => DriversListPage(),
