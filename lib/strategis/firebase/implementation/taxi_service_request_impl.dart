@@ -132,6 +132,34 @@ class TaxiServiceRequestImpl extends ITaxiServiceRequest {
     }
   }
 
+  //Get the id of ServiceRequestEstimateList looking for the id from the node TaxiServiceRequestLis
+  Future<String> getIdRequest(String? idRequest) async {
+    String idEstimate = "";
+
+    await connection
+        .reference()
+        .child(NodeNameGallery.SERVICEREQUESTESTIMATELIST)
+        .once()
+        .then((value) {
+      DataSnapshot dataSnapshot = value;
+      final extractedData = dataSnapshot.value;
+      print(extractedData);
+      if (extractedData != null)
+        extractedData.forEach(
+          (blogId, blogData) {
+            String idTaxiRequest = blogData['idTaxiServiceRequest'];
+            //if (idTaxiRequest == idRequest) {
+            if (idTaxiRequest == '-N2xskfYO0f8o-QTxJrr') {
+              idEstimate = blogId.toString();
+              print(idEstimate);
+            }
+          },
+        );
+    });
+
+    return idEstimate;
+  }
+
   /** Future<DataSnapshot> getRequest() async {
     String? requestID = widget.serviceRequestId;
 
