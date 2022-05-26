@@ -33,6 +33,7 @@ class _DriverUpdateFormState extends State<DriverUpdateForm> {
       fieldCi,
       fieldLicense,
       fieldCellphone,
+      fieldEmail,
       iddriver;
   late ImagesFileAdapter fieldImage;
 
@@ -43,6 +44,7 @@ class _DriverUpdateFormState extends State<DriverUpdateForm> {
     widget._driver.ci = fieldCi.getValue();
     widget._driver.pictureStr = fieldImage.getImageBase64();
     widget._driver.picture = base64Decode(fieldImage.getImageBase64());
+    widget._driver.email = fieldEmail.getValue();
     return widget._driver;
   }
 
@@ -67,6 +69,9 @@ class _DriverUpdateFormState extends State<DriverUpdateForm> {
 
     fieldCi = new CustomTextField(
       hint: widget._driver.ci,
+      readOnly: true,
+      fillColor: Color(0xFFCDCDC8),
+      filled: true,
       multiValidator: MultiValidator([
         RequiredValidator(errorText: 'Número de carnet requerido'),
         NumberValidator(errorText: 'No puede ingresar letras')
@@ -101,6 +106,20 @@ class _DriverUpdateFormState extends State<DriverUpdateForm> {
       value: widget._driver.cellphone,
     );
 
+    fieldEmail = new CustomTextField(
+      hint: widget._driver.cellphone,
+      readOnly: true,
+      fillColor: Color(0xFFCDCDC8),
+      filled: true,
+      multiValidator: MultiValidator([
+        RequiredValidator(errorText: 'Email requerido')
+      ]),
+      marginLeft: 0,
+      marginRight: 0,
+      heightNum: 42,
+      value: widget._driver.email,
+    );
+
     return Form(
       key: widget.formKey,
       autovalidateMode: AutovalidateMode.always,
@@ -109,9 +128,10 @@ class _DriverUpdateFormState extends State<DriverUpdateForm> {
           SizedBox(height: 18),
           fieldImage,
           fullnameField,
-          fieldCi,
-          fieldLicense,
           fieldCellphone,
+          fieldLicense,
+          fieldCi,
+          fieldEmail,
         ],
       ),
     );
