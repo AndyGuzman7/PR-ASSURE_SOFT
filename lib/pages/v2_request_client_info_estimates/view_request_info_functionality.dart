@@ -25,6 +25,7 @@ class ViewRequestFunctionality {
     updateData!(value);
   }
 
+/*
   Future<void> sendRequest(EstimateTaxi taxiRequest) async {
     taxiRequest.idRequestTaxiFirebase = key;
     dbRef.reference().child(nameBranch).child(key).set(taxiRequest.toJson());
@@ -47,7 +48,7 @@ class ViewRequestFunctionality {
     dbRef.reference().child(nameBranch).child(key).set(estimateTaxi.toJson());
     //print(key);
   }
-
+*/
   Future<void> getIdSessionIdTaxi() async {
     idTaxi = await sessionsService.getSessionValue("id");
     print(idTaxi);

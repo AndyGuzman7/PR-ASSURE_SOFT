@@ -8,9 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:taxi_segurito_app/SRC/providers/push_notifications_provider.dart';
 import 'package:taxi_segurito_app/pages/contacList/list_contact.dart';
 import 'package:taxi_segurito_app/pages/menu/driver_menu.dart';
-import 'package:taxi_segurito_app/pages/v2_list_request_client/list_request_client_page.dart';
-import 'package:taxi_segurito_app/pages/v2_list_request_driver/list_request_driver_page.dart';
-import 'package:taxi_segurito_app/pages/v2_request_client_info_estimates/view_request_info_page.dart';
+import 'package:taxi_segurito_app/pages/v2_list_request_client/taxi_service_request_list_page.dart';
+import 'package:taxi_segurito_app/pages/v2_list_request_driver/taxi_services_estimate_list_page.dart';
+import 'package:taxi_segurito_app/pages/v2_request_client_info_estimates/client_service_request_information_page.dart';
 import 'package:taxi_segurito_app/pages/v2_taxi_request/taxi_request_page.dart';
 
 import 'package:taxi_segurito_app/pages/vehicle_screen/vehicle_edit_screen.dart';
@@ -56,6 +56,9 @@ void main() async {
       case 'owner':
         app = AppTaxiSegurito('ownerMenu', sessionName: name);
         break;
+      case 'driver':
+        app = AppTaxiSegurito('driverMenu', sessionName: name);
+        break;
       default:
         app = AppTaxiSegurito('scannerQr', sessionName: name);
         break;
@@ -93,14 +96,15 @@ class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
       debugShowCheckedModeBanner: false,
       initialRoute: routeInitial,
       routes: {
-        'listRequestDriver': (BuildContext contextss) =>
-            ListRequestDriver(idRequest: "-N1vLO9946XQ4MXqRkys"),
+        'taxiServicesEstimateListPage': (BuildContext contextss) =>
+            TaxiServicesEstimateListPage(
+                idRequestService: "-N1vLO9946XQ4MXqRkys"),
         'loginUser': (_) => UserLoginPage(),
-        'listRequestClient': (_) => ListRequestClient(),
+        'listRequestClient': (_) => TaxiServiceRequestListPage(),
         'taxiRequestScreen': (_) => TaxiRequestPage(),
         'registerScreen': (_) => RegisterPage(),
-        'viewRequestInfo': (_) => RequestInfo(
-              requestID: "-N1oqGSf7jtxDr7DEnjy",
+        'viewRequestInfo': (_) => ClientServiceRequestInformationPage(
+              serviceRequestId: "-N1oqGSf7jtxDr7DEnjy",
             ),
         'firstScreen': (_) => MainWindow(),
         'scannerQr': (_) => ScannerQrPage(name: this.sessionName),

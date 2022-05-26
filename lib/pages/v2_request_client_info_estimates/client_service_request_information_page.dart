@@ -8,21 +8,24 @@ import 'package:taxi_segurito_app/components/inputs/CustomTextField.dart';
 import 'package:taxi_segurito_app/models/estimate_taxi.dart';
 
 import 'package:taxi_segurito_app/strategis/convert_distance.dart';
-import 'package:taxi_segurito_app/pages/v2_request_client_info_estimates/view_request_info_functionality.dart';
+import 'package:taxi_segurito_app/pages/v2_request_client_info_estimates/client_service_request_information_functionality.dart';
+import 'package:taxi_segurito_app/strategis/firebase/implementation/taxi_service_request_impl.dart';
 import 'package:taxi_segurito_app/validators/TextFieldValidators.dart';
 
 import '../../models/client_request.dart';
 
 // ignore: must_be_immutable
-class RequestInfo extends StatefulWidget {
-  String? requestID;
+class ClientServiceRequestInformationPage extends StatefulWidget {
+  String? serviceRequestId;
 
-  RequestInfo({this.requestID});
+  ClientServiceRequestInformationPage({this.serviceRequestId});
   @override
-  _RequestInfoState createState() => _RequestInfoState();
+  _ClientServiceRequestInformationPageState createState() =>
+      _ClientServiceRequestInformationPageState();
 }
 
-class _RequestInfoState extends State<RequestInfo> {
+class _ClientServiceRequestInformationPageState
+    extends State<ClientServiceRequestInformationPage> {
   late LatLng latLngOrigen = LatLng(0, 0);
   late LatLng latLngDestino = LatLng(0, 0);
 
@@ -31,8 +34,8 @@ class _RequestInfoState extends State<RequestInfo> {
   late CustomTextField fieldPrice;
   Map<MarkerId, Marker> _markers = {};
 
-  ViewRequestFunctionality taxiRequestFunctionality =
-      new ViewRequestFunctionality();
+  ClientServiceRequestInformationFunctionality taxiRequestFunctionality =
+      new ClientServiceRequestInformationFunctionality();
   Set<Marker> get markers => _markers.values.toSet();
 
   Location location = Location();
@@ -61,38 +64,26 @@ class _RequestInfoState extends State<RequestInfo> {
   void initState() {
     super.initState();
     setState(() {
-      taxiRequestFunctionality.initFirebase();
       setCustomMapPin();
-      getRequest().then((value) {
-        updateDate(value);
+      getNodeItemInformation();
+    });
+  }
+
+  getNodeItemInformation() {
+    TaxiServiceRequestImpl taxiServiceRequestImpl =
+        new TaxiServiceRequestImpl();
+    taxiServiceRequestImpl.getNodeItem(widget.serviceRequestId).then((value) {
+      ClienRequest clienRequest = value;
+      setState(() {
+        distancia = ConvertDistance().getDistance(clienRequest);
+        passengers = clienRequest.numeroPasageros.toString();
+        latLngOrigen =
+            LatLng(clienRequest.latitudOrigen, clienRequest.longitudOrigen);
+
+        latLngDestino =
+            LatLng(clienRequest.latitudDestino, clienRequest.longitudDestino);
       });
     });
-
-    print(widget.requestID);
-  }
-
-  void updateDate(value) {
-    DataSnapshot snapshot = value;
-    ClienRequest clienRequest = ClienRequest.fromJson(snapshot.value);
-    setState(() {
-      distancia = ConvertDistance().getDistance(clienRequest);
-      passengers = clienRequest.numeroPasageros.toString();
-      latLngOrigen =
-          LatLng(clienRequest.latitudOrigen, clienRequest.longitudOrigen);
-
-      latLngDestino =
-          LatLng(clienRequest.latitudDestino, clienRequest.longitudDestino);
-    });
-  }
-
-  //Obtener informacion desde Firebase
-  Future<DataSnapshot> getRequest() async {
-    String? requestID = widget.requestID;
-
-    return FirebaseDatabase.instance
-        .reference()
-        .child("Request/$requestID")
-        .once();
   }
 
   //Cargar iconos de marcadores
@@ -107,6 +98,7 @@ class _RequestInfoState extends State<RequestInfo> {
 
   @override
   Widget build(BuildContext context) {
+    taxiRequestFunctionality.context = context;
     Image imagedefault = new Image.asset(
       "assets/images/user_icon.png",
     );
@@ -128,16 +120,14 @@ class _RequestInfoState extends State<RequestInfo> {
 
     final btnSendEstimates = new CustomButton(
       onTap: () {
-        /* if (registerRequest()) {
-          taxiRequestFunctionality.(
-            double.parse(
-              fieldPrice.getValue(),
-            ),
-          );
-          /*  EstimateTaxi taxiRequest = new EstimateTaxi(1, '-N19THZozQ9wurM6uzLF',
-              '', double.parse(fieldPrice.getValue()));*/
-          // taxiRequestFunctionality.sendRequest(taxiRequest);
-        }*/
+        if (registerRequest()) {
+          FocusScope.of(context).unfocus();
+          taxiRequestFunctionality.insertNodeEstimates(
+              double.parse(
+                fieldPrice.getValue(),
+              ),
+              widget.serviceRequestId);
+        }
       },
       buttonText: "Enviar",
       buttonColor: Color.fromRGBO(255, 193, 7, 1),
