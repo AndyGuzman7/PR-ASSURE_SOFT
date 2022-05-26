@@ -45,13 +45,7 @@ class TaxiServiceRequestImpl extends ITaxiServiceRequest {
           .remove()
           .then(
         (_) async {
-          var clienRequest = (await connection
-                  .reference()
-                  .child(NodeNameGallery.TAXISERVICEREQUESTLIST + "/$key")
-                  .once())
-              .values;
-
-          if (clienRequest == null) success = true;
+          success = true;
         },
       );
       return success;

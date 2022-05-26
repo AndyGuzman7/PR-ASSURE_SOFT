@@ -133,7 +133,7 @@ class TaxiServicesEstimatesListFunctionality {
         new TaxiServiceRequestImpl();
     taxiServiceRequestImpl.deleteNode(value).then((value) {
       if (value) {
-        Navigator.pushNamed(context, 'taxiRequestScreen');
+        Navigator.pop(context);
       } else
         print("No se envio");
     });
