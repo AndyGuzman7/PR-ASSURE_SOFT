@@ -100,7 +100,8 @@ class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
       initialRoute: routeInitial,
       routes: {
         'taxiServicesEstimateListPage': (BuildContext contextss) =>
-            TaxiServicesEstimateListPage(idRequest: "-N1vLO9946XQ4MXqRkys"),
+            TaxiServicesEstimateListPage(
+                idRequestService: "-N1vLO9946XQ4MXqRkys"),
         'loginUser': (_) => UserLoginPage(),
         'listRequestClient': (_) => TaxiServiceRequestListPage(),
         'taxiRequestScreen': (_) => TaxiRequestPage(),
