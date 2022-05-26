@@ -1,4 +1,5 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'package:taxi_segurito_app/pages/v2_request_client_info_estimates/nameGalleryStateConfirmation.dart';
 
 class RequestAcceptFunctionality {
   late final dbRef;
@@ -38,7 +39,7 @@ class RequestAcceptFunctionality {
 
           if (idUserRequest == idUser) {
             String statusConfirmation = blogData['estado'];
-            if (statusConfirmation == "confirmado") {
+            if (statusConfirmation == NameGalleryStateConfirmation.CONFIRMADO) {
               idRequestAccept = blogId;
               print(idRequestAccept);
               statusRequest = true;

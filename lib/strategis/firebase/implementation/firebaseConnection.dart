@@ -1,11 +1,13 @@
 import 'package:firebase_database/firebase_database.dart';
 
 class FirebaseConnection {
-  late final dbRef;
+  late var dbRef; // = FirebaseDatabase.instance.reference();
 
-  FirebaseConnection();
-  initFirebase() {
+  FirebaseConnection() {
     dbRef = FirebaseDatabase.instance.reference();
+  }
+
+  dynamic getConnection() {
     return dbRef;
   }
 

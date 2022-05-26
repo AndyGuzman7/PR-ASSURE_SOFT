@@ -14,7 +14,7 @@ class DriverMenu extends MenuDriver {
       MenuDriverItem(
         text: 'Configuraciones',
         iconPath: 'assets/icons/config.png',
-        pageRoute: 'companyList',
+        pageRoute: 'dialogReason',
       ),
     ];
   }
