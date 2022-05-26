@@ -2,81 +2,78 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:location/location.dart';
 import 'package:taxi_segurito_app/models/client_request.dart';
-import 'package:taxi_segurito_app/models/estimate_taxi.dart';
-import 'package:taxi_segurito_app/pages/v2_request_client_info_estimates/nameGalleryStateConfirmation.dart';
-import 'package:taxi_segurito_app/strategis/firebase/implementation/service_request_estimates_impl.dart';
-import 'package:taxi_segurito_app/strategis/firebase/implementation/taxi_service_request_impl.dart';
 
-class TaxiServiceRequestListPageFunctionality {
-  List<ClienRequest> listRequest2 = [];
-
+class ListRequestClientFunctionality {
+  List<ClienRequest> listRequest = [];
+  late final nameBranch = "Request";
+  late final dbRef;
   late Location location = new Location();
   late bool _serviceEnabled;
   late PermissionStatus _permissionGranted;
   late LocationData locationData;
-  TaxiServiceRequestImpl taxiServiceRequestImpl = new TaxiServiceRequestImpl();
-  ServiceRequestEstimatesImpl serviceRequestEstimatesImpl =
-      new ServiceRequestEstimatesImpl();
+
   late double latitudTaxi;
   late double longitudTaxi;
+
   late Function(List<ClienRequest>) updateListRequest;
-  late Function(EstimateTaxi) showConfirmation;
 
-  TaxiServiceRequestListPageFunctionality();
-
-  void initListenerNodeFirebase() {
+  ListRequestClientFunctionality();
+  void initFirebase() {
     try {
-      listRequest2 = [];
-
-      taxiServiceRequestImpl.getNodeEvent().listen((event) {
-        listRequest2 = filtreRequestClientZoneRange(
-            taxiServiceRequestImpl.convertJsonList(event));
-        updateListRequest(listRequest2);
-        for (var item in listRequest2) {
-          print(item.idUser);
-        }
+      dbRef = FirebaseDatabase.instance.reference();
+      Stream<Event> streamBuilder = dbRef.child(nameBranch).onValue;
+      streamBuilder.listen((event) {
+        DataSnapshot snapshot = event.snapshot;
+        print(snapshot.value);
+        getItemsFirebase(snapshot);
       });
     } catch (e) {
       print(e);
     }
   }
 
-  void listenConfirmationClient(list) {
-    for (EstimateTaxi item in list) {
-      serviceRequestEstimatesImpl = new ServiceRequestEstimatesImpl();
-      serviceRequestEstimatesImpl
-          .getConfirmationClientEvent(item.idFirebase)
-          .listen((event) {
-        listenEvent(event, item);
-      });
-    }
-  }
+  getItemsFirebase(DataSnapshot snapshot) {
+    listRequest = [];
+    List<ClienRequest> listRequestPreview = [];
 
-  listenEvent(event, EstimateTaxi estimateTaxi) {
-    DataSnapshot snapshot = event.snapshot;
-    if (snapshot.value == NameGalleryStateConfirmation.CONFIRMADO) {
-      showConfirmation(estimateTaxi);
-    }
-  }
+    final extractedData = snapshot.value;
+    if (extractedData != null)
+      extractedData.forEach(
+        (blogId, blogData) {
+          print(blogData);
+          ClienRequest clienRequest = ClienRequest.fromJson(blogData);
+          listRequestPreview.add(clienRequest);
+        },
+      );
 
-  List<ClienRequest> filtreRequestClientZoneRange(List<ClienRequest> value) {
-    List<ClienRequest> listRequest = [];
-
-    for (var item in value) {
+    for (ClienRequest item in listRequestPreview) {
       double latitudClient = item.latitudOrigen;
       double longitudClient = item.longitudOrigen;
 
       double distancia = getConvertKm(getDistance(
           latitudClient, longitudClient, latitudTaxi, longitudTaxi));
-      print("distancia:  " + distancia.toString());
+
       if (distancia <= item.rango) {
         listRequest.add(item);
       }
     }
-    return listRequest;
+    updateListRequest(listRequest);
+    for (var item in listRequest) {
+      print(item.rango.toString() +
+          " sfsdfsdf " +
+          item.numeroPasageros.toString());
+    }
   }
 
-  Future<bool> initServiceUbicationPermisson() async {
+  Future<void> sendRequest(ClienRequest clienRequest) async {
+    dbRef.reference().child(nameBranch).push().set(clienRequest.toJson());
+  }
+
+  Stream<Event> getEvent() {
+    return dbRef.child(nameBranch).onValue;
+  }
+
+  Future<bool> initUbicacion() async {
     _serviceEnabled = await location.serviceEnabled();
     if (!_serviceEnabled) {
       _serviceEnabled = await location.requestService();
@@ -84,6 +81,7 @@ class TaxiServiceRequestListPageFunctionality {
         return false;
       }
     }
+
     _permissionGranted = await location.hasPermission();
     if (_permissionGranted == PermissionStatus.denied) {
       _permissionGranted = await location.requestPermission();
@@ -94,16 +92,20 @@ class TaxiServiceRequestListPageFunctionality {
     return true;
   }
 
-  initServiceUbication() {
+  initServiceRequest() {
     getUbication().then((value) {
       latitudTaxi = value.latitude!;
       longitudTaxi = value.longitude!;
-      initListenerNodeFirebase();
+      initFirebase();
     });
   }
 
   Future<LocationData> getUbication() async {
     return locationData = await location.getLocation();
+  }
+
+  void getInstance() {
+    return dbRef;
   }
 
   double getDistance(

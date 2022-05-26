@@ -29,6 +29,7 @@ class ClientServiceRequestInformationFunctionality {
     EstimateTaxi estimateTaxi = new EstimateTaxi(
         int.parse(idUser),
         NameGalleryStateConfirmation.SINCONFIRMAR,
+        NameGalleryStateConfirmation.SINCONFIRMAR,
         serviceRequestEstimatesImpl.key,
         idServiceRequest,
         estimate,

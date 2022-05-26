@@ -59,12 +59,12 @@ class ServiceRequestEstimatesImpl extends IServiceRequestEstimates {
   }
 
   @override
-  Stream<Event> getConfirmationEvent(idFirebase) {
+  Stream<Event> getConfirmationClientEvent(idFirebase) {
     return connection
         .reference()
         .child(NodeNameGallery.SERVICEREQUESTESTIMATELIST)
         .child(idFirebase)
-        .child('estado')
+        .child('estadoCliente')
         .onValue;
   }
 
@@ -76,7 +76,7 @@ class ServiceRequestEstimatesImpl extends IServiceRequestEstimates {
           .reference()
           .child(NodeNameGallery.SERVICEREQUESTESTIMATELIST)
           .child(value)
-          .update({'estado': status, 'motivoCancelacion': motivo}).then(
+          .update({'estadoCliente': status, 'motivoCancelacion': motivo}).then(
         (_) async {
           success = true;
         },
@@ -96,7 +96,7 @@ class ServiceRequestEstimatesImpl extends IServiceRequestEstimates {
           .reference()
           .child(NodeNameGallery.SERVICEREQUESTESTIMATELIST)
           .child(value)
-          .update({'estado': status}).then(
+          .update({'estadoCliente': status}).then(
         (_) async {
           success = true;
         },
@@ -106,5 +106,15 @@ class ServiceRequestEstimatesImpl extends IServiceRequestEstimates {
       log(e.toString());
       return false;
     }
+  }
+
+  @override
+  Stream<Event> getConfirmationTaxiEvent(idFirebase) {
+    return connection
+        .reference()
+        .child(NodeNameGallery.SERVICEREQUESTESTIMATELIST)
+        .child(idFirebase)
+        .child('estadoTaxi')
+        .onValue;
   }
 }

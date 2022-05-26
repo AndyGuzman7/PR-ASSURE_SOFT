@@ -6,19 +6,18 @@ import 'package:taxi_segurito_app/models/driver.dart';
 import 'package:location/location.dart';
 import 'package:taxi_segurito_app/models/estimate_taxi.dart';
 import 'package:taxi_segurito_app/pages/v2_list_request_client/taxi_service_request_list_functionality.dart';
+import 'package:taxi_segurito_app/pages/v2_request_client_info_estimates/nameGalleryStateConfirmation.dart';
 
 import 'package:taxi_segurito_app/strategis/firebase/implementation/service_request_estimates_impl.dart';
 import 'package:taxi_segurito_app/strategis/firebase/implementation/taxi_service_request_impl.dart';
 
-class ListRequestDriverFunctionality {
-  List<EstimateTaxi> listDriverReq = [];
+class TaxiServicesEstimatesListFunctionality {
+  List<EstimateTaxi> listEstimateTaxi = [];
   late BuildContext context;
 
   late double latitudClient;
   late double longitudClient;
-  late String placaTaxi;
-  late String imagenTaxi;
-  late double estimacion;
+
   late Location location = new Location();
   late bool _serviceEnabled;
   late PermissionStatus _permissionGranted;
@@ -26,28 +25,37 @@ class ListRequestDriverFunctionality {
   TaxiServiceRequestListPageFunctionality clientFunctionality =
       TaxiServiceRequestListPageFunctionality();
   late Function(List<EstimateTaxi>) updateListRequest;
-
-  late Future<List<Driver>> drivers;
-
-  late final dbRef;
-
-  Function(String)? updateData;
+  late Function() showConfirmation;
+  ServiceRequestEstimatesImpl serviceRequestEstimatesImpl =
+      new ServiceRequestEstimatesImpl();
 
   void initListenerNodeFirebase(idRequestService) {
     try {
-      ServiceRequestEstimatesImpl serviceRequestEstimatesImpl =
-          new ServiceRequestEstimatesImpl();
       serviceRequestEstimatesImpl.getNodeEvent().listen((event) {
         print(event.snapshot.value);
-        listDriverReq = [];
-        listDriverReq = serviceRequestEstimatesImpl.convertJsonList(event);
-        listDriverReq =
-            filtreRequestClientZoneRange(listDriverReq, idRequestService);
-        updateListRequest(listDriverReq);
+        listEstimateTaxi = [];
+        listEstimateTaxi = serviceRequestEstimatesImpl.convertJsonList(event);
+        listEstimateTaxi =
+            filtreRequestClientZoneRange(listEstimateTaxi, idRequestService);
+        updateListRequest(listEstimateTaxi);
       });
     } catch (e) {
       print(e);
     }
+  }
+
+  void listenNodeFirebaseStatus(idEstimate) {
+    serviceRequestEstimatesImpl
+        .getConfirmationTaxiEvent(idEstimate)
+        .listen((event) {
+      String value = event.snapshot.value;
+      print("fsdf");
+      if (value == NameGalleryStateConfirmation.CONFIRMADO) {
+        showConfirmation();
+      } else {
+        //statusRequest = false;
+      }
+    });
   }
 
   filtreRequestClientZoneRange(value, idRequestService) {
@@ -95,6 +103,25 @@ class ListRequestDriverFunctionality {
     });
   }
 
+  confirmationEstimate(key) {
+    serviceRequestEstimatesImpl
+        .confirmateEstimate(key, NameGalleryStateConfirmation.CONFIRMADO)
+        .then((value) {
+      if (value) {
+        showSnackBar(context);
+        listenNodeFirebaseStatus(key);
+      }
+    });
+  }
+
+  showSnackBar(contex) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Confirmacion Enviada'),
+      ),
+    );
+  }
+
   Future<LocationData> getUbication() async {
     _locationData = await location.getLocation();
     print(_locationData.toString() + "AAA");
@@ -112,7 +139,7 @@ class ListRequestDriverFunctionality {
     });
   }
 
-  initServiceRequest(valu) {
+  startServices(valu) {
     getUbication().then((value) {
       latitudClient = value.latitude!;
       longitudClient = value.longitude!;
