@@ -7,6 +7,8 @@ import 'package:taxi_segurito_app/pages/v2_list_request_client/request_decision_
 import 'package:taxi_segurito_app/pages/v2_list_request_client/widgets/request_list.dart';
 import 'package:taxi_segurito_app/pages/v2_list_request_client/widgets/request_list_item.dart';
 import 'package:taxi_segurito_app/pages/v2_request_client_info_estimates/client_service_request_information_page.dart';
+import 'package:taxi_segurito_app/pages/v2_taxi_request/widgets/view_map.dart';
+import 'package:taxi_segurito_app/pages/v2_view_taxi_request/view_taxi_request.dart';
 import 'package:taxi_segurito_app/strategis/firebase/implementation/service_request_estimates_impl.dart';
 
 class TaxiServiceRequestListPage extends StatefulWidget {
@@ -276,9 +278,18 @@ class _TaxiServiceRequestListPageState
                   Expanded(
                     child: CustomButtonWithLinearBorder(
                         onTap: () {
-                          requestDecisionFunctionality
-                              .updateStatusRequest(idUserTaxista);
+                          requestDecisionFunctionality.updateStatusRequest(
+                              estimateTaxi.idUserTaxi.toString());
                           Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ViewTaxiRequest(
+                                serviceRequestId:
+                                    estimateTaxi.idTaxiServiceRequest,
+                              ),
+                            ),
+                          );
                         },
                         buttonBorderColor: colorMainDanger,
                         marginBotton: 0,
