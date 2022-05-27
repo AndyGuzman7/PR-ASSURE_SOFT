@@ -6,13 +6,9 @@ import 'package:taxi_segurito_app/pages/v2_view_taxi_request/view_taxi_request_f
 
 class DialogReason extends StatefulWidget {
   String idFirebase;
-  BuildContext contextMain;
   VoidCallback callBackCancel;
   DialogReason(
-      {Key? key,
-      required this.idFirebase,
-      required this.contextMain,
-      required this.callBackCancel})
+      {Key? key, required this.idFirebase, required this.callBackCancel})
       : super(key: key);
 
   @override
@@ -38,7 +34,7 @@ class _DialogReasonState extends State<DialogReason> {
 
   @override
   Widget build(BuildContext context) {
-    viewTaxiRequestFunctionality.context = widget.contextMain;
+    viewTaxiRequestFunctionality.context = context;
     bool statusRd = false;
     String reason = "";
 
@@ -47,7 +43,7 @@ class _DialogReasonState extends State<DialogReason> {
         if (values == "4") {
           if (_formKey.currentState!.validate()) {
             viewTaxiRequestFunctionality.sendReasonCancel(
-                widget.idFirebase, reason, widget.contextMain);
+                widget.idFirebase, reason);
             Navigator.pop(context);
             widget.callBackCancel();
           }
@@ -66,7 +62,7 @@ class _DialogReasonState extends State<DialogReason> {
           }
 
           viewTaxiRequestFunctionality.sendReasonCancel(
-              widget.idFirebase, reasonR, widget.contextMain);
+              widget.idFirebase, reasonR);
           Navigator.pop(context);
           widget.callBackCancel();
         }

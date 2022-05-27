@@ -8,14 +8,14 @@ class ViewTaxiRequestFunctionality {
       new ServiceRequestEstimatesImpl();
   ViewTaxiRequestFunctionality();
 
-  void sendReasonCancel(idFirebase, motivo, contextMain) {
+  void sendReasonCancel(idFirebase, motivo) {
     //value, motivo, status
     serviceRequestEstimatesImpl
         .cancelEstimateTaxi(
             idFirebase, motivo, NameGalleryStateConfirmation.CANCELADO)
         .then(
           (value) => {
-            if (value) {Navigator.pop(contextMain)}
+            if (value) {Navigator.pop(context)}
           },
         );
   }
