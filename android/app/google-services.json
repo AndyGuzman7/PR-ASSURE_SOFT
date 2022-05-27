@@ -1,49 +1,33 @@
 {
   "project_info": {
-    "project_number": "209662885126",
-    "project_id": "taxi-segurito",
-    "storage_bucket": "taxi-segurito.appspot.com"
+    "project_number": "819041074761",
+    "project_id": "prueba-taxi-segurito-4ecc4",
+    "storage_bucket": "prueba-taxi-segurito-4ecc4.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:209662885126:android:49da785d276143ca693287",
+        "mobilesdk_app_id": "1:819041074761:android:fae17dd84294cc74ddc998",
         "android_client_info": {
           "package_name": "com.example.taxi_segurito_app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "209662885126-a41fttl9sei8eq5sphoh3j39our381ka.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.taxi_segurito_app",
-            "certificate_hash": "2db61263111d2c6e0a98f295616d54d572a25ec8"
-          }
-        },
-        {
-          "client_id": "209662885126-n1h84qfvtdlbhc1d1bb6grekjjqtedsj.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.taxi_segurito_app",
-            "certificate_hash": "afc001b534471cae203fe70676dd66c31b5c3860"
-          }
-        },
-        {
-          "client_id": "209662885126-bndtecdqt0e5stsvpife68gdfv3957r4.apps.googleusercontent.com",
+          "client_id": "819041074761-vmrbab7dh895n3r6ls5ebjvnrovpvg7u.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCmUhy6361TStWtHc59Nzshyl31gxrgIbY"
+          "current_key": "AIzaSyBzcU9YBI23DvXfgzjaScTD5oZ7nysNEuM"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "209662885126-bndtecdqt0e5stsvpife68gdfv3957r4.apps.googleusercontent.com",
+              "client_id": "819041074761-vmrbab7dh895n3r6ls5ebjvnrovpvg7u.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

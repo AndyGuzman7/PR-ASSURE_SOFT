@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:taxi_segurito_app/models/user.dart';
+import 'package:taxi_segurito_app/models/driver.dart';
+
 import 'package:taxi_segurito_app/services/server.dart';
 import 'sessions_service.dart';
 
@@ -16,9 +18,40 @@ class AuthService {
     User? userRes = await _getUser(user);
     if (userRes != null) {
       await _saveSession(userRes);
+      print("se guarda sesion");
     }
 
     return userRes;
+  }
+
+  //Carlos
+  Future<Driver?> logInDriver(Driver driver) async {
+    Driver? userRes = await _getUserDriver(driver);
+    if (userRes != null) {
+      await _saveSessionDriver(userRes);
+    }
+    return userRes;
+  }
+
+  Future<Driver?> _getUserDriver(Driver driver) async {
+    log("Entra Metodo get");
+    final queryParams = {'email': driver.email, 'password': driver.password};
+    final endpoint = Uri.http(
+      Server.host,
+      "${Server.baseEndpoint}/auth/auth_driver_controller.php",
+      queryParams,
+    );
+
+    final response = await http.get(endpoint);
+    log("response.body: " + response.body);
+    if (response.statusCode == 200) {
+      final body = json.decode(response.body);
+      //log(body['name']);
+      return new Driver.logInDriverResponse(
+          body['id'], body['role'], body['name'], body['cellphone']);
+    }
+    log("retorna nulo");
+    return null;
   }
 
   Future<bool> logOut() async {
@@ -51,6 +84,13 @@ class AuthService {
     return name.toString();
   }
 
+  _saveSessionDriver(Driver driver) async {
+    await _sessionsService.addSessionValue('id', driver.idPerson.toString());
+    await _sessionsService.addSessionValue('role', driver.role);
+    await _sessionsService.addSessionValue('name', driver.fullName);
+    await _sessionsService.addSessionValue('cellphone', driver.cellphone);
+  }
+
   _saveSession(User user) async {
     await _sessionsService.addSessionValue('id', user.idPerson.toString());
     await _sessionsService.addSessionValue('role', user.role);
@@ -81,6 +121,7 @@ class AuthService {
       "${Server.baseEndpoint}/auth/auth_controller.php",
       queryParams,
     );
+    print(endpoint);
 
     final response = await http.get(endpoint);
     log("response.body: " + response.body);

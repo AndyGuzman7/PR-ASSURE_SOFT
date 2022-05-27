@@ -1,10 +1,24 @@
+//import 'dart:html';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:async';
+import 'dart:io';
+
+import 'package:firebase_core/firebase_core.dart';
 import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:taxi_segurito_app/SRC/providers/push_notifications_provider.dart';
 import 'package:taxi_segurito_app/pages/contacList/list_contact.dart';
+import 'package:taxi_segurito_app/pages/menu/driver_menu.dart';
+import 'package:taxi_segurito_app/pages/v2_list_request_client/taxi_service_request_list_page.dart';
+import 'package:taxi_segurito_app/pages/v2_list_request_driver/taxi_services_estimate_list_page.dart';
+import 'package:taxi_segurito_app/pages/v2_request_client_info_estimates/client_service_request_information_page.dart';
+import 'package:taxi_segurito_app/pages/v2_taxi_request/taxi_request_page.dart';
+
 import 'package:taxi_segurito_app/pages/vehicle_screen/vehicle_edit_screen.dart';
 import 'package:taxi_segurito_app/pages/vehicle_screen/vehicle_register_screen.dart';
+
 import './pages/driver_register/driver_register.dart';
 import './pages/main_window/main_window.dart';
 import './pages/log_in/log_in_page.dart';
@@ -22,9 +36,16 @@ import './pages/vehiclesList/VehiclesListPage.dart';
 import './pages/historyReview/HistoryReview.dart';
 import './models/vehicle.dart';
 import './models/providers/HttpProvider.dart';
+import 'package:firebase_database/firebase_database.dart';
+
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+import 'pages/menu/menu_client.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  Firebase.initializeApp();
+
   HttpOverrides.global = new HttpProvider();
   SessionsService sessions = SessionsService();
   bool idsession = await sessions.verificationSession('id');
@@ -39,6 +60,9 @@ void main() async {
         break;
       case 'owner':
         app = AppTaxiSegurito('ownerMenu', sessionName: name);
+        break;
+      case 'driver':
+        app = AppTaxiSegurito('driverMenu', sessionName: name);
         break;
       default:
         app = AppTaxiSegurito('scannerQr', sessionName: name);
@@ -58,6 +82,12 @@ class AppTaxiSegurito extends StatefulWidget {
 }
 
 class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
+  @override
+  void initState() {
+    super.initState();
+    PushNotificationService.initializedApp();
+  }
+
   String routeInitial;
   String? sessionName;
   _AppTaxiSeguritoState(this.routeInitial, {this.sessionName});
@@ -69,14 +99,24 @@ class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
       title: "Taxi Segurito",
       theme: ThemeData(primarySwatch: Colors.amber),
       debugShowCheckedModeBanner: false,
-      initialRoute: routeInitial,
+      initialRoute: 'clientMenu',
       routes: {
+        'taxiServicesEstimateListPage': (BuildContext contextss) =>
+            TaxiServicesEstimateListPage(
+                idRequestService: "-N1vLO9946XQ4MXqRkys"),
         'loginUser': (_) => UserLoginPage(),
+        'listRequestClient': (_) => TaxiServiceRequestListPage(),
+        'taxiRequestScreen': (_) => TaxiRequestPage(),
         'registerScreen': (_) => RegisterPage(),
+        'viewRequestInfo': (_) => ClientServiceRequestInformationPage(
+              serviceRequestId: "-N1oqGSf7jtxDr7DEnjy",
+            ),
         'firstScreen': (_) => MainWindow(),
         'scannerQr': (_) => ScannerQrPage(name: this.sessionName),
         'ownerMenu': (_) => OwnerMenu(name: this.sessionName),
+        'clientMenu': (_) => ClientMenu(name: this.sessionName),
         'adminMenu': (_) => AdminMenu(name: this.sessionName),
+        'driverMenu': (_) => DriverMenu(name: this.sessionName),
         'driverList': (_) => DriversListPage(),
         'registerCompany': (_) => CompanyRegisterScreen(),
         'companyList': (_) => CompanyListPage(),
