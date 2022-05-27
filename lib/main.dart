@@ -104,8 +104,6 @@ class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
         'listRequestClient': (_) => TaxiServiceRequestListPage(),
         'taxiRequestScreen': (_) => TaxiRequestPage(),
         'registerScreen': (_) => RegisterPage(),
-        'viewTaxiRequest': (_) =>
-            ViewTaxiRequest(serviceRequestId: "-N2qp54DNPIU24L4_Pg0"),
         'viewRequestInfo': (_) => ClientServiceRequestInformationPage(
               serviceRequestId: "-N1oqGSf7jtxDr7DEnjy",
             ),

@@ -105,7 +105,7 @@ class TaxiServicesEstimatesListFunctionality {
 
   confirmationEstimate(key) {
     serviceRequestEstimatesImpl
-        .confirmateEstimate(key, NameGalleryStateConfirmation.CONFIRMADO)
+        .confirmateEstimateClient(key, NameGalleryStateConfirmation.CONFIRMADO)
         .then((value) {
       if (value) {
         showSnackBar(context);

@@ -3,17 +3,19 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:taxi_segurito_app/components/buttons/CustomButton.dart';
 import 'package:taxi_segurito_app/models/client_request.dart';
+import 'package:taxi_segurito_app/models/estimate_taxi.dart';
 import 'package:taxi_segurito_app/pages/v2_view_taxi_request/view_taxi_request_functionality.dart';
 import 'package:taxi_segurito_app/strategis/convert_distance.dart';
 import 'package:taxi_segurito_app/strategis/firebase/implementation/taxi_service_request_impl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'dialog_reason.dart';
 
 // ignore: must_be_immutable
 class ViewTaxiRequest extends StatefulWidget {
-  String? serviceRequestId;
+  EstimateTaxi? estimate;
 
-  ViewTaxiRequest({this.serviceRequestId});
+  ViewTaxiRequest({this.estimate});
   @override
   State<ViewTaxiRequest> createState() => _ViewTaxiRequestState();
 }
@@ -28,8 +30,6 @@ class _ViewTaxiRequestState extends State<ViewTaxiRequest> {
 
   late String idEstimateTaxi = "";
 
-  ViewTaxiRequestFunctionality viewTaxiRequestFunctionality =
-      new ViewTaxiRequestFunctionality();
   Set<Marker> get markers => _markers.values.toSet();
 
   Location location = Location();
@@ -68,7 +68,9 @@ class _ViewTaxiRequestState extends State<ViewTaxiRequest> {
     TaxiServiceRequestImpl taxiServiceRequestImpl =
         new TaxiServiceRequestImpl();
 
-    taxiServiceRequestImpl.getNodeItem(widget.serviceRequestId).then((value) {
+    taxiServiceRequestImpl
+        .getNodeItem(widget.estimate!.idTaxiServiceRequest)
+        .then((value) {
       ClienRequest clienRequest = value;
       setState(() {
         distancia = ConvertDistance().getDistance(clienRequest);
@@ -81,11 +83,11 @@ class _ViewTaxiRequestState extends State<ViewTaxiRequest> {
       });
     });
 
-    taxiServiceRequestImpl.getIdRequest(widget.serviceRequestId).then((value) {
+    /*taxiServiceRequestImpl.getIdRequest(widget.serviceRequestId).then((value) {
       setState(() {
         idEstimateTaxi = value;
       });
-    });
+    });*/
   }
 
   //Load bookmark icons
@@ -104,14 +106,22 @@ class _ViewTaxiRequestState extends State<ViewTaxiRequest> {
       "assets/images/user_icon.png",
     );
 
+    closeView() {
+      Navigator.pop(context);
+    }
+
     //button that displays the dialog for canceling the request
     final btnActive = new CustomButton(
       onTap: () {
         showDialog(
-            context: context,
-            builder: (BuildContext context) => DialogReason(
-                  idFirebase: idEstimateTaxi,
-                ));
+          context: context,
+          builder: (BuildContext context) => DialogReason(
+            idFirebase: widget.estimate!.idFirebase,
+            callBackCancel: () {
+              closeView();
+            },
+          ),
+        );
       },
       buttonText: "Cancelar Solicitud",
       buttonColor: Color.fromRGBO(255, 193, 7, 1),

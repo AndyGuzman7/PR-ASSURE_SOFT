@@ -148,8 +148,7 @@ class _TaxiServiceRequestListPageState
 
   @override
   Widget build(BuildContext context) {
-    ServiceRequestEstimatesImpl serviceRequestEstimatesImpl =
-        new ServiceRequestEstimatesImpl();
+    listRequestClientFunctionality.context = context;
     listRequestClientFunctionality.showConfirmation = (value) {
       showAlert(value);
     };
@@ -278,18 +277,9 @@ class _TaxiServiceRequestListPageState
                   Expanded(
                     child: CustomButtonWithLinearBorder(
                         onTap: () {
-                          requestDecisionFunctionality.updateStatusRequest(
-                              estimateTaxi.idUserTaxi.toString());
+                          listRequestClientFunctionality
+                              .confirmationService(estimateTaxi);
                           Navigator.pop(context);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ViewTaxiRequest(
-                                serviceRequestId:
-                                    estimateTaxi.idTaxiServiceRequest,
-                              ),
-                            ),
-                          );
                         },
                         buttonBorderColor: colorMainDanger,
                         marginBotton: 0,
