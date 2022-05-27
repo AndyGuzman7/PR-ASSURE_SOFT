@@ -4,10 +4,8 @@ import 'package:location/location.dart';
 import 'package:taxi_segurito_app/components/buttons/CustomButton.dart';
 import 'package:taxi_segurito_app/models/client_request.dart';
 import 'package:taxi_segurito_app/models/estimate_taxi.dart';
-import 'package:taxi_segurito_app/pages/v2_view_taxi_request/view_taxi_request_functionality.dart';
 import 'package:taxi_segurito_app/strategis/convert_distance.dart';
 import 'package:taxi_segurito_app/strategis/firebase/implementation/taxi_service_request_impl.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'dialog_reason.dart';
 
@@ -82,12 +80,6 @@ class _ViewTaxiRequestState extends State<ViewTaxiRequest> {
             LatLng(clienRequest.latitudDestino, clienRequest.longitudDestino);
       });
     });
-
-    /*taxiServiceRequestImpl.getIdRequest(widget.serviceRequestId).then((value) {
-      setState(() {
-        idEstimateTaxi = value;
-      });
-    });*/
   }
 
   //Load bookmark icons
@@ -111,7 +103,7 @@ class _ViewTaxiRequestState extends State<ViewTaxiRequest> {
     }
 
     //button that displays the dialog for canceling the request
-    final btnActive = new CustomButton(
+    final btnCancelRequest = new CustomButton(
       onTap: () {
         showDialog(
           context: context,
@@ -277,7 +269,7 @@ class _ViewTaxiRequestState extends State<ViewTaxiRequest> {
                     Row(
                       children: [
                         Expanded(
-                          child: btnActive,
+                          child: btnCancelRequest,
                         ),
                       ],
                     ),

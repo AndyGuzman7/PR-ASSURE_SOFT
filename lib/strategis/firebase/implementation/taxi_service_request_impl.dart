@@ -101,12 +101,7 @@ class TaxiServiceRequestImpl extends ITaxiServiceRequest {
     return listRequestPreview;
   }
 
-  @override
-  Future<List<ClienRequest>> getNode() {
-    // TODO: implement getNode
-    throw UnimplementedError();
-  }
-
+//Get data ClientRequest
   @override
   Future<ClienRequest> getNodeItem(serviceRequestId) async {
     ClienRequest clienRequest = new ClienRequest.init();
@@ -125,43 +120,4 @@ class TaxiServiceRequestImpl extends ITaxiServiceRequest {
       return clienRequest;
     }
   }
-
-  //Get the id of ServiceRequestEstimateList looking for the id from the node TaxiServiceRequestLis
-  Future<String> getIdRequest(String? idRequest) async {
-    String idEstimate = "";
-
-    await connection
-        .reference()
-        .child(NodeNameGallery.SERVICEREQUESTESTIMATELIST)
-        .child(idRequest)
-        .once()
-        .then((value) {
-      DataSnapshot dataSnapshot = value;
-      final extractedData = dataSnapshot.value;
-      print(extractedData);
-      if (extractedData != null)
-        extractedData.forEach(
-          (blogId, blogData) {
-            String idTaxiRequest = blogData['idTaxiServiceRequest'];
-            //if (idTaxiRequest == idRequest) {
-            if (idTaxiRequest == '-N2xskfYO0f8o-QTxJrr') {
-              idEstimate = blogId.toString();
-              print(idEstimate);
-            }
-          },
-        );
-    });
-
-    return idEstimate;
-  }
-
-  /** Future<DataSnapshot> getRequest() async {
-    String? requestID = widget.serviceRequestId;
-
-    return FirebaseDatabase.instance
-        .reference()
-        .child("Request/$requestID")
-        .once();
-  }
- */
 }
