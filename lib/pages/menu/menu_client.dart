@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:taxi_segurito_app/components/buttons/Button_app.dart';
 import 'package:taxi_segurito_app/components/sidemenu/side_menu.dart';
+import 'package:taxi_segurito_app/pages/forgetObjects/forgetObjectMain.dart';
+import 'package:taxi_segurito_app/pages/menu/menu_client_functionality.dart';
+import 'package:taxi_segurito_app/pages/v2_taxi_request/taxi_request_page.dart';
 
 class ClientMenu extends StatefulWidget {
   String? name;
@@ -14,6 +17,7 @@ class _ClientMenuState extends State<ClientMenu> {
   get borderRadius => BorderRadius.circular(8.0);
   @override
   Widget build(BuildContext context) {
+    MenuClientFunctionality functionality = new MenuClientFunctionality(context);
     final List<Center> items = [
       Center(
         child: Container(
@@ -22,7 +26,14 @@ class _ClientMenuState extends State<ClientMenu> {
           elevation: 10,
           borderRadius: borderRadius,
             child: InkWell(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TaxiRequestPage(),
+                  ),
+                );
+              },
               child: Container(
                 padding: EdgeInsets.all(0.0),
                 height: 80.0,//MediaQuery.of(context).size.width * .08,
@@ -42,7 +53,7 @@ class _ClientMenuState extends State<ClientMenu> {
                           borderRadius: borderRadius,
                         ),
                         child: Icon(
-                          Icons.settings,
+                          Icons.emoji_objects,
                           color: Colors.white,
                         ),
                       );
@@ -70,7 +81,14 @@ class _ClientMenuState extends State<ClientMenu> {
           elevation: 10,
           borderRadius: borderRadius,
             child: InkWell(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MyHomePageForgetObject(),
+                  ),
+                );
+              },
               child: Container(
                 padding: EdgeInsets.all(0.0),
                 height: 80.0,//MediaQuery.of(context).size.width * .08,
@@ -90,7 +108,7 @@ class _ClientMenuState extends State<ClientMenu> {
                           borderRadius: borderRadius,
                         ),
                         child: Icon(
-                          Icons.settings,
+                          Icons.emoji_objects,
                           color: Colors.white,
                         ),
                       );
@@ -118,7 +136,9 @@ class _ClientMenuState extends State<ClientMenu> {
           elevation: 10,
           borderRadius: borderRadius,
             child: InkWell(
-              onTap: () {},
+              onTap: () {
+                functionality.onPressedbtnContactEmergency();
+              },
               child: Container(
                 padding: EdgeInsets.all(0.0),
                 height: 80.0,//MediaQuery.of(context).size.width * .08,
@@ -138,7 +158,7 @@ class _ClientMenuState extends State<ClientMenu> {
                           borderRadius: borderRadius,
                         ),
                         child: Icon(
-                          Icons.settings,
+                          Icons.contact_page_rounded,
                           color: Colors.white,
                         ),
                       );
@@ -166,7 +186,9 @@ class _ClientMenuState extends State<ClientMenu> {
           elevation: 10,
           borderRadius: borderRadius,
             child: InkWell(
-              onTap: () {},
+              onTap: () {
+                functionality.onPressedbtnCallPanic();
+              },
               child: Container(
                 padding: EdgeInsets.all(0.0),
                 height: 80.0,//MediaQuery.of(context).size.width * .08,
@@ -186,7 +208,7 @@ class _ClientMenuState extends State<ClientMenu> {
                           borderRadius: borderRadius,
                         ),
                         child: Icon(
-                          Icons.settings,
+                          Icons.location_on,
                           color: Colors.white,
                         ),
                       );
@@ -214,7 +236,9 @@ class _ClientMenuState extends State<ClientMenu> {
           elevation: 10,
           borderRadius: borderRadius,
             child: InkWell(
-              onTap: () {},
+              onTap: () {
+                functionality.onPressedTimePressedFault();
+              },
               child: Container(
                 padding: EdgeInsets.all(0.0),
                 height: 80.0,//MediaQuery.of(context).size.width * .08,
@@ -234,7 +258,7 @@ class _ClientMenuState extends State<ClientMenu> {
                           borderRadius: borderRadius,
                         ),
                         child: Icon(
-                          Icons.settings,
+                          Icons.warning_rounded,
                           color: Colors.white,
                         ),
                       );
@@ -262,7 +286,9 @@ class _ClientMenuState extends State<ClientMenu> {
           elevation: 10,
           borderRadius: borderRadius,
             child: InkWell(
-              onTap: () {},
+              onTap: () {
+                functionality.onPressedLogOut();
+              },
               child: Container(
                 padding: EdgeInsets.all(0.0),
                 height: 80.0,//MediaQuery.of(context).size.width * .08,
@@ -282,7 +308,7 @@ class _ClientMenuState extends State<ClientMenu> {
                           borderRadius: borderRadius,
                         ),
                         child: Icon(
-                          Icons.settings,
+                          Icons.logout  ,
                           color: Colors.white,
                         ),
                       );
