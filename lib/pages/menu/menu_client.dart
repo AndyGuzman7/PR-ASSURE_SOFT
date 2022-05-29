@@ -3,6 +3,7 @@ import 'package:taxi_segurito_app/components/buttons/Button_app.dart';
 import 'package:taxi_segurito_app/components/sidemenu/side_menu.dart';
 import 'package:taxi_segurito_app/pages/forgetObjects/forgetObjectMain.dart';
 import 'package:taxi_segurito_app/pages/menu/menu_client_functionality.dart';
+import 'package:taxi_segurito_app/pages/scanner_qr/scanner_qr_page.dart';
 import 'package:taxi_segurito_app/pages/v2_taxi_request/taxi_request_page.dart';
 
 class ClientMenu extends StatefulWidget {
@@ -63,7 +64,7 @@ class _ClientMenuState extends State<ClientMenu> {
                         'Servicio Taxi',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 25,
+                          fontSize: 20,
                         ),
                       ),
                     ),
@@ -85,7 +86,7 @@ class _ClientMenuState extends State<ClientMenu> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => MyHomePageForgetObject(),
+                    builder: (context) => ScannerQrPage(),
                   ),
                 );
               },
@@ -108,117 +109,17 @@ class _ClientMenuState extends State<ClientMenu> {
                           borderRadius: borderRadius,
                         ),
                         child: Icon(
-                          Icons.emoji_objects,
+                          Icons.qr_code,
                           color: Colors.white,
                         ),
                       );
                     }),
                     Expanded(
                       child: Text(
-                        'Registrar Objetos Perdidos',
+                        'QR',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 25,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        )
-      ),
-      Center(
-        child: Container(
-          margin: EdgeInsets.all(20),
-          child: Material(
-          elevation: 10,
-          borderRadius: borderRadius,
-            child: InkWell(
-              onTap: () {
-                functionality.onPressedbtnContactEmergency();
-              },
-              child: Container(
-                padding: EdgeInsets.all(0.0),
-                height: 80.0,//MediaQuery.of(context).size.width * .08,
-                width: MediaQuery.of(context).size.width,//MediaQuery.of(context).size.width * .3,
-                decoration: BoxDecoration(
-                  borderRadius: borderRadius,
-                ),
-                child: Row(
-                  children: <Widget>[
-                    LayoutBuilder(builder: (context, constraints) {
-                      //print(constraints);
-                      return Container(
-                        height: constraints.maxHeight,
-                        width: constraints.maxHeight,
-                        decoration: BoxDecoration(
-                          color: Color.fromRGBO(255, 193, 7, 1),
-                          borderRadius: borderRadius,
-                        ),
-                        child: Icon(
-                          Icons.contact_page_rounded,
-                          color: Colors.white,
-                        ),
-                      );
-                    }),
-                    Expanded(
-                      child: Text(
-                        'Contactos de Emergencia',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 25,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        )
-      ),
-      Center(
-        child: Container(
-          margin: EdgeInsets.all(20),
-          child: Material(
-          elevation: 10,
-          borderRadius: borderRadius,
-            child: InkWell(
-              onTap: () {
-                functionality.onPressedbtnCallPanic();
-              },
-              child: Container(
-                padding: EdgeInsets.all(0.0),
-                height: 80.0,//MediaQuery.of(context).size.width * .08,
-                width: MediaQuery.of(context).size.width,//MediaQuery.of(context).size.width * .3,
-                decoration: BoxDecoration(
-                  borderRadius: borderRadius,
-                ),
-                child: Row(
-                  children: <Widget>[
-                    LayoutBuilder(builder: (context, constraints) {
-                      //print(constraints);
-                      return Container(
-                        height: constraints.maxHeight,
-                        width: constraints.maxHeight,
-                        decoration: BoxDecoration(
-                          color: Color.fromRGBO(255, 193, 7, 1),
-                          borderRadius: borderRadius,
-                        ),
-                        child: Icon(
-                          Icons.location_on,
-                          color: Colors.white,
-                        ),
-                      );
-                    }),
-                    Expanded(
-                      child: Text(
-                        'Compartir Ubicacion',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 25,
+                          fontSize: 20,
                         ),
                       ),
                     ),
@@ -258,7 +159,7 @@ class _ClientMenuState extends State<ClientMenu> {
                           borderRadius: borderRadius,
                         ),
                         child: Icon(
-                          Icons.warning_rounded,
+                          Icons.phone_android,
                           color: Colors.white,
                         ),
                       );
@@ -268,57 +169,7 @@ class _ClientMenuState extends State<ClientMenu> {
                         'Boton de Panico',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 25,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        )
-      ),
-      Center(
-        child: Container(
-          margin: EdgeInsets.all(20),
-          child: Material(
-          elevation: 10,
-          borderRadius: borderRadius,
-            child: InkWell(
-              onTap: () {
-                functionality.onPressedLogOut();
-              },
-              child: Container(
-                padding: EdgeInsets.all(0.0),
-                height: 80.0,//MediaQuery.of(context).size.width * .08,
-                width: MediaQuery.of(context).size.width,//MediaQuery.of(context).size.width * .3,
-                decoration: BoxDecoration(
-                  borderRadius: borderRadius,
-                ),
-                child: Row(
-                  children: <Widget>[
-                    LayoutBuilder(builder: (context, constraints) {
-                      //print(constraints);
-                      return Container(
-                        height: constraints.maxHeight,
-                        width: constraints.maxHeight,
-                        decoration: BoxDecoration(
-                          color: Color.fromRGBO(255, 193, 7, 1),
-                          borderRadius: borderRadius,
-                        ),
-                        child: Icon(
-                          Icons.logout  ,
-                          color: Colors.white,
-                        ),
-                      );
-                    }),
-                    Expanded(
-                      child: Text(
-                        'Cerrar Sesion',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 25,
+                          fontSize: 20,
                         ),
                       ),
                     ),
