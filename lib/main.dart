@@ -41,11 +41,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:workmanager/workmanager.dart';
-
+import 'package:taxi_segurito_app/services/notifications.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Firebase.initializeApp();
+
+  //await PushNotificationService.GetToken();
+  
+
+  NotificationsFirebase notificationClient = new NotificationsFirebase();
+  
+  {
 
   //configuraciones para las notificaciones
   FlutterLocalNotificationsPlugin plugin = FlutterLocalNotificationsPlugin();
@@ -71,13 +78,12 @@ void main() async {
   );
 
   Workmanager().registerPeriodicTask(
-    "10",
+    "1",
     "Key",
     frequency: Duration(minutes: 10),
     
   );
-
-
+  }
 
   AndroidAlarmManager.initialize();
   AndroidAlarmManager.periodic(

@@ -50,9 +50,11 @@ class PushNotificationService {
         description:
             'This channel is used for important notifications.', // description
         importance: Importance.high,
-        playSound: true);
-    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-        FlutterLocalNotificationsPlugin();
+        playSound: true
+    );
+    
+    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
     void showNotification() {
       flutterLocalNotificationsPlugin.show(
         0,
@@ -64,6 +66,8 @@ class PushNotificationService {
               importance: Importance.high,
               color: Colors.blue,
               playSound: true,
+              showWhen: false,
+              showProgress: true,
               icon: '@mipmap/ic_launcher'),
         ),
       );
@@ -76,6 +80,8 @@ class PushNotificationService {
     messageString.listen((event) {
       showNotification();
     });
+
+    return Future.value(true);
   }
 
   static Future initializedApp() async {
@@ -88,6 +94,14 @@ class PushNotificationService {
     FirebaseMessaging.onBackgroundMessage(_backgroundHandler);
     FirebaseMessaging.onMessage.listen(_onMessageHandler);
     FirebaseMessaging.onMessageOpenedApp.listen(_onMessageOpenApp);
+  }
+
+  //metodo para obtener el token del telefono
+  static Future GetToken() async {
+
+    await Firebase.initializeApp();
+    token = await FirebaseMessaging.instance.getToken();
+    print(token);
   }
 
   static closeStreams() {

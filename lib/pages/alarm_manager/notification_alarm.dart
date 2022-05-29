@@ -10,8 +10,11 @@ import 'package:taxi_segurito_app/pages/list_request_client/widgets/request_list
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart';
+import 'package:taxi_segurito_app/services/notifications.dart';
 import 'package:workmanager/workmanager.dart';
 import 'dart:convert';
+
+import '../../models/client_user.dart';
 
 class Notification1 extends StatefulWidget {
   Notification1({Key? key}) : super(key: key);
@@ -23,8 +26,11 @@ class Notification1 extends StatefulWidget {
 class _Notification1State extends State<Notification1> {
   int id = 1;
   bool isOn = false;
+  late NotificationsFirebase notificationsFirebase;
+  late Clientuser client;
   void initState() {
     super.initState();
+    notificationsFirebase = new NotificationsFirebase();
     //AndroidAlarmManager.periodic(Duration(seconds: 1), id, alarmaMostrar);
   }
 
@@ -71,6 +77,8 @@ class _Notification1State extends State<Notification1> {
                     });
                     if(isOn==true)
                     {
+                      
+                      notificationsFirebase.sendMessageConfirmClient("Ignacio merlini");
                       AndroidAlarmManager.oneShot(Duration(seconds: 2), id, alarmaMostrar);
                       //AndroidAlarmManager.periodic(Duration(seconds: 1), id, alarmaMostrar);
                     }
