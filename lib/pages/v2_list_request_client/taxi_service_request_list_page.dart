@@ -7,6 +7,8 @@ import 'package:taxi_segurito_app/pages/v2_list_request_client/request_decision_
 import 'package:taxi_segurito_app/pages/v2_list_request_client/widgets/request_list.dart';
 import 'package:taxi_segurito_app/pages/v2_list_request_client/widgets/request_list_item.dart';
 import 'package:taxi_segurito_app/pages/v2_request_client_info_estimates/client_service_request_information_page.dart';
+import 'package:taxi_segurito_app/pages/v2_taxi_request/widgets/view_map.dart';
+import 'package:taxi_segurito_app/pages/v2_view_taxi_request/view_taxi_request.dart';
 import 'package:taxi_segurito_app/strategis/firebase/implementation/service_request_estimates_impl.dart';
 
 class TaxiServiceRequestListPage extends StatefulWidget {
@@ -146,8 +148,7 @@ class _TaxiServiceRequestListPageState
 
   @override
   Widget build(BuildContext context) {
-    ServiceRequestEstimatesImpl serviceRequestEstimatesImpl =
-        new ServiceRequestEstimatesImpl();
+    listRequestClientFunctionality.context = context;
     listRequestClientFunctionality.showConfirmation = (value) {
       showAlert(value);
     };
@@ -155,7 +156,7 @@ class _TaxiServiceRequestListPageState
     requestList.setCallbak = (ClienRequest value) async {
       print(value.idFirebase);
 
-      final result = await Navigator.push(
+      EstimateTaxi? result = await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => ClientServiceRequestInformationPage(
@@ -164,7 +165,7 @@ class _TaxiServiceRequestListPageState
         ),
       );
 
-      listEstimates.add(result);
+      if (result != null) listEstimates.add(result);
       listRequestClientFunctionality.listenConfirmationClient(listEstimates);
     };
 
@@ -227,72 +228,75 @@ class _TaxiServiceRequestListPageState
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(25),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(25),
+          ),
+        ),
+        titleTextStyle: TextStyle(
+          color: Colors.black,
+          fontSize: 18,
+          fontWeight: FontWeight.w700,
+        ),
+        title: Text(
+          "Se acepto la cotizacion",
+          textAlign: TextAlign.center,
+        ),
+        backgroundColor: Colors.white,
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            boxData(
+              Text(
+                'Estimacion: ' + estimateTaxi.estimacion.toString(),
+              ),
             ),
-          ),
-          titleTextStyle: TextStyle(
-            color: Colors.black,
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-          ),
-          title: Text(
-            "Se acepto la cotizacion",
-            textAlign: TextAlign.center,
-          ),
-          backgroundColor: Colors.white,
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              boxData(
-                Text(
-                  'Estimacion: ' + estimateTaxi.estimacion.toString(),
-                ),
-              ),
-              boxData(Text(
+            boxData(
+              Text(
                 'Distancia: ' + "23" + ' Km',
-              )),
-              Row(
-                children: [
-                  Expanded(
-                    child: CustomButtonWithLinearBorder(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        buttonBorderColor: colorMainNull,
-                        marginBotton: 0,
-                        marginLeft: 0,
-                        marginRight: 0,
-                        marginTop: 0,
-                        buttonText: "Rechazar",
-                        buttonColor: Colors.white,
-                        buttonTextColor: colorMainNull),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                    child: CustomButtonWithLinearBorder(
-                        onTap: () {
-                          requestDecisionFunctionality
-                              .updateStatusRequest(idUserTaxista);
-                          Navigator.pop(context);
-                        },
-                        buttonBorderColor: colorMainDanger,
-                        marginBotton: 0,
-                        marginLeft: 0,
-                        marginRight: 0,
-                        marginTop: 0,
-                        buttonText: "Aceptar",
-                        buttonColor: Colors.white,
-                        buttonTextColor: colorMainDanger),
-                  ),
-                ],
               ),
-            ],
-          )),
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: CustomButtonWithLinearBorder(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      buttonBorderColor: colorMainNull,
+                      marginBotton: 0,
+                      marginLeft: 0,
+                      marginRight: 0,
+                      marginTop: 0,
+                      buttonText: "Rechazar",
+                      buttonColor: Colors.white,
+                      buttonTextColor: colorMainNull),
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                  child: CustomButtonWithLinearBorder(
+                      onTap: () {
+                        Navigator.pop(context);
+                        listRequestClientFunctionality
+                            .confirmationService(estimateTaxi);
+                      },
+                      buttonBorderColor: colorMainDanger,
+                      marginBotton: 0,
+                      marginLeft: 0,
+                      marginRight: 0,
+                      marginTop: 0,
+                      buttonText: "Aceptar",
+                      buttonColor: Colors.white,
+                      buttonTextColor: colorMainDanger),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

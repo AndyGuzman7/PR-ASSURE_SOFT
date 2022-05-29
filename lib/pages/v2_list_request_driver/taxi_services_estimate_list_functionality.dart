@@ -105,7 +105,7 @@ class TaxiServicesEstimatesListFunctionality {
 
   confirmationEstimate(key) {
     serviceRequestEstimatesImpl
-        .confirmateEstimate(key, NameGalleryStateConfirmation.CONFIRMADO)
+        .confirmateEstimateClient(key, NameGalleryStateConfirmation.CONFIRMADO)
         .then((value) {
       if (value) {
         showSnackBar(context);
@@ -133,7 +133,7 @@ class TaxiServicesEstimatesListFunctionality {
         new TaxiServiceRequestImpl();
     taxiServiceRequestImpl.deleteNode(value).then((value) {
       if (value) {
-        Navigator.pushNamed(context, 'taxiRequestScreen');
+        Navigator.pop(context);
       } else
         print("No se envio");
     });
