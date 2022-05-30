@@ -63,7 +63,7 @@ void main() async {
         app = AppTaxiSegurito('driverMenu', sessionName: name);
         break;
       default:
-        app = AppTaxiSegurito('scannerQr', sessionName: name);
+        app = AppTaxiSegurito('clientMenu', sessionName: name);
         break;
     }
   }
