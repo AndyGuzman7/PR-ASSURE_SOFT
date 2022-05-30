@@ -8,17 +8,14 @@ import 'package:taxi_segurito_app/pages/v2_taxi_request/taxi_request_page.dart';
 
 class ContainerName extends StatelessWidget {
   ContainerName({Key? key}) : super(key: key);
-  late double heigth;
   @override
   SizedBox build(BuildContext context) {
-    heigth = MediaQuery.of(context).size.height;
-    print(heigth);
     return SizedBox(
-      //width: MediaQuery.of(context).size.width,
+      width: MediaQuery.of(context).size.width,
       child: Padding(
         padding: EdgeInsets.all(20),
         child: Text(
-          "Bienvenido\n" + "aasasffffffffffffffffffffffffffffffffffff",
+          "Bienvenido",
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 36,
@@ -233,7 +230,7 @@ class _ClientMenuState extends State<ClientMenu> {
                 pinned: true,
               ),
             ),
-            SliverPadding(padding: EdgeInsets.only(bottom: (150 / 2) + 30)),
+            SliverPadding(padding: EdgeInsets.only(bottom: 20)),
             SliverList(delegate: SliverChildListDelegate(items))
           ],
         ),
