@@ -56,19 +56,22 @@ class PushNotificationService {
     final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
     void showNotification() {
+      
       flutterLocalNotificationsPlugin.show(
         0,
-        "Testing",
-        "How you doin ?",
+        "notificacion",
+        "notificacion envio",
         NotificationDetails(
-          android: AndroidNotificationDetails(channel.id, channel.name,
+          android: AndroidNotificationDetails(
+              channel.id, 
+              channel.name,
               channelDescription: channel.description,
               importance: Importance.high,
               color: Colors.blue,
               playSound: true,
               showWhen: false,
               showProgress: true,
-              icon: '@mipmap/ic_launcher'),
+            ),
         ),
       );
     }

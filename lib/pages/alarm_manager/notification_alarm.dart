@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:taxi_segurito_app/models/client_request.dart';
 import 'package:taxi_segurito_app/pages/list_request_client/location.dart';
@@ -24,7 +25,6 @@ class Notification1 extends StatefulWidget {
 }
 
 class _Notification1State extends State<Notification1> {
-  int id = 1;
   bool isOn = false;
   late NotificationsFirebase notificationsFirebase;
   late Clientuser client;
@@ -32,6 +32,31 @@ class _Notification1State extends State<Notification1> {
     super.initState();
     notificationsFirebase = new NotificationsFirebase();
     //AndroidAlarmManager.periodic(Duration(seconds: 1), id, alarmaMostrar);
+  }
+
+  Future<void> setupInteractedMessage() async {
+    // Get any messages which caused the application to open from
+    // a terminated state.
+    RemoteMessage? initialMessage =
+        await FirebaseMessaging.instance.getInitialMessage();
+
+    // If the message also contains a data property with a "type" of "chat",
+    // navigate to a chat screen
+    if (initialMessage != null) {
+      _handleMessage(initialMessage);
+    }
+
+    // Also handle any interaction when the app is in the background via a
+    // Stream listener
+    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
+  }
+  
+  void _handleMessage(RemoteMessage message) {
+    if (message.data['type'] == 'chat') {
+      Navigator.pushNamed(context, '/chat', 
+        
+      );
+    }
   }
 
   
@@ -77,14 +102,13 @@ class _Notification1State extends State<Notification1> {
                     });
                     if(isOn==true)
                     {
-                      
-                      notificationsFirebase.sendMessageConfirmClient("Ignacio merlini");
-                      AndroidAlarmManager.oneShot(Duration(seconds: 2), id, alarmaMostrar);
-                      //AndroidAlarmManager.periodic(Duration(seconds: 1), id, alarmaMostrar);
+                      sendNotification();
+                      callBackTask();
+                      //AndroidAlarmManager.oneShot(Duration(seconds: 2), id, alarmaMostrar);                    
                     }
                     else
                     {
-                      AndroidAlarmManager.cancel(id);
+                      //AndroidAlarmManager.cancel(id);
                     }
                     
                   }
@@ -100,20 +124,69 @@ class _Notification1State extends State<Notification1> {
   }
 }
 
-void alarmaMostrar(){
-  print("Notificacion: ${DateTime.now()}");
+
+sendNotification() {
+
+  String title = "Cotizacion aceptada";
+  String body = "La cotizacion se acepto";
+  NotificationsFirebase notificationClient = new NotificationsFirebase();
+  notificationClient.confirmClient("Lucky luciano", title, body);
 }
 
-void callBackTask(){
-  Workmanager().executeTask((tarea, datos) async {
-    final FlutterLocalNotificationsPlugin notificacion = new FlutterLocalNotificationsPlugin();
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
+void notificationClient() {
+  AndroidNotificationChannel channel = AndroidNotificationChannel(
+        'high_importance_channel', // id
+        'High Importance Notifications', // title
+
+        description:
+            'This channel is used for important notifications.', // description
+        importance: Importance.high,
+        playSound: true
+  );
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
+      flutterLocalNotificationsPlugin.show(
+        notification.hashCode,
+        notification?.title,
+        notification?.body,
+        NotificationDetails(
+          android: AndroidNotificationDetails(
+              channel.id, 
+              channel.name,
+              channelDescription: channel.description,
+              importance: Importance.high,
+              color: Colors.blue,
+              playSound: true,
+              showWhen: false,
+              showProgress: true,
+              icon: android?.smallIcon,
+            ),
+        ),
+      );
+    });
+}
+
+
+void callBackTask(){
+  {
+    final FlutterLocalNotificationsPlugin notificacion = new FlutterLocalNotificationsPlugin();
+    int id = 0;
+    String title = "Cotizacion aceptada";
+    String body = "La cotizacion se acepto";
+    NotificationsFirebase notificationClient = new NotificationsFirebase();
+    notificationClient.confirmClient("Lucky luciano", title, body);
     const AndroidNotificationDetails notificationDetails = AndroidNotificationDetails(
       'id',
-      'Notificacion1',
+      'channel1',
       channelDescription: 'Notificacion ejemplo',
       importance: Importance.max,
       priority: Priority.high,
+      playSound: true,
+      enableVibration: false,
+      color: Colors.amberAccent,
       showProgress: true,
       showWhen: false,
       
@@ -123,17 +196,13 @@ void callBackTask(){
       android: notificationDetails
     );
 
-    await notificacion.show(
-      0,
-      'NotificacionEnvio',
-      'Envio datos',
+    notificacion.show(
+      id++,
+      title,
+      body,
       details,
-      payload: 'Item1'
+      payload: sendNotification()
     );
+  }
 
-
-    return Future.value(true);
-
-    
-  });
 }

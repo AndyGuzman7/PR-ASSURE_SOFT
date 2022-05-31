@@ -47,7 +47,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Firebase.initializeApp();
 
-  //await PushNotificationService.GetToken();
+  
   
 
   NotificationsFirebase notificationClient = new NotificationsFirebase();
