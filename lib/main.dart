@@ -97,7 +97,7 @@ class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
       title: "Taxi Segurito",
       theme: ThemeData(primarySwatch: Colors.amber),
       debugShowCheckedModeBanner: false,
-      initialRoute: 'clientMenu',
+      initialRoute: routeInitial,
       routes: {
         'taxiServicesEstimateListPage': (BuildContext contextss) =>
             TaxiServicesEstimateListPage(

@@ -5,6 +5,7 @@ import 'package:taxi_segurito_app/models/estimate_taxi.dart';
 
 import 'package:taxi_segurito_app/pages/v2_list_request_driver/taxi_services_estimate_list_functionality.dart';
 import 'package:taxi_segurito_app/pages/v2_list_request_driver/widgets/estimate_list.dart';
+import 'package:taxi_segurito_app/pages/v2_view_user_request/view_taxi_request.dart';
 
 import '../../components/buttons/CustomButton.dart';
 import '../../components/slider/slider.dart';
@@ -249,6 +250,7 @@ class _TaxiServicesEstimateListPageState
   }
 
   showInformationSelectedEstimate(EstimateTaxi estimateTaxi) {
+    selectedEstimateTaxi = estimateTaxi;
     final btnConfirm = new CustomButtonWithLinearBorder(
       onTap: () {
         Navigator.pop(context);
@@ -327,7 +329,15 @@ class _TaxiServicesEstimateListPageState
             Expanded(
               child: CustomButtonWithLinearBorder(
                   onTap: () {
+                    //routeInitial
                     Navigator.pop(context);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ViewUserRequest(
+                            idRequest: selectedEstimateTaxi.idFirebase,
+                          ),
+                        ));
                   },
                   buttonBorderColor: colorMainDanger,
                   marginBotton: 0,
