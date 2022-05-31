@@ -5,10 +5,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:taxi_segurito_app/components/buttons/CustomButton.dart';
 import 'package:taxi_segurito_app/components/inputs/CustomTextField.dart';
-import 'package:taxi_segurito_app/models/estimate_taxi.dart';
+import 'package:taxi_segurito_app/pages/v2_client_service_request_information/client_service_request_information_functionality.dart';
 
 import 'package:taxi_segurito_app/strategis/convert_distance.dart';
-import 'package:taxi_segurito_app/pages/v2_request_client_info_estimates/client_service_request_information_functionality.dart';
 import 'package:taxi_segurito_app/strategis/firebase/implementation/taxi_service_request_impl.dart';
 import 'package:taxi_segurito_app/validators/TextFieldValidators.dart';
 
