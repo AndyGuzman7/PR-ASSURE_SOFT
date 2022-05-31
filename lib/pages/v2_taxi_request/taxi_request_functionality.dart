@@ -6,7 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:location/location.dart';
 import 'package:taxi_segurito_app/models/client_request.dart';
-import 'package:taxi_segurito_app/pages/v2_list_request_driver/taxi_services_estimate_list_page.dart';
+import 'package:taxi_segurito_app/pages/v2_taxi_services_estimate_list/taxi_services_estimate_list_page.dart';
 import 'package:taxi_segurito_app/services/notifications.dart';
 import 'package:taxi_segurito_app/services/sessions_service.dart';
 import 'package:taxi_segurito_app/strategis/firebase/implementation/taxi_service_request_impl.dart';

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:taxi_segurito_app/components/map/markers_map.dart';
 import 'package:taxi_segurito_app/models/owner.dart';
 import 'package:taxi_segurito_app/strategis/location_service.dart';
 
@@ -25,7 +26,7 @@ class ViewMap extends StatefulWidget {
 
 class _ViewMapState extends State<ViewMap> {
   LocationService locationService = new LocationService();
-
+  MarkersMap markersMap = new MarkersMap();
   Color colorMain = Color.fromRGBO(255, 193, 7, 1);
 
   getLocationOrigen() {
@@ -36,52 +37,11 @@ class _ViewMapState extends State<ViewMap> {
     return widget.latLngDestine;
   }
 
-  Set<Marker> createMarkersMap(LatLng latlnOrigin, LatLng latLngDestine) {
-    Map<MarkerId, Marker> markersMap = {};
-
-    markersMap[MarkerId('Origin')] = new Marker(
-      markerId: MarkerId('Origin'),
-      position: latlnOrigin,
-      draggable: true,
-      icon: pinLocationIconUser,
-      infoWindow: InfoWindow(title: "Origin"),
-      onDragEnd: (newPosition) {
-        widget.latLngOrigin =
-            LatLng(newPosition.latitude, newPosition.longitude);
-      },
-    );
-
-    markersMap[MarkerId('Destine')] = new Marker(
-      markerId: MarkerId('Destine'),
-      position: latLngDestine,
-      draggable: true,
-      icon: pinLocationIconCar,
-      infoWindow: InfoWindow(title: "Destine"),
-      onDragEnd: (newPosition) {
-        widget.latLngDestine =
-            LatLng(newPosition.latitude, newPosition.longitude);
-      },
-    );
-
-    Set<Marker> markers = markersMap.values.toSet();
-    return markers;
-  }
-
   late BitmapDescriptor pinLocationIconUser, pinLocationIconCar;
   @override
   void initState() {
     super.initState();
     locationService.getPermisson();
-    setCustomMapPin();
-  }
-
-  void setCustomMapPin() async {
-    pinLocationIconUser = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(size: Size(35, 35)),
-        'assets/images/location_user.png');
-    pinLocationIconCar = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(size: Size(35, 35)),
-        'assets/images/location_car.png');
   }
 
   @override
@@ -122,8 +82,8 @@ class _ViewMapState extends State<ViewMap> {
               mapToolbarEnabled: false,
               compassEnabled: false,
               myLocationEnabled: true,
-              markers:
-                  createMarkersMap(widget.latLngOrigin!, widget.latLngDestine!),
+              markers: markersMap.createMarkersMap(
+                  widget.latLngOrigin!, widget.latLngDestine!),
               mapType: MapType.normal,
             ));
           } else {

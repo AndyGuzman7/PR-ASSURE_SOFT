@@ -1,12 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:taxi_segurito_app/models/client_request.dart';
-import 'package:taxi_segurito_app/models/driver.dart';
 
 import 'package:location/location.dart';
 import 'package:taxi_segurito_app/models/estimate_taxi.dart';
-import 'package:taxi_segurito_app/pages/v2_list_request_client/taxi_service_request_list_functionality.dart';
-import 'package:taxi_segurito_app/pages/v2_request_client_info_estimates/nameGalleryStateConfirmation.dart';
+import 'package:taxi_segurito_app/pages/v2_client_service_request_information/nameGalleryStateConfirmation.dart';
+import 'package:taxi_segurito_app/pages/v2_taxi_service_request_list/taxi_service_request_list_functionality.dart';
 
 import 'package:taxi_segurito_app/strategis/firebase/implementation/service_request_estimates_impl.dart';
 import 'package:taxi_segurito_app/strategis/firebase/implementation/taxi_service_request_impl.dart';
