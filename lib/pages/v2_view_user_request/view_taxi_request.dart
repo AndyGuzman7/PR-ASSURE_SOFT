@@ -3,14 +3,14 @@ import 'package:taxi_segurito_app/components/buttons/CustomButtonWithLinearBorde
 import 'package:taxi_segurito_app/pages/v2_view_user_request/view_taxi_request_functionality.dart';
 
 class ViewUserRequest extends StatefulWidget {
-  const ViewUserRequest({Key? key}) : super(key: key);
+  String idRequest;
+  ViewUserRequest({Key? key, required this.idRequest}) : super(key: key);
 
   @override
   State<ViewUserRequest> createState() => _ViewUserRequestState();
 }
 
 class _ViewUserRequestState extends State<ViewUserRequest> {
-  late String idRequest = "-N2jDEz3sbu8idToVBr2";
   ViewTaxiRequestFunctionality viewTaxiRequestFunctionality =
       new ViewTaxiRequestFunctionality();
 
@@ -21,7 +21,8 @@ class _ViewUserRequestState extends State<ViewUserRequest> {
   @override
   void initState() {
     super.initState();
-    viewTaxiRequestFunctionality.initListenerNodeFirebase(idRequest);
+    print(widget.idRequest);
+    viewTaxiRequestFunctionality.initListenerNodeFirebase(widget.idRequest);
   }
 
   @override

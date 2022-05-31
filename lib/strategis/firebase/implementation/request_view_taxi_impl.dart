@@ -22,7 +22,7 @@ class RequestViewTaxiImpl extends IUserViewRequest {
         .reference()
         .child(NodeNameGallery.SERVICEREQUESTESTIMATELIST)
         .child(idFirebase)
-        .child('estado')
+        .child('estadoTaxi')
         .onValue;
   }
 }

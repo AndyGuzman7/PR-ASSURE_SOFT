@@ -26,6 +26,7 @@ class ViewTaxiRequestFunctionality {
 
   listenEvent(event) {
     DataSnapshot snapshot = event.snapshot;
+    print(snapshot.value);
     if (snapshot.value == NameGalleryStateConfirmation.CANCELADO) {
       showConfirmation();
     }
