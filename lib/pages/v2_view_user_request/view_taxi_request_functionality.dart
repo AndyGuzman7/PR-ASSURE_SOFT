@@ -1,4 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:taxi_segurito_app/models/estimate_taxi.dart';
 import 'package:taxi_segurito_app/pages/v2_client_service_request_information/nameGalleryStateConfirmation.dart';
 import 'package:taxi_segurito_app/strategis/firebase/implementation/request_view_taxi_impl.dart';
 import 'package:taxi_segurito_app/strategis/firebase/implementation/service_request_estimates_impl.dart';
@@ -9,8 +11,7 @@ class ViewTaxiRequestFunctionality {
 
   RequestViewTaxiImpl requestViewTaxiImpl = new RequestViewTaxiImpl();
 
-  late Function() showConfirmation;
-
+  void Function(EstimateTaxi estimateTaxi)? showConfirmation;
   ViewTaxiRequestFunctionality();
 
   void initListenerNodeFirebase(String idRequest) {
@@ -25,9 +26,10 @@ class ViewTaxiRequestFunctionality {
 
   listenEvent(event) {
     DataSnapshot snapshot = event.snapshot;
-    print(snapshot.value);
-    if (snapshot.value == NameGalleryStateConfirmation.CANCELADO) {
-      showConfirmation();
+    EstimateTaxi estimateTaxi = EstimateTaxi.fromJson(snapshot.value);
+    print(estimateTaxi.estadoTaxi);
+    if (estimateTaxi.estadoTaxi == NameGalleryStateConfirmation.CANCELADO) {
+      showConfirmation!(estimateTaxi);
     }
   }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:taxi_segurito_app/components/buttons/CustomButtonWithLinearBorder.dart';
+import 'package:taxi_segurito_app/models/estimate_taxi.dart';
 import 'package:taxi_segurito_app/pages/v2_view_user_request/view_taxi_request_functionality.dart';
 
 class ViewUserRequest extends StatefulWidget {
@@ -27,8 +28,8 @@ class _ViewUserRequestState extends State<ViewUserRequest> {
 
   @override
   Widget build(BuildContext context) {
-    viewTaxiRequestFunctionality.showConfirmation = () {
-      showAlert();
+    viewTaxiRequestFunctionality.showConfirmation = (motivo) {
+      showAlert(motivo);
     };
 
     return Scaffold(
@@ -41,9 +42,10 @@ class _ViewUserRequestState extends State<ViewUserRequest> {
   }
 
   //AlertDialog confirm request
-  void showAlert() {
+  void showAlert(EstimateTaxi estimateTaxi) {
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(
@@ -56,7 +58,8 @@ class _ViewUserRequestState extends State<ViewUserRequest> {
           fontWeight: FontWeight.w700,
         ),
         title: Text(
-          "Su solicitud fue cancelada por el taxista",
+          "Su solicitud fue cancelada por el taxista\nMotivo: " +
+              estimateTaxi.motivoCancelacion,
           textAlign: TextAlign.center,
         ),
         backgroundColor: Colors.white,
@@ -70,8 +73,9 @@ class _ViewUserRequestState extends State<ViewUserRequest> {
                   child: new CustomButtonWithLinearBorder(
                     onTap: () {
                       Navigator.pop(context);
+                      Navigator.popAndPushNamed(context, 'taxiRequestScreen');
                     },
-                    buttonText: "Volver al menu",
+                    buttonText: "Volver al formulario de servicio",
                     buttonColor: Color.fromRGBO(255, 193, 7, 1),
                     buttonTextColor: Colors.white,
                     marginBotton: 0,
