@@ -31,8 +31,5 @@ class ViewUserRequestFunctionality {
     if (estimateTaxi.estadoTaxi == NameGalleryStateConfirmation.CANCELADO) {
       showConfirmation!(estimateTaxi);
     }
-    if (estimateTaxi.estadoTaxi == NameGalleryStateConfirmation.FINALIZADO) {
-      showTerminateService!();
-    }
   }
 }

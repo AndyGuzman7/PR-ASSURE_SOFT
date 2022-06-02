@@ -8,11 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:taxi_segurito_app/SRC/providers/push_notifications_provider.dart';
 import 'package:taxi_segurito_app/pages/contacList/list_contact.dart';
 import 'package:taxi_segurito_app/pages/menu/driver_menu.dart';
-import 'package:taxi_segurito_app/pages/v2_list_request_client/taxi_service_request_list_page.dart';
-import 'package:taxi_segurito_app/pages/v2_list_request_driver/taxi_services_estimate_list_page.dart';
-import 'package:taxi_segurito_app/pages/v2_request_client_info_estimates/client_service_request_information_page.dart';
+import 'package:taxi_segurito_app/pages/v2_client_service_request_information/client_service_request_information_page.dart';
+
 import 'package:taxi_segurito_app/pages/v2_taxi_request/taxi_request_page.dart';
-import 'package:taxi_segurito_app/pages/v2_view_taxi_request/view_taxi_request.dart';
+import 'package:taxi_segurito_app/pages/v2_taxi_service_request_list/taxi_service_request_list_page.dart';
+import 'package:taxi_segurito_app/pages/v2_taxi_services_estimate_list/taxi_services_estimate_list_page.dart';
 
 import 'package:taxi_segurito_app/pages/vehicle_screen/vehicle_edit_screen.dart';
 import 'package:taxi_segurito_app/pages/vehicle_screen/vehicle_register_screen.dart';

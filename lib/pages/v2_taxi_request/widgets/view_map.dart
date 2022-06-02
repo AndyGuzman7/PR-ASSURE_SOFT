@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:taxi_segurito_app/models/owner.dart';
+import 'package:taxi_segurito_app/strategis/location_service.dart';
 
 class ViewMap extends StatefulWidget {
+  LatLng? latLngOrigin;
+  LatLng? latLngDestine;
   ViewMap({Key? key}) : super(key: key);
   _ViewMapState _taxiRequestMapv2State = new _ViewMapState();
   @override
@@ -21,76 +24,55 @@ class ViewMap extends StatefulWidget {
 }
 
 class _ViewMapState extends State<ViewMap> {
-  Map<MarkerId, Marker> _markers = {};
-  Set<Marker> get markers => _markers.values.toSet();
+  LocationService locationService = new LocationService();
+
+  Color colorMain = Color.fromRGBO(255, 193, 7, 1);
+
   getLocationOrigen() {
-    return latLngOrigen;
+    return widget.latLngOrigin;
   }
 
   getLocationDestino() {
-    return latLngOrigen;
+    return widget.latLngDestine;
   }
 
-  Location location = Location();
+  Set<Marker> createMarkersMap(LatLng latlnOrigin, LatLng latLngDestine) {
+    Map<MarkerId, Marker> markersMap = {};
 
-  late LatLng latLngOrigen;
-  late LatLng latLngDestino = LatLng(-0.000327615289788, -0.00522494279294);
+    markersMap[MarkerId('Origin')] = new Marker(
+      markerId: MarkerId('Origin'),
+      position: latlnOrigin,
+      draggable: true,
+      icon: pinLocationIconUser,
+      infoWindow: InfoWindow(title: "Origin"),
+      onDragEnd: (newPosition) {
+        widget.latLngOrigin =
+            LatLng(newPosition.latitude, newPosition.longitude);
+      },
+    );
 
-  late bool _serviceEnabled;
-  late PermissionStatus _permissionGranted;
+    markersMap[MarkerId('Destine')] = new Marker(
+      markerId: MarkerId('Destine'),
+      position: latLngDestine,
+      draggable: true,
+      icon: pinLocationIconCar,
+      infoWindow: InfoWindow(title: "Destine"),
+      onDragEnd: (newPosition) {
+        widget.latLngDestine =
+            LatLng(newPosition.latitude, newPosition.longitude);
+      },
+    );
 
-  Set<Marker> _createMarker(LatLng locationOrigin) {
-    _markers[MarkerId('Origin')] = new Marker(
-        markerId: MarkerId('Origin'),
-        position: LatLng(locationOrigin.latitude, locationOrigin.longitude),
-        draggable: true,
-        icon: pinLocationIconUser,
-        infoWindow: InfoWindow(title: "Origin"),
-        onDragEnd: (newPosition) {
-          latLngOrigen = LatLng(newPosition.latitude, newPosition.longitude);
-        });
-
-    _markers[MarkerId('Destine')] = new Marker(
-        markerId: MarkerId('Destine'),
-        position: latLngDestino,
-        draggable: true,
-        icon: pinLocationIconCar,
-        infoWindow: InfoWindow(title: "Destine"),
-        onDragEnd: (newPosition) {
-          latLngDestino = LatLng(newPosition.latitude, newPosition.longitude);
-        });
-
+    Set<Marker> markers = markersMap.values.toSet();
     return markers;
-  }
-
-  Future<void> initUbicacion() async {
-    _serviceEnabled = await location.serviceEnabled();
-
-    if (!_serviceEnabled) {
-      _serviceEnabled = await location.requestService();
-      if (!_serviceEnabled) {
-        return;
-      }
-    }
-    _permissionGranted = await location.hasPermission();
-
-    if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await location.requestPermission();
-      if (_permissionGranted != PermissionStatus.granted) {
-        return;
-      }
-    }
   }
 
   late BitmapDescriptor pinLocationIconUser, pinLocationIconCar;
   @override
   void initState() {
     super.initState();
-
+    locationService.getPermisson();
     setCustomMapPin();
-    initUbicacion();
-
-    //taxiRequestFunctionality.initFirebase();
   }
 
   void setCustomMapPin() async {
@@ -102,8 +84,6 @@ class _ViewMapState extends State<ViewMap> {
         'assets/images/location_car.png');
   }
 
-  Color colorMain = Color.fromRGBO(255, 193, 7, 1);
-
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -113,29 +93,37 @@ class _ViewMapState extends State<ViewMap> {
       height: height,
       width: width,
       child: FutureBuilder(
-        future: location.getLocation(),
+        future: locationService.getUbication(),
         builder: (_, AsyncSnapshot<LocationData> snapshot) {
-          print(snapshot.hasData);
           if (snapshot.hasData) {
-            final locat = snapshot.data;
-            LatLng locationOri =
-                LatLng(locat?.latitude ?? 0.0, locat?.longitude ?? 0.0);
-            latLngOrigen = locationOri;
-            latLngDestino = LatLng(
-                (latLngOrigen.latitude + latLngDestino.latitude),
-                (latLngOrigen.longitude + latLngDestino.longitude));
-            print("respuesta " + locationOri.latitude.toString());
+            final data = snapshot.data;
+
+            if (widget.latLngOrigin == null)
+              widget.latLngOrigin =
+                  LatLng(data?.latitude ?? 0.0, data?.longitude ?? 0.0);
+
+            if (widget.latLngDestine == null) {
+              widget.latLngDestine =
+                  LatLng(-0.000327615289788, -0.00522494279294);
+
+              widget.latLngDestine = LatLng(
+                (widget.latLngOrigin!.latitude +
+                    widget.latLngDestine!.latitude),
+                (widget.latLngOrigin!.longitude +
+                    widget.latLngDestine!.longitude),
+              );
+            }
 
             return Expanded(
                 child: GoogleMap(
-              initialCameraPosition: CameraPosition(
-                  target: LatLng(locationOri.latitude, locationOri.longitude),
-                  zoom: 15),
+              initialCameraPosition:
+                  CameraPosition(target: widget.latLngOrigin!, zoom: 15),
               onMapCreated: (GoogleMapController controller) {},
               mapToolbarEnabled: false,
               compassEnabled: false,
               myLocationEnabled: true,
-              markers: _createMarker(locationOri),
+              markers:
+                  createMarkersMap(widget.latLngOrigin!, widget.latLngDestine!),
               mapType: MapType.normal,
             ));
           } else {
