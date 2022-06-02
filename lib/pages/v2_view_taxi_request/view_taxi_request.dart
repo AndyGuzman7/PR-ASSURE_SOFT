@@ -5,9 +5,11 @@ import 'package:taxi_segurito_app/components/buttons/CustomButton.dart';
 import 'package:taxi_segurito_app/components/buttons/CustomButtonWithLinearBorder.dart';
 import 'package:taxi_segurito_app/models/client_request.dart';
 import 'package:taxi_segurito_app/models/estimate_taxi.dart';
+import 'package:taxi_segurito_app/pages/v2_taxi_service_request_list/taxi_service_request_list_page.dart';
 import 'package:taxi_segurito_app/pages/v2_view_taxi_request/view_taxi_request_functionality.dart';
 import 'package:taxi_segurito_app/strategis/convert_distance.dart';
 import 'package:taxi_segurito_app/strategis/firebase/implementation/taxi_service_request_impl.dart';
+import 'package:taxi_segurito_app/strategis/location_service.dart';
 
 import 'dialog_reason.dart';
 
@@ -21,6 +23,7 @@ class ViewTaxiRequest extends StatefulWidget {
 }
 
 class _ViewTaxiRequestState extends State<ViewTaxiRequest> {
+  LocationService locationService = new LocationService();
   late LatLng latLngOrigen = LatLng(0, 0);
   late LatLng latLngDestino = LatLng(0, 0);
 
@@ -60,6 +63,9 @@ class _ViewTaxiRequestState extends State<ViewTaxiRequest> {
   @override
   void initState() {
     super.initState();
+
+    locationService.getPermisson();
+    locationService.listenLocation();
     setState(() {
       setCustomMapPin();
       getNodeItemInformation();
@@ -104,7 +110,81 @@ class _ViewTaxiRequestState extends State<ViewTaxiRequest> {
     );
 
     closeView() {
+      locationService.stopListening();
       Navigator.pop(context);
+    }
+
+    //AlertDialog terminate service
+    void showFinishService() {
+      Color colorMain = Color.fromRGBO(255, 193, 7, 1);
+      Color colorMainDanger = Color.fromRGBO(242, 78, 30, 1);
+      Color colorMainNull = Color.fromARGB(255, 244, 123, 123);
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(25),
+            ),
+          ),
+          titleTextStyle: TextStyle(
+            color: Colors.black,
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+          ),
+          title: Text(
+            "Desea finalizar el servicio?",
+            textAlign: TextAlign.center,
+          ),
+          backgroundColor: Colors.white,
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: CustomButtonWithLinearBorder(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        buttonBorderColor: colorMainNull,
+                        marginBotton: 0,
+                        marginLeft: 0,
+                        marginRight: 0,
+                        marginTop: 0,
+                        buttonText: "Rechazar",
+                        buttonColor: Colors.white,
+                        buttonTextColor: colorMainNull),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    child: CustomButtonWithLinearBorder(
+                        onTap: () {
+                          viewTaxiRequestFunctionality.sendTerminateService(
+                              widget.estimate!.idFirebase,
+                              widget.estimate!.idUserTaxi);
+                          Navigator.pop(context);
+                          locationService.stopListening();
+                          closeView();
+                        },
+                        buttonBorderColor: colorMainDanger,
+                        marginBotton: 0,
+                        marginLeft: 0,
+                        marginRight: 0,
+                        marginTop: 0,
+                        buttonText: "Confirmar",
+                        buttonColor: Colors.white,
+                        buttonTextColor: colorMainDanger),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
     }
 
     //button that displays the dialog for canceling the request
@@ -132,7 +212,7 @@ class _ViewTaxiRequestState extends State<ViewTaxiRequest> {
     //BUtton terminate service
     final btnTerminate = new CustomButton(
       onTap: () {
-        showAlert();
+        showFinishService();
       },
       buttonText: "Finalizar Solicitud",
       buttonColor: Color.fromRGBO(255, 193, 7, 1),
@@ -306,86 +386,6 @@ class _ViewTaxiRequestState extends State<ViewTaxiRequest> {
             ],
           ),
         ],
-      ),
-    );
-  }
-
-  //AlertDialog terminate service
-  void showAlert() {
-    Color colorMain = Color.fromRGBO(255, 193, 7, 1);
-    Color colorMainDanger = Color.fromRGBO(242, 78, 30, 1);
-    Color colorMainNull = Color.fromARGB(255, 244, 123, 123);
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(25),
-          ),
-        ),
-        titleTextStyle: TextStyle(
-          color: Colors.black,
-          fontSize: 18,
-          fontWeight: FontWeight.w700,
-        ),
-        title: Text(
-          "Desea finalizar el servicio?",
-          textAlign: TextAlign.center,
-        ),
-        backgroundColor: Colors.white,
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: CustomButtonWithLinearBorder(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      buttonBorderColor: colorMainNull,
-                      marginBotton: 0,
-                      marginLeft: 0,
-                      marginRight: 0,
-                      marginTop: 0,
-                      buttonText: "Rechazar",
-                      buttonColor: Colors.white,
-                      buttonTextColor: colorMainNull),
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                  child: CustomButtonWithLinearBorder(
-                      onTap: () {
-                        viewTaxiRequestFunctionality.sendTerminateService(
-                            widget.estimate!.idFirebase,
-                            widget.estimate!.idUserTaxi);
-                        Navigator.pop(context);
-                        /*Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => TaxiServicesEstimateListPage(
-                              idRequestService:
-                                  widget.estimate!.idTaxiServiceRequest,
-                            ),
-                          ),
-                        );*/
-                      },
-                      buttonBorderColor: colorMainDanger,
-                      marginBotton: 0,
-                      marginLeft: 0,
-                      marginRight: 0,
-                      marginTop: 0,
-                      buttonText: "Confirmar",
-                      buttonColor: Colors.white,
-                      buttonTextColor: colorMainDanger),
-                ),
-              ],
-            ),
-          ],
-        ),
       ),
     );
   }
