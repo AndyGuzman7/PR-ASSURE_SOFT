@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:taxi_segurito_app/components/buttons/CustomButtonWithLinearBorder.dart';
 import 'package:taxi_segurito_app/models/driver.dart';
+import 'package:taxi_segurito_app/models/estimate_taxi.dart';
 import 'package:taxi_segurito_app/pages/v2_view_user_request/calification_page.dart';
 import 'package:taxi_segurito_app/pages/v2_view_user_request/view_user_request_functionality.dart';
 
@@ -31,12 +32,13 @@ class _ViewUserRequestState extends State<ViewUserRequest> {
 
   @override
   Widget build(BuildContext context) {
-    viewTaxiRequestFunctionality.showConfirmation = () {
-      showAlert(1, "Su solicitud fue cancelada por el taxista");
+    viewTaxiRequestFunctionality.showConfirmation =
+        (EstimateTaxi estimateTaxi) {
+      showCancelRequest(estimateTaxi);
     };
 
     viewTaxiRequestFunctionality.showTerminateService = () {
-      showAlert(2, "El servicio fue finalizado con exito");
+      showTerminateRequest(2, "El servicio fue finalizado con exito");
     };
 
     return Scaffold(
@@ -48,8 +50,60 @@ class _ViewUserRequestState extends State<ViewUserRequest> {
     );
   }
 
+  //AlertDialog confirm request
+  void showCancelRequest(EstimateTaxi estimateTaxi) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(25),
+          ),
+        ),
+        titleTextStyle: TextStyle(
+          color: Colors.black,
+          fontSize: 18,
+          fontWeight: FontWeight.w700,
+        ),
+        title: Text(
+          "Su solicitud fue cancelada por el taxista\nMotivo: " +
+              estimateTaxi.motivoCancelacion,
+          textAlign: TextAlign.center,
+        ),
+        backgroundColor: Colors.white,
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: new CustomButtonWithLinearBorder(
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.popAndPushNamed(context, 'taxiRequestScreen');
+                    },
+                    buttonText: "Volver al formulario de servicio",
+                    buttonColor: Color.fromRGBO(255, 193, 7, 1),
+                    buttonTextColor: Colors.white,
+                    marginBotton: 0,
+                    buttonBorderColor: Color.fromRGBO(255, 193, 7, 1),
+                    marginLeft: 5,
+                    marginRight: 0,
+                    marginTop: 0,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   //AlertDialog confirm terminate service or cancel service
-  void showAlert(int value, String message) {
+  void showTerminateRequest(int value, String message) {
     final text = Text(
       message,
       textAlign: TextAlign.center,
@@ -61,8 +115,9 @@ class _ViewUserRequestState extends State<ViewUserRequest> {
           child: new CustomButtonWithLinearBorder(
             onTap: () {
               Navigator.pop(context);
+              Navigator.popAndPushNamed(context, 'taxiRequestScreen');
             },
-            buttonText: "Volver al menu",
+            buttonText: "Volver al formulario de servicio",
             buttonColor: Color.fromRGBO(255, 193, 7, 1),
             buttonTextColor: Colors.white,
             marginBotton: 0,
@@ -81,8 +136,9 @@ class _ViewUserRequestState extends State<ViewUserRequest> {
           child: new CustomButtonWithLinearBorder(
             onTap: () {
               Navigator.pop(context);
+              Navigator.popAndPushNamed(context, 'taxiRequestScreen');
             },
-            buttonText: "Volver al menu",
+            buttonText: "Volver al formulario",
             buttonColor: Color.fromRGBO(255, 193, 7, 1),
             buttonTextColor: Colors.white,
             marginBotton: 0,

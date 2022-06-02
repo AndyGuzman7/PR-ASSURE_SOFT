@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:taxi_segurito_app/models/estimate_taxi.dart';
-import 'package:taxi_segurito_app/pages/v2_request_client_info_estimates/nameGalleryStateConfirmation.dart';
+import 'package:taxi_segurito_app/pages/v2_client_service_request_information/nameGalleryStateConfirmation.dart';
 import 'package:taxi_segurito_app/strategis/firebase/implementation/request_view_taxi_impl.dart';
 import 'package:taxi_segurito_app/strategis/firebase/implementation/service_request_estimates_impl.dart';
 
@@ -10,10 +11,8 @@ class ViewUserRequestFunctionality {
 
   RequestViewTaxiImpl requestViewTaxiImpl = new RequestViewTaxiImpl();
 
-  late Function() showConfirmation;
-  late Function() showTerminateService;
-
-  ViewUserRequestFunctionality();
+  void Function(EstimateTaxi estimateTaxi)? showConfirmation;
+  void Function()? showTerminateService;
 
   void initListenerNodeFirebase(String idRequest) {
     try {
@@ -27,12 +26,13 @@ class ViewUserRequestFunctionality {
 
   listenEvent(event) {
     DataSnapshot snapshot = event.snapshot;
-    print(snapshot.value);
-    if (snapshot.value == NameGalleryStateConfirmation.CANCELADO) {
-      showConfirmation();
+    EstimateTaxi estimateTaxi = EstimateTaxi.fromJson(snapshot.value);
+    print(estimateTaxi.estadoTaxi);
+    if (estimateTaxi.estadoTaxi == NameGalleryStateConfirmation.CANCELADO) {
+      showConfirmation!(estimateTaxi);
     }
-    if (snapshot.value == NameGalleryStateConfirmation.FINALIZADO) {
-      showTerminateService();
+    if (estimateTaxi.estadoTaxi == NameGalleryStateConfirmation.FINALIZADO) {
+      showTerminateService!();
     }
   }
 }
