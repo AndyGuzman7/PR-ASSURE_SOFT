@@ -6,6 +6,8 @@ import 'package:taxi_segurito_app/components/buttons/CustomButton.dart';
 import 'package:taxi_segurito_app/components/slider/slider.dart';
 import 'package:taxi_segurito_app/models/client_request.dart';
 import 'package:taxi_segurito_app/pages/v2_taxi_request/taxi_request_functionality.dart';
+import 'package:taxi_segurito_app/pages/v2_taxi_request/widgets/view_map.dart';
+
 import 'package:taxi_segurito_app/services/sessions_service.dart';
 import '../../components/inputs/CustomTextField.dart';
 import '../../validators/TextFieldValidators.dart';
@@ -18,81 +20,11 @@ class TaxiRequestPage extends StatefulWidget {
 }
 
 class _PruebaState extends State<TaxiRequestPage> {
-  Map<MarkerId, Marker> _markers = {};
-  Set<Marker> get markers => _markers.values.toSet();
   late CustomTextField fieldPassengers;
   late CustomSlider customSlider;
   Location location = Location();
   TaxiRequestFunctionality taxiRequestFunctionality =
       new TaxiRequestFunctionality();
-  late LatLng latLngOrigen;
-  late LatLng latLngDestino = LatLng(-0.000327615289788, -0.00522494279294);
-
-  late bool _serviceEnabled;
-  late PermissionStatus _permissionGranted;
-
-  Set<Marker> _createMarker(LatLng locationOrigin) {
-    _markers[MarkerId('Origin')] = new Marker(
-        markerId: MarkerId('Origin'),
-        position: LatLng(locationOrigin.latitude, locationOrigin.longitude),
-        draggable: true,
-        icon: pinLocationIconUser,
-        infoWindow: InfoWindow(title: "Origin"),
-        onDragEnd: (newPosition) {
-          latLngOrigen = LatLng(newPosition.latitude, newPosition.longitude);
-        });
-
-    _markers[MarkerId('Destine')] = new Marker(
-        markerId: MarkerId('Destine'),
-        position: latLngDestino,
-        draggable: true,
-        icon: pinLocationIconCar,
-        infoWindow: InfoWindow(title: "Destine"),
-        onDragEnd: (newPosition) {
-          latLngDestino = LatLng(newPosition.latitude, newPosition.longitude);
-        });
-
-    return markers;
-  }
-
-  Future<void> initUbicacion() async {
-    _serviceEnabled = await location.serviceEnabled();
-
-    if (!_serviceEnabled) {
-      _serviceEnabled = await location.requestService();
-      if (!_serviceEnabled) {
-        return;
-      }
-    }
-    _permissionGranted = await location.hasPermission();
-
-    if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await location.requestPermission();
-      if (_permissionGranted != PermissionStatus.granted) {
-        return;
-      }
-    }
-  }
-
-  late BitmapDescriptor pinLocationIconUser, pinLocationIconCar;
-  @override
-  void initState() {
-    super.initState();
-
-    setCustomMapPin();
-    initUbicacion();
-
-    //taxiRequestFunctionality.initFirebase();
-  }
-
-  void setCustomMapPin() async {
-    pinLocationIconUser = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(size: Size(35, 35)),
-        'assets/images/location_user.png');
-    pinLocationIconCar = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(size: Size(35, 35)),
-        'assets/images/location_car.png');
-  }
 
   Color colorMain = Color.fromRGBO(255, 193, 7, 1);
 
@@ -100,6 +32,7 @@ class _PruebaState extends State<TaxiRequestPage> {
   Widget build(BuildContext context) {
     taxiRequestFunctionality.context = context;
     final _formKey = GlobalKey<FormState>();
+    final taxiRequestMap = new ViewMap();
 
     bool registerRequest() {
       if (_formKey.currentState!.validate()) {
@@ -111,6 +44,9 @@ class _PruebaState extends State<TaxiRequestPage> {
     final btnRegister = new CustomButton(
       onTap: () {
         if (registerRequest()) {
+          late LatLng latLngOrigen = taxiRequestMap.getLocationOrigen();
+          late LatLng latLngDestino = taxiRequestMap.getLocationDestino();
+
           print("se quire enviar");
           ClienRequest clienRequest = new ClienRequest(
               0,
@@ -162,71 +98,39 @@ class _PruebaState extends State<TaxiRequestPage> {
         child: title);
 
     return Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          title: Text('Formulario de servicio'),
-        ),
-        body: Column(
+      backgroundColor: Colors.white,
+      resizeToAvoidBottomInset: true,
+      appBar: AppBar(),
+      body: Container(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Row(
-              children: [
-                Form(
-                    key: _formKey,
-                    child: Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        //CustomFieldText Passengers
-                        child: Column(
-                          children: [
-                            containerTitle,
-                            fieldPassengers,
-                            Container(
-                              child: Text("Rango de Busqueda",
-                                  textAlign: TextAlign.right),
-                            ),
-                            customSlider,
-                            btnRegister
-                          ],
-                        ),
+            Form(
+              key: _formKey,
+              child: Expanded(
+                  child: Container(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      containerTitle,
+                      fieldPassengers,
+                      Container(
+                        child: Text("Rango de Busqueda",
+                            textAlign: TextAlign.right),
                       ),
-                    ))
-              ],
-            ),
-
-            //Mapa
-            FutureBuilder(
-              future: location.getLocation(),
-              builder: (_, AsyncSnapshot<LocationData> snapshot) {
-                print(snapshot.hasData);
-                if (snapshot.hasData) {
-                  final locat = snapshot.data;
-                  LatLng locationOri =
-                      LatLng(locat?.latitude ?? 0.0, locat?.longitude ?? 0.0);
-                  latLngOrigen = locationOri;
-                  latLngDestino = LatLng(
-                      (latLngOrigen.latitude + latLngDestino.latitude),
-                      (latLngOrigen.longitude + latLngDestino.longitude));
-                  print("respuesta " + locationOri.latitude.toString());
-
-                  return Expanded(
-                      child: GoogleMap(
-                    initialCameraPosition: CameraPosition(
-                        target:
-                            LatLng(locationOri.latitude, locationOri.longitude),
-                        zoom: 15),
-                    onMapCreated: (GoogleMapController controller) {},
-                    mapToolbarEnabled: false,
-                    compassEnabled: false,
-                    myLocationEnabled: true,
-                    markers: _createMarker(locationOri),
-                    mapType: MapType.normal,
-                  ));
-                } else {
-                  return Center(child: CircularProgressIndicator());
-                }
-              },
+                      customSlider,
+                      btnRegister,
+                      Column(children: [taxiRequestMap]),
+                    ],
+                  ),
+                ),
+              )),
             ),
           ],
-        ));
+        ),
+      ),
+    );
   }
 }

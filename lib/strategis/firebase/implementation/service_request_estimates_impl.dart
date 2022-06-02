@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:taxi_segurito_app/models/estimate_taxi.dart';
 import 'package:taxi_segurito_app/strategis/firebase/implementation/firebaseConnection.dart';
+import 'package:taxi_segurito_app/strategis/firebase/implementation/taxi_impl.dart';
 
 import 'package:taxi_segurito_app/strategis/firebase/interface/IServiceRequestEstimates.dart';
 import 'package:taxi_segurito_app/strategis/firebase/nodeNameGallery.dart';
@@ -59,24 +60,44 @@ class ServiceRequestEstimatesImpl extends IServiceRequestEstimates {
   }
 
   @override
-  Stream<Event> getConfirmationEvent(idFirebase) {
+  Stream<Event> getConfirmationClientEvent(idFirebase) {
     return connection
         .reference()
         .child(NodeNameGallery.SERVICEREQUESTESTIMATELIST)
         .child(idFirebase)
-        .child('estado')
+        .child('estadoCliente')
         .onValue;
   }
 
   @override
-  Future<bool> cancelEstimate(value, motivo, status) async {
+  Future<bool> cancelEstimateClient(idFirebase, status) async {
+    bool success = false;
+    try {
+      await connection
+          .reference()
+          .child(NodeNameGallery.SERVICEREQUESTESTIMATELIST)
+          .child(idFirebase)
+          .update({'estadoCliente': status}).then(
+        (_) async {
+          success = true;
+        },
+      );
+      return success;
+    } catch (e) {
+      log(e.toString());
+      return false;
+    }
+  }
+
+  //Terminate service: update estadoCliente y estadoTaxi
+  Future<bool> terminateService(value, status) async {
     bool success = false;
     try {
       await connection
           .reference()
           .child(NodeNameGallery.SERVICEREQUESTESTIMATELIST)
           .child(value)
-          .update({'estado': status, 'motivoCancelacion': motivo}).then(
+          .update({'estadoCliente': status, 'estadoTaxi': status}).then(
         (_) async {
           success = true;
         },
@@ -89,14 +110,69 @@ class ServiceRequestEstimatesImpl extends IServiceRequestEstimates {
   }
 
   @override
-  Future<bool> confirmateEstimate(value, status) async {
+  Future<bool> confirmateEstimateClient(value, status) async {
     bool success = false;
     try {
       await connection
           .reference()
           .child(NodeNameGallery.SERVICEREQUESTESTIMATELIST)
           .child(value)
-          .update({'estado': status}).then(
+          .update({'estadoCliente': status}).then(
+        (_) async {
+          success = true;
+        },
+      );
+      return success;
+    } catch (e) {
+      log(e.toString());
+      return false;
+    }
+  }
+
+  @override
+  Stream<Event> getConfirmationTaxiEvent(idFirebase) {
+    return connection
+        .reference()
+        .child(NodeNameGallery.SERVICEREQUESTESTIMATELIST)
+        .child(idFirebase)
+        .child('estadoTaxi')
+        .onValue;
+  }
+
+  @override
+  Future<bool> confirmateEstimateTaxi(EstimateTaxi estimateTaxi, status) async {
+    bool success = false;
+    try {
+      await connection
+          .reference()
+          .child(NodeNameGallery.SERVICEREQUESTESTIMATELIST)
+          .child(estimateTaxi.idFirebase)
+          .update({'estadoTaxi': status}).then(
+        (_) async {
+          TaxiImpl taxiImpl = new TaxiImpl();
+          taxiImpl
+              .updateStatusTaxi(estimateTaxi.idUserTaxi, 'Ocupado')
+              .then((value) {
+            success = true;
+          });
+        },
+      );
+      return success;
+    } catch (e) {
+      log(e.toString());
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> cancelEstimateTaxi(value, motivo, status) async {
+    bool success = false;
+    try {
+      await connection
+          .reference()
+          .child(NodeNameGallery.SERVICEREQUESTESTIMATELIST)
+          .child(value)
+          .update({'estadoTaxi': status, 'motivoCancelacion': motivo}).then(
         (_) async {
           success = true;
         },

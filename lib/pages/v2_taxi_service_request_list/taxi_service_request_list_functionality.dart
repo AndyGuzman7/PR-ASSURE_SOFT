@@ -1,14 +1,17 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:location/location.dart';
 import 'package:taxi_segurito_app/models/client_request.dart';
 import 'package:taxi_segurito_app/models/estimate_taxi.dart';
-import 'package:taxi_segurito_app/pages/v2_request_client_info_estimates/nameGalleryStateConfirmation.dart';
+import 'package:taxi_segurito_app/pages/v2_client_service_request_information/nameGalleryStateConfirmation.dart';
+import 'package:taxi_segurito_app/pages/v2_view_taxi_request/view_taxi_request.dart';
 import 'package:taxi_segurito_app/strategis/firebase/implementation/service_request_estimates_impl.dart';
 import 'package:taxi_segurito_app/strategis/firebase/implementation/taxi_service_request_impl.dart';
 
 class TaxiServiceRequestListPageFunctionality {
   List<ClienRequest> listRequest2 = [];
+  late BuildContext context;
 
   late Location location = new Location();
   late bool _serviceEnabled;
@@ -45,7 +48,7 @@ class TaxiServiceRequestListPageFunctionality {
     for (EstimateTaxi item in list) {
       serviceRequestEstimatesImpl = new ServiceRequestEstimatesImpl();
       serviceRequestEstimatesImpl
-          .getConfirmationEvent(item.idFirebase)
+          .getConfirmationClientEvent(item.idFirebase)
           .listen((event) {
         listenEvent(event, item);
       });
@@ -57,6 +60,24 @@ class TaxiServiceRequestListPageFunctionality {
     if (snapshot.value == NameGalleryStateConfirmation.CONFIRMADO) {
       showConfirmation(estimateTaxi);
     }
+  }
+
+  void confirmationService(EstimateTaxi estimateTaxi) {
+    serviceRequestEstimatesImpl
+        .confirmateEstimateTaxi(
+            estimateTaxi, NameGalleryStateConfirmation.CONFIRMADO)
+        .then((value) {
+      if (value) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ViewTaxiRequest(
+              estimate: estimateTaxi,
+            ),
+          ),
+        );
+      }
+    });
   }
 
   List<ClienRequest> filtreRequestClientZoneRange(List<ClienRequest> value) {

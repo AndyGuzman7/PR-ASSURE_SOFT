@@ -150,6 +150,7 @@ class _DriverLoginPageState extends State<LogInDriverPage> {
                       CustomButton(
                         onTap: () async {
                           if (_formKey.currentState!.validate()) {
+                            FocusScope.of(context).unfocus();
                             functionality.validateLogIn(Driver.logInDriver(
                                 _email.value.text, _pass.value.text));
                           }

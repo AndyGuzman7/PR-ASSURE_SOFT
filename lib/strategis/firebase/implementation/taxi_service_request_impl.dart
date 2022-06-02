@@ -45,13 +45,7 @@ class TaxiServiceRequestImpl extends ITaxiServiceRequest {
           .remove()
           .then(
         (_) async {
-          var clienRequest = (await connection
-                  .reference()
-                  .child(NodeNameGallery.TAXISERVICEREQUESTLIST + "/$key")
-                  .once())
-              .values;
-
-          if (clienRequest == null) success = true;
+          success = true;
         },
       );
       return success;
@@ -107,12 +101,7 @@ class TaxiServiceRequestImpl extends ITaxiServiceRequest {
     return listRequestPreview;
   }
 
-  @override
-  Future<List<ClienRequest>> getNode() {
-    // TODO: implement getNode
-    throw UnimplementedError();
-  }
-
+//Get data ClientRequest
   @override
   Future<ClienRequest> getNodeItem(serviceRequestId) async {
     ClienRequest clienRequest = new ClienRequest.init();
@@ -131,14 +120,4 @@ class TaxiServiceRequestImpl extends ITaxiServiceRequest {
       return clienRequest;
     }
   }
-
-  /** Future<DataSnapshot> getRequest() async {
-    String? requestID = widget.serviceRequestId;
-
-    return FirebaseDatabase.instance
-        .reference()
-        .child("Request/$requestID")
-        .once();
-  }
- */
 }

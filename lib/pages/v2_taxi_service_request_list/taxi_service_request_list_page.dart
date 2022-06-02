@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:taxi_segurito_app/components/buttons/CustomButtonWithLinearBorder.dart';
 import 'package:taxi_segurito_app/models/client_request.dart';
 import 'package:taxi_segurito_app/models/estimate_taxi.dart';
-import 'package:taxi_segurito_app/pages/v2_list_request_client/taxi_service_request_list_functionality.dart';
-import 'package:taxi_segurito_app/pages/v2_list_request_client/request_decision_functionality.dart';
-import 'package:taxi_segurito_app/pages/v2_list_request_client/widgets/request_list.dart';
-import 'package:taxi_segurito_app/pages/v2_list_request_client/widgets/request_list_item.dart';
-import 'package:taxi_segurito_app/pages/v2_request_client_info_estimates/client_service_request_information_page.dart';
-import 'package:taxi_segurito_app/strategis/firebase/implementation/service_request_estimates_impl.dart';
+import 'package:taxi_segurito_app/pages/v2_client_service_request_information/client_service_request_information_page.dart';
+
+import 'package:taxi_segurito_app/pages/v2_taxi_service_request_list/taxi_service_request_list_functionality.dart';
+import 'package:taxi_segurito_app/pages/v2_taxi_service_request_list/widgets/request_list.dart';
+import 'package:taxi_segurito_app/pages/v2_taxi_service_request_list/widgets/request_list_item.dart';
 
 class TaxiServiceRequestListPage extends StatefulWidget {
   TaxiServiceRequestListPage({Key? key}) : super(key: key);
@@ -27,9 +26,6 @@ class _TaxiServiceRequestListPageState
   late String idUserTaxista = "-N1vHdpBe2km7i6xJbkz";
   late bool estadoSolicitud = false;
 
-  RequestDecisionFunctionality requestDecisionFunctionality =
-      new RequestDecisionFunctionality();
-
   Color colorMain = Color.fromRGBO(255, 193, 7, 1);
   Color colorMainDanger = Color.fromRGBO(242, 78, 30, 1);
   Color colorMainNull = Color.fromARGB(255, 244, 123, 123);
@@ -39,7 +35,7 @@ class _TaxiServiceRequestListPageState
   @override
   void initState() {
     super.initState();
-    requestDecisionFunctionality.initFirebase();
+
     requestList.listRequest = [];
     listRequestClientFunctionality
         .initServiceUbicationPermisson()
@@ -146,8 +142,7 @@ class _TaxiServiceRequestListPageState
 
   @override
   Widget build(BuildContext context) {
-    ServiceRequestEstimatesImpl serviceRequestEstimatesImpl =
-        new ServiceRequestEstimatesImpl();
+    listRequestClientFunctionality.context = context;
     listRequestClientFunctionality.showConfirmation = (value) {
       showAlert(value);
     };
@@ -155,7 +150,7 @@ class _TaxiServiceRequestListPageState
     requestList.setCallbak = (ClienRequest value) async {
       print(value.idFirebase);
 
-      final result = await Navigator.push(
+      EstimateTaxi? result = await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => ClientServiceRequestInformationPage(
@@ -164,7 +159,7 @@ class _TaxiServiceRequestListPageState
         ),
       );
 
-      listEstimates.add(result);
+      if (result != null) listEstimates.add(result);
       listRequestClientFunctionality.listenConfirmationClient(listEstimates);
     };
 
@@ -227,72 +222,75 @@ class _TaxiServiceRequestListPageState
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(25),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(25),
+          ),
+        ),
+        titleTextStyle: TextStyle(
+          color: Colors.black,
+          fontSize: 18,
+          fontWeight: FontWeight.w700,
+        ),
+        title: Text(
+          "Se acepto la cotizacion",
+          textAlign: TextAlign.center,
+        ),
+        backgroundColor: Colors.white,
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            boxData(
+              Text(
+                'Estimacion: ' + estimateTaxi.estimacion.toString(),
+              ),
             ),
-          ),
-          titleTextStyle: TextStyle(
-            color: Colors.black,
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-          ),
-          title: Text(
-            "Se acepto la cotizacion",
-            textAlign: TextAlign.center,
-          ),
-          backgroundColor: Colors.white,
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              boxData(
-                Text(
-                  'Estimacion: ' + estimateTaxi.estimacion.toString(),
-                ),
-              ),
-              boxData(Text(
+            boxData(
+              Text(
                 'Distancia: ' + "23" + ' Km',
-              )),
-              Row(
-                children: [
-                  Expanded(
-                    child: CustomButtonWithLinearBorder(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        buttonBorderColor: colorMainNull,
-                        marginBotton: 0,
-                        marginLeft: 0,
-                        marginRight: 0,
-                        marginTop: 0,
-                        buttonText: "Rechazar",
-                        buttonColor: Colors.white,
-                        buttonTextColor: colorMainNull),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                    child: CustomButtonWithLinearBorder(
-                        onTap: () {
-                          requestDecisionFunctionality
-                              .updateStatusRequest(idUserTaxista);
-                          Navigator.pop(context);
-                        },
-                        buttonBorderColor: colorMainDanger,
-                        marginBotton: 0,
-                        marginLeft: 0,
-                        marginRight: 0,
-                        marginTop: 0,
-                        buttonText: "Aceptar",
-                        buttonColor: Colors.white,
-                        buttonTextColor: colorMainDanger),
-                  ),
-                ],
               ),
-            ],
-          )),
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: CustomButtonWithLinearBorder(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      buttonBorderColor: colorMainNull,
+                      marginBotton: 0,
+                      marginLeft: 0,
+                      marginRight: 0,
+                      marginTop: 0,
+                      buttonText: "Rechazar",
+                      buttonColor: Colors.white,
+                      buttonTextColor: colorMainNull),
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                  child: CustomButtonWithLinearBorder(
+                      onTap: () {
+                        Navigator.pop(context);
+                        listRequestClientFunctionality
+                            .confirmationService(estimateTaxi);
+                      },
+                      buttonBorderColor: colorMainDanger,
+                      marginBotton: 0,
+                      marginLeft: 0,
+                      marginRight: 0,
+                      marginTop: 0,
+                      buttonText: "Aceptar",
+                      buttonColor: Colors.white,
+                      buttonTextColor: colorMainDanger),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

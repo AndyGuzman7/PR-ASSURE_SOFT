@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:taxi_segurito_app/models/client_request.dart';
-import 'package:taxi_segurito_app/pages/v2_list_request_client/widgets/request_list_item_functionality.dart';
+import 'package:taxi_segurito_app/pages/v2_taxi_service_request_list/widgets/request_list_item_functionality.dart';
 
 class RequestListItem extends StatefulWidget {
   void Function(ClienRequest clienRequest) callbackRequest;
