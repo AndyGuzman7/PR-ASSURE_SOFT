@@ -13,6 +13,7 @@ import 'package:taxi_segurito_app/pages/contacList/list_contact.dart';
 import 'package:taxi_segurito_app/pages/menu/driver_menu.dart';
 import 'package:taxi_segurito_app/pages/v2_list_request_client/taxi_service_request_list_page.dart';
 import 'package:taxi_segurito_app/pages/v2_list_request_driver/taxi_services_estimate_list_page.dart';
+import 'package:taxi_segurito_app/pages/v2_location_taxi/v2_receive_location/receive_location_driver.dart';
 import 'package:taxi_segurito_app/pages/v2_location_taxi/v2_send_my_location/send_my_location.dart';
 import 'package:taxi_segurito_app/pages/v2_request_client_info_estimates/client_service_request_information_page.dart';
 import 'package:taxi_segurito_app/pages/v2_taxi_request/taxi_request_page.dart';
@@ -99,7 +100,7 @@ class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
       theme: ThemeData(primarySwatch: Colors.amber),
       debugShowCheckedModeBanner: false,
       //initialRoute: routeInitial,
-      home: SendMyUbication(),
+      home: ReceiveLocationDriver(),
       routes: {
         'sendMyUbication': (_) => SendMyUbication(),
         'taxiServicesEstimateListPage': (BuildContext contextss) =>

@@ -1,3 +1,5 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:location/location.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:taxi_segurito_app/strategis/firebase/implementation/firebaseConnection.dart';
@@ -36,5 +38,14 @@ class SendLocationDriver implements ISendLocation {
       print(ex);
       return false;
     }
+  }
+
+  @override
+  Future<Stream<Event>> getNodeEvent() async{
+    return await  connection
+        .reference()
+        .child(NodeNameGallery.SENDMYUBICATIONDRIVER)
+        .child('latitude')
+        .onValue;
   }
 }
