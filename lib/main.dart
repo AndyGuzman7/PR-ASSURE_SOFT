@@ -7,6 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:typed_data';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:taxi_segurito_app/SRC/providers/push_notifications_provider.dart';
 import 'package:taxi_segurito_app/pages/alarm_manager/notification_alarm.dart';
@@ -46,11 +47,7 @@ import 'package:taxi_segurito_app/services/notifications.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Firebase.initializeApp();
-
-  
-  
-
-  NotificationsFirebase notificationClient = new NotificationsFirebase();
+  FirebaseMessaging.onBackgroundMessage(_messageHandler);
   
   {
 
@@ -124,6 +121,10 @@ void main() async {
     }
   }
   runApp(app);
+}
+
+Future<void> _messageHandler(RemoteMessage message) async {
+  print('background message ${message.notification!.body}');
 }
 
 void notificacion() async {
@@ -213,6 +214,8 @@ class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
   @override
   void initState() {
     super.initState();
+
+
     PushNotificationService.initializedApp();
     PushNotificationService.subscribeToTopic();
 

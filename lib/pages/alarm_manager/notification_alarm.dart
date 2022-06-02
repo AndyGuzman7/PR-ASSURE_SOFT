@@ -23,18 +23,31 @@ class Notification1 extends StatefulWidget {
   @override
   State<Notification1> createState() => _Notification1State();
 }
-
+//https://medium.com/firebase-tips-tricks/how-to-use-firebase-cloud-messaging-in-flutter-a15ca69ff292
 class _Notification1State extends State<Notification1> {
   bool isOn = false;
-  late NotificationsFirebase notificationsFirebase;
+  late FirebaseMessaging messaging;
+  final NotificationsFirebase notificationsFirebase = new NotificationsFirebase();
   late Clientuser client;
   void initState() {
     super.initState();
-    notificationsFirebase = new NotificationsFirebase();
-    //AndroidAlarmManager.periodic(Duration(seconds: 1), id, alarmaMostrar);
+
+    messaging = FirebaseMessaging.instance;
+    notificationsFirebase.subscribeToTopic(Topic: 'ConfirmEstimate');
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage event) {
+        print("message recieved");
+        print(event.notification!.body);
+    });
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      print('Message clicked!');
+    });
+
   }
 
-  Future<void> setupInteractedMessage() async {
+
+
+ /* Future<void> setupInteractedMessage() async {
     // Get any messages which caused the application to open from
     // a terminated state.
     RemoteMessage? initialMessage =
@@ -57,7 +70,7 @@ class _Notification1State extends State<Notification1> {
         
       );
     }
-  }
+  }*/
 
   
 
@@ -102,8 +115,14 @@ class _Notification1State extends State<Notification1> {
                     });
                     if(isOn==true)
                     {
-                      sendNotification();
-                      callBackTask();
+                     String title = "Cotizacion aceptada";
+                      String body = "La cotizacion se acepto";
+                      String token = "e53nf4hyRVGCGbJ9-1wIrP:APA91bH8JqmbIBng_R4xh68yJgO3GUM5LVTEq75afZwE-MU5CCjC604UNmwAWhwoBwWx5m2st3ZdGQ_G6sXVP_fRf-fFTnwVg0a-iNX6HwIdLEIWizsVkVik_PabugvdbaihZSDLvzgh";
+                      String client = "Marco Aurelio";
+                      notificationsFirebase.sendNotificationToTaxi(Token: token, Title: title, Body: body, Client: client);
+                      //sendNotification();
+                      //notificationsFirebase.sendMessage();
+                      //callBackTask();
                       //AndroidAlarmManager.oneShot(Duration(seconds: 2), id, alarmaMostrar);                    
                     }
                     else
@@ -129,8 +148,8 @@ sendNotification() {
 
   String title = "Cotizacion aceptada";
   String body = "La cotizacion se acepto";
-  NotificationsFirebase notificationClient = new NotificationsFirebase();
-  notificationClient.confirmClient("Lucky luciano", title, body);
+ // NotificationsFirebase notificationClient = new NotificationsFirebase();
+  //notificationClient.confirmClient("Lucky luciano", title, body);
 }
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
@@ -169,15 +188,14 @@ void notificationClient() {
     });
 }
 
-
 void callBackTask(){
   {
     final FlutterLocalNotificationsPlugin notificacion = new FlutterLocalNotificationsPlugin();
     int id = 0;
     String title = "Cotizacion aceptada";
     String body = "La cotizacion se acepto";
-    NotificationsFirebase notificationClient = new NotificationsFirebase();
-    notificationClient.confirmClient("Lucky luciano", title, body);
+    //NotificationsFirebase notificationClient = new NotificationsFirebase();
+    //notificationClient.confirmClient("Lucky luciano", title, body);
     const AndroidNotificationDetails notificationDetails = AndroidNotificationDetails(
       'id',
       'channel1',

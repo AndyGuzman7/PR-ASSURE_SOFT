@@ -23,7 +23,7 @@ environment:
 dependencies:
   google_sign_in: ^5.1.0
   google_maps_flutter:
-  firebase_messaging:
+  firebase_messaging: any
   firebase_auth: ^3.1.1
   firebase_database: ^8.0.0
   location:

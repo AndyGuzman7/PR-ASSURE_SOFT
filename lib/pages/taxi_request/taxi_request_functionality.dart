@@ -35,7 +35,7 @@ class TaxiRequestFunctionality {
     print(key);
     LatLng latLng =
         new LatLng(clienRequest.latitudOrigen, clienRequest.longitudOrigen);
-    notificationsFirebase.sendNotification(latLng);
+    //notificationsFirebase.sendNotification(latLng);
   }
 
   Future<void> initUbicacion() async {
