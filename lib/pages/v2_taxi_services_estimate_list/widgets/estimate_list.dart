@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:taxi_segurito_app/models/estimate_taxi.dart';
-import 'package:taxi_segurito_app/pages/v2_list_request_driver/widgets/estimate_list_item.dart';
+import 'package:taxi_segurito_app/pages/v2_taxi_services_estimate_list/widgets/estimate_list_item.dart';
 
 class EstimateList extends StatefulWidget {
   List<EstimateTaxi>? listEstimates = [];

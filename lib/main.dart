@@ -1,7 +1,4 @@
-//import 'dart:html';
 import 'dart:convert';
-import 'dart:io';
-import 'dart:async';
 import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -11,11 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:taxi_segurito_app/SRC/providers/push_notifications_provider.dart';
 import 'package:taxi_segurito_app/pages/contacList/list_contact.dart';
 import 'package:taxi_segurito_app/pages/menu/driver_menu.dart';
-import 'package:taxi_segurito_app/pages/v2_list_request_client/taxi_service_request_list_page.dart';
-import 'package:taxi_segurito_app/pages/v2_list_request_driver/taxi_services_estimate_list_page.dart';
+import 'package:taxi_segurito_app/pages/v2_client_service_request_information/client_service_request_information_page.dart';
 import 'package:taxi_segurito_app/pages/v2_location_taxi/v2_send_my_location/send_my_location.dart';
-import 'package:taxi_segurito_app/pages/v2_request_client_info_estimates/client_service_request_information_page.dart';
+
 import 'package:taxi_segurito_app/pages/v2_taxi_request/taxi_request_page.dart';
+import 'package:taxi_segurito_app/pages/v2_taxi_service_request_list/taxi_service_request_list_page.dart';
+import 'package:taxi_segurito_app/pages/v2_taxi_services_estimate_list/taxi_services_estimate_list_page.dart';
 
 import 'package:taxi_segurito_app/pages/vehicle_screen/vehicle_edit_screen.dart';
 import 'package:taxi_segurito_app/pages/vehicle_screen/vehicle_register_screen.dart';
@@ -41,6 +39,8 @@ import 'package:firebase_database/firebase_database.dart';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+import 'pages/menu/menu_client.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Firebase.initializeApp();
@@ -64,7 +64,7 @@ void main() async {
         app = AppTaxiSegurito('driverMenu', sessionName: name);
         break;
       default:
-        app = AppTaxiSegurito('scannerQr', sessionName: name);
+        app = AppTaxiSegurito('clientMenu', sessionName: name);
         break;
     }
   }
@@ -98,8 +98,8 @@ class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
       title: "Taxi Segurito",
       theme: ThemeData(primarySwatch: Colors.amber),
       debugShowCheckedModeBanner: false,
-      //initialRoute: routeInitial,
-      home: SendMyUbication(),
+      initialRoute: routeInitial,
+      //home: SendMyUbication(),
       routes: {
         'sendMyUbication': (_) => SendMyUbication(),
         'taxiServicesEstimateListPage': (BuildContext contextss) =>
@@ -115,6 +115,7 @@ class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
         'firstScreen': (_) => MainWindow(),
         'scannerQr': (_) => ScannerQrPage(name: this.sessionName),
         'ownerMenu': (_) => OwnerMenu(name: this.sessionName),
+        'clientMenu': (_) => ClientMenu(name: this.sessionName),
         'adminMenu': (_) => AdminMenu(name: this.sessionName),
         'driverMenu': (_) => DriverMenu(name: this.sessionName),
         'driverList': (_) => DriversListPage(),

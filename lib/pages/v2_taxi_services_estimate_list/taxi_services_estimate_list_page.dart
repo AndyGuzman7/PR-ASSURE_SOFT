@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:taxi_segurito_app/components/buttons/CustomButton.dart';
 import 'package:taxi_segurito_app/components/buttons/CustomButtonWithLinearBorder.dart';
+import 'package:taxi_segurito_app/components/slider/slider.dart';
 import 'package:taxi_segurito_app/models/client_request.dart';
 import 'package:taxi_segurito_app/models/estimate_taxi.dart';
-
-import 'package:taxi_segurito_app/pages/v2_list_request_driver/taxi_services_estimate_list_functionality.dart';
-import 'package:taxi_segurito_app/pages/v2_list_request_driver/widgets/estimate_list.dart';
-
-import '../../components/buttons/CustomButton.dart';
-import '../../components/slider/slider.dart';
+import 'package:taxi_segurito_app/pages/v2_taxi_services_estimate_list/taxi_services_estimate_list_functionality.dart';
+import 'package:taxi_segurito_app/pages/v2_taxi_services_estimate_list/widgets/estimate_list.dart';
+import 'package:taxi_segurito_app/pages/v2_view_user_request/view_user_request.dart';
 
 class TaxiServicesEstimateListPage extends StatefulWidget {
   String idRequestService;
@@ -249,6 +248,7 @@ class _TaxiServicesEstimateListPageState
   }
 
   showInformationSelectedEstimate(EstimateTaxi estimateTaxi) {
+    selectedEstimateTaxi = estimateTaxi;
     final btnConfirm = new CustomButtonWithLinearBorder(
       onTap: () {
         Navigator.pop(context);
@@ -327,7 +327,16 @@ class _TaxiServicesEstimateListPageState
             Expanded(
               child: CustomButtonWithLinearBorder(
                   onTap: () {
+                    //routeInitial
                     Navigator.pop(context);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ViewUserRequest(
+                            idRequest: selectedEstimateTaxi.idFirebase,
+                            idTaxi: selectedEstimateTaxi.idUserTaxi,
+                          ),
+                        ));
                   },
                   buttonBorderColor: colorMainDanger,
                   marginBotton: 0,
