@@ -89,6 +89,26 @@ class ServiceRequestEstimatesImpl extends IServiceRequestEstimates {
     }
   }
 
+  //Terminate service: update estadoCliente y estadoTaxi
+  Future<bool> terminateService(value, status) async {
+    bool success = false;
+    try {
+      await connection
+          .reference()
+          .child(NodeNameGallery.SERVICEREQUESTESTIMATELIST)
+          .child(value)
+          .update({'estadoCliente': status, 'estadoTaxi': status}).then(
+        (_) async {
+          success = true;
+        },
+      );
+      return success;
+    } catch (e) {
+      log(e.toString());
+      return false;
+    }
+  }
+
   @override
   Future<bool> confirmateEstimateClient(value, status) async {
     bool success = false;
