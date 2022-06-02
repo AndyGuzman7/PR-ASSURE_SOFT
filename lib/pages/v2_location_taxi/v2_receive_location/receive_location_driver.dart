@@ -59,15 +59,15 @@ class _ReceiveLocationDriver extends State<ReceiveLocationDriver> {
             );
           } else {
             return Center(
-              child: Text("aaaa"),
-            ); //getNodeItemInformation(); //Center(
-            //     child: GoogleMap(
-            //   initialCameraPosition: CameraPosition(
-            //       target: LatLng(-19.036639, -65.2592666), zoom: 15),
-            //   mapToolbarEnabled: false,
-            //   mapType: MapType.normal,
-            // )
-            //);
+            //   child: Text("aaaa"),
+            // ); //getNodeItemInformation(); //Center(
+                child: GoogleMap(
+              initialCameraPosition: CameraPosition(
+                  target: LatLng(-19.036639, -65.2592666), zoom: 15),
+              mapToolbarEnabled: false,
+              mapType: MapType.normal,
+            )
+            );
           }
           //GoogleMap(initialCameraPosition: CameraPosition(target: LatLng());
         },
