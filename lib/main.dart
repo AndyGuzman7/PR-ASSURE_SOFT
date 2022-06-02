@@ -44,13 +44,42 @@ import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:workmanager/workmanager.dart';
 import 'package:taxi_segurito_app/services/notifications.dart';
 
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  print('Handling a background message ${message.messageId}');
+  print(message.data);
+  flutterLocalNotificationsPlugin.show(
+      message.data.hashCode,
+      message.data['notificaction']['title'],
+      message.data['notificaction']['body'],
+      NotificationDetails(
+        android: AndroidNotificationDetails(
+          channel.id,
+          channel.name,
+          channelDescription: channel.description,
+          importance: Importance.high,
+          playSound: true,
+          enableVibration: false,
+          color: Colors.amberAccent,
+        ),
+      ));
+}
+
+const AndroidNotificationChannel channel = AndroidNotificationChannel(
+  'high_importance_channel', // id
+  'High Importance Notifications', // title
+  description: 'This channel is used for important notifications.', // description
+  importance: Importance.high,
+  playSound: true
+);
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Firebase.initializeApp();
-  FirebaseMessaging.onBackgroundMessage(_messageHandler);
+  await Firebase.initializeApp();
   
-  {
-
   //configuraciones para las notificaciones
   FlutterLocalNotificationsPlugin plugin = FlutterLocalNotificationsPlugin();
   const AndroidInitializationSettings settings = AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -80,9 +109,8 @@ void main() async {
     frequency: Duration(minutes: 10),
     
   );
-  }
 
-  AndroidAlarmManager.initialize();
+ /* AndroidAlarmManager.initialize();
   AndroidAlarmManager.periodic(
     Duration(seconds: 5), 
     1, 
@@ -90,7 +118,17 @@ void main() async {
     exact: true, 
     wakeup: true, 
     rescheduleOnReboot: true,
-  );
+  );*/
+
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(channel);
+
+  
+
+
 
   HttpOverrides.global = new HttpProvider();
   SessionsService sessions = SessionsService();
@@ -123,37 +161,8 @@ void main() async {
   runApp(app);
 }
 
-Future<void> _messageHandler(RemoteMessage message) async {
-  print('background message ${message.notification!.body}');
-}
 
-void notificacion() async {
-  print("Alarma: ${DateTime.now()}");
-  final FlutterLocalNotificationsPlugin notificacion = FlutterLocalNotificationsPlugin();
 
-      const AndroidNotificationDetails notificationDetails = AndroidNotificationDetails(
-        'id',
-        'Notificacion1',
-        channelDescription: 'Notificacion ejemplo',
-        importance: Importance.max,
-        priority: Priority.high,
-        showProgress: true,
-        showWhen: false,
-      
-      );
-
-      const NotificationDetails details = NotificationDetails(
-        android: notificationDetails
-      );
-
-      await notificacion.show(
-        1,
-        'Simulacion',
-        'Es una simulacion con android alert manager',
-        details,
-        payload: 'Item1'
-      );
-}
 
 //envio de notificacion
 Future selectNotification(payload) async {
@@ -214,15 +223,44 @@ class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
   @override
   void initState() {
     super.initState();
+    
+    var initialzationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
+    var initializationSettings = InitializationSettings(android: initialzationSettingsAndroid);
+
+    flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
+      if (notification != null && android != null) {
+        flutterLocalNotificationsPlugin.show(
+            notification.hashCode,
+            notification.title,
+            notification.body,
+            NotificationDetails(
+              android: AndroidNotificationDetails(
+                channel.id,
+                channel.name,
+                channelDescription: channel.description,
+                icon: android.smallIcon,
+                importance: Importance.max,
+                priority: Priority.high,
+                playSound: true,
+                enableVibration: false,
+                color: Colors.amberAccent,
+              ),
+            ));
+      }
+    });
+    
 
 
-    PushNotificationService.initializedApp();
+    /*PushNotificationService.initializedApp();
     PushNotificationService.subscribeToTopic();
 
     PushNotificationService.messageString.listen((event) {
       print("object");
       //showNotification();
-    });
+    });*/
   }
 
   String routeInitial;

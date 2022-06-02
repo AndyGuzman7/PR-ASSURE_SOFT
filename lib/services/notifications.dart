@@ -24,7 +24,6 @@ abstract class IFcmNotification {
 
 class NotificationsFirebase extends IFcmNotification {
   final FirebaseMessaging messaging = FirebaseMessaging.instance;
-  late  RemoteMessage remoteMessage; 
   final String url = "https://fcm.googleapis.com/fcm/send";
   final String contentType = "application/json";
   final String authorization = "key=AAAAvrKm_kk:APA91bFbW-5W3MWTSOPq_Lam18qRzZNMzFT37EfOTrBvHSzkVV5Z2WJbHp2d-IzxoSuISXxWbPpHaxFJ2DuIpr_ecrICHc6dh3xQUexzaw2i6I1oBEp-Cys5dce9GGMpS2tfgZSO3Dl4";

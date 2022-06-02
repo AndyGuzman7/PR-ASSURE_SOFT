@@ -64,7 +64,9 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-
+        <meta-data
+  android:name="com.google.firebase.messaging.default_notification_channel_id"
+  android:value="high_importance_channel" />
         <service
         android:name="dev.fluttercommunity.plus.androidalarmmanager.AlarmService"
         android:permission="android.permission.BIND_JOB_SERVICE"

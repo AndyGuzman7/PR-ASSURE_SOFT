@@ -23,57 +23,19 @@ class Notification1 extends StatefulWidget {
   @override
   State<Notification1> createState() => _Notification1State();
 }
-//https://medium.com/firebase-tips-tricks/how-to-use-firebase-cloud-messaging-in-flutter-a15ca69ff292
+
 class _Notification1State extends State<Notification1> {
   bool isOn = false;
-  late FirebaseMessaging messaging;
   final NotificationsFirebase notificationsFirebase = new NotificationsFirebase();
   late Clientuser client;
   void initState() {
     super.initState();
 
-    messaging = FirebaseMessaging.instance;
     notificationsFirebase.subscribeToTopic(Topic: 'ConfirmEstimate');
 
-    FirebaseMessaging.onMessage.listen((RemoteMessage event) {
-        print("message recieved");
-        print(event.notification!.body);
-    });
-    FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      print('Message clicked!');
-    });
-
   }
 
-
-
- /* Future<void> setupInteractedMessage() async {
-    // Get any messages which caused the application to open from
-    // a terminated state.
-    RemoteMessage? initialMessage =
-        await FirebaseMessaging.instance.getInitialMessage();
-
-    // If the message also contains a data property with a "type" of "chat",
-    // navigate to a chat screen
-    if (initialMessage != null) {
-      _handleMessage(initialMessage);
-    }
-
-    // Also handle any interaction when the app is in the background via a
-    // Stream listener
-    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
-  }
   
-  void _handleMessage(RemoteMessage message) {
-    if (message.data['type'] == 'chat') {
-      Navigator.pushNamed(context, '/chat', 
-        
-      );
-    }
-  }*/
-
-  
-
   @override
   Widget build(BuildContext context) {
     
@@ -121,7 +83,6 @@ class _Notification1State extends State<Notification1> {
                       String client = "Marco Aurelio";
                       notificationsFirebase.sendNotificationToTaxi(Token: token, Title: title, Body: body, Client: client);
                       //sendNotification();
-                      //notificationsFirebase.sendMessage();
                       //callBackTask();
                       //AndroidAlarmManager.oneShot(Duration(seconds: 2), id, alarmaMostrar);                    
                     }
@@ -148,45 +109,10 @@ sendNotification() {
 
   String title = "Cotizacion aceptada";
   String body = "La cotizacion se acepto";
- // NotificationsFirebase notificationClient = new NotificationsFirebase();
-  //notificationClient.confirmClient("Lucky luciano", title, body);
+  NotificationsFirebase notificationClient = new NotificationsFirebase();
+  notificationClient.confirmClient("Lucky luciano", title, body);
 }
 
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-
-void notificationClient() {
-  AndroidNotificationChannel channel = AndroidNotificationChannel(
-        'high_importance_channel', // id
-        'High Importance Notifications', // title
-
-        description:
-            'This channel is used for important notifications.', // description
-        importance: Importance.high,
-        playSound: true
-  );
-      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      RemoteNotification? notification = message.notification;
-      AndroidNotification? android = message.notification?.android;
-      flutterLocalNotificationsPlugin.show(
-        notification.hashCode,
-        notification?.title,
-        notification?.body,
-        NotificationDetails(
-          android: AndroidNotificationDetails(
-              channel.id, 
-              channel.name,
-              channelDescription: channel.description,
-              importance: Importance.high,
-              color: Colors.blue,
-              playSound: true,
-              showWhen: false,
-              showProgress: true,
-              icon: android?.smallIcon,
-            ),
-        ),
-      );
-    });
-}
 
 void callBackTask(){
   {
