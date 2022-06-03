@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:taxi_segurito_app/components/buttons/CustomButtonWithLinearBorder.dart';
 import 'package:taxi_segurito_app/models/estimate_taxi.dart';
 import 'package:taxi_segurito_app/pages/v2_list_request_driver/widgets/request_list_driver_item_functionality.dart';
+import 'package:taxi_segurito_app/services/notifications.dart';
 
 class RequestListItemDriver extends StatefulWidget {
   void Function(EstimateTaxi estimateTaxi) callbackRequest;
@@ -22,18 +23,28 @@ class _RequestListItemState extends State<RequestListItemDriver> {
   RequestListItemFunctionality requestListItemFunctionality =
       new RequestListItemFunctionality();
 
+  final NotificationsFirebase notificationsFirebase = new NotificationsFirebase();
+
   @override
   Widget build(BuildContext context) {
     requestListItemFunctionality.context = context;
     Image imagedefault = new Image.asset(
       "assets/images/user_default.png",
     );
+    
+    sendNotificationConfirm(){
+      String title = "Cotizacion aceptada";
+      String body = "La cotizacion se acepto";
+      String token = "e53nf4hyRVGCGbJ9-1wIrP:APA91bH8JqmbIBng_R4xh68yJgO3GUM5LVTEq75afZwE-MU5CCjC604UNmwAWhwoBwWx5m2st3ZdGQ_G6sXVP_fRf-fFTnwVg0a-iNX6HwIdLEIWizsVkVik_PabugvdbaihZSDLvzgh";
+      String client = "Marco Aurelio";
+      notificationsFirebase.sendNotificationToTaxi(Token: token, Title: title, Body: body, Client: client);
+    }
 
-   
     //evento donde se envia el mensaje de confirmado al taxista
     final btnAceptar = new CustomButtonWithLinearBorder(
       onTap: () {
         requestListItemFunctionality.confirmationEstimate(widget.driverRequest!.idRequestTaxiFirebase);
+        sendNotificationConfirm();
         Navigator.pop(context);
       },
       buttonText: "Si",
@@ -67,6 +78,7 @@ class _RequestListItemState extends State<RequestListItemDriver> {
       );
     }
 
+
     showMessage() {
       showDialog(
         barrierDismissible: true,
@@ -83,7 +95,7 @@ class _RequestListItemState extends State<RequestListItemDriver> {
               ),
               alignment: Alignment.topLeft,
             ),
-            backgroundColor: Colors.white,
+            backgroundColor: Colors.white,  
             content: Row(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,

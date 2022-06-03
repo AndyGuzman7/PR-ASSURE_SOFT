@@ -5,8 +5,10 @@ import 'package:taxi_segurito_app/models/estimate_taxi.dart';
 import 'package:taxi_segurito_app/strategis/firebase/implementation/request_taxi_impl.dart';
 import 'package:workmanager/workmanager.dart';
 
+
 class RequestListItemFunctionality {
   late BuildContext context;
+
   RequestListItemFunctionality();
 
   String getDistance(EstimateTaxi estimateTaxi, double latitudCliente,
@@ -33,7 +35,10 @@ class RequestListItemFunctionality {
     requestTaxiImpl.updateNode(key).then((value) {
       print(value);
 
-      if (value) showSnackBar(context);
+      if (value)
+      {
+        showSnackBar(context);
+      } 
     });
   }
 
