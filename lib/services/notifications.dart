@@ -90,6 +90,7 @@ class NotificationsFirebase extends IFcmNotification {
 
   }
 
+  //metodo para enviar automaticamente notificaciones
   Future<http.Response> sendConfirmClient(to, title, body, client) async {
     try {
       final dynamic data = json.encode(

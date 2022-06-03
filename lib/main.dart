@@ -44,6 +44,7 @@ import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:workmanager/workmanager.dart';
 import 'package:taxi_segurito_app/services/notifications.dart';
 
+//metodo para el envio de notificaciones de firebase en segundo plano
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   print('Handling a background message ${message.messageId}');
@@ -65,6 +66,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
       ));
 }
 
+//configuracion para el envio del mensaje
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
   'high_importance_channel', // id
   'High Importance Notifications', // title
@@ -110,24 +112,13 @@ void main() async {
     
   );
 
- /* AndroidAlarmManager.initialize();
-  AndroidAlarmManager.periodic(
-    Duration(seconds: 5), 
-    1, 
-    notificacion, 
-    exact: true, 
-    wakeup: true, 
-    rescheduleOnReboot: true,
-  );*/
-
+  //metodo para enviar notificaciones en segundo plano
+  //enviar notificaciones desde firebase
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
-
-  
-
 
 
   HttpOverrides.global = new HttpProvider();
@@ -224,9 +215,10 @@ class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
   void initState() {
     super.initState();
     
+    //configuraciones para los permisos del dispositivo
     var initialzationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
     var initializationSettings = InitializationSettings(android: initialzationSettingsAndroid);
-
+    //configuracion para mostrar la notificacion
     flutterLocalNotificationsPlugin.initialize(initializationSettings);
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
