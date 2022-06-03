@@ -228,10 +228,12 @@ class _TaxiServiceRequestListPageState
 
 //AlertDialog confirm request
   void showAlert(EstimateTaxi estimateTaxi) {
-    getPleikSession();
+    /*getPleikSession();
     estimateTaxi.placa = pleik;
     print("AAAAAAAAAAAAAAA");
-    print(estimateTaxi);
+    print("AAAAAAAAAAAAAAA");
+    print("AAAAAAAAAAAAAAA");
+    print(estimateTaxi);*/
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
