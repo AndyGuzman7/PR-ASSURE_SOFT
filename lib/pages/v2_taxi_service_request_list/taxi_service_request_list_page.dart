@@ -7,6 +7,7 @@ import 'package:taxi_segurito_app/pages/v2_client_service_request_information/cl
 import 'package:taxi_segurito_app/pages/v2_taxi_service_request_list/taxi_service_request_list_functionality.dart';
 import 'package:taxi_segurito_app/pages/v2_taxi_service_request_list/widgets/request_list.dart';
 import 'package:taxi_segurito_app/pages/v2_taxi_service_request_list/widgets/request_list_item.dart';
+import 'package:taxi_segurito_app/services/sessions_service.dart';
 
 class TaxiServiceRequestListPage extends StatefulWidget {
   TaxiServiceRequestListPage({Key? key}) : super(key: key);
@@ -29,6 +30,8 @@ class _TaxiServiceRequestListPageState
   Color colorMain = Color.fromRGBO(255, 193, 7, 1);
   Color colorMainDanger = Color.fromRGBO(242, 78, 30, 1);
   Color colorMainNull = Color.fromARGB(255, 244, 123, 123);
+  SessionsService sessionsService = new SessionsService();
+  var pleik;
 
   TaxiServiceRequestListPageFunctionality listRequestClientFunctionality =
       new TaxiServiceRequestListPageFunctionality();
@@ -50,7 +53,8 @@ class _TaxiServiceRequestListPageState
         });
       }
     });
-
+    print("AAAAAAAAAAAAAAAAAAAAAAAASSS");
+    getPleikSession();
     refreshListKey = new GlobalKey<RefreshIndicatorState>();
     listRequest = new List<ClienRequest>.empty(growable: true);
   }
@@ -217,8 +221,17 @@ class _TaxiServiceRequestListPageState
     );
   }
 
+  Future<void> getPleikSession() async {
+    pleik = await sessionsService.getSessionValue("pleik");
+    print(pleik);
+  }
+
 //AlertDialog confirm request
   void showAlert(EstimateTaxi estimateTaxi) {
+    getPleikSession();
+    estimateTaxi.placa = pleik;
+    print("AAAAAAAAAAAAAAA");
+    print(estimateTaxi);
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
