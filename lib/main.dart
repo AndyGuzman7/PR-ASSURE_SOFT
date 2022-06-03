@@ -48,6 +48,8 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   print('Handling a background message ${message.messageId}');
   print(message.data);
+  id = message.messageId;
+  key = message.collapseKey;
   flutterLocalNotificationsPlugin.show(
       message.data.hashCode,
       message.data['notificaction']['title'],
@@ -62,7 +64,9 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
           enableVibration: false,
           color: Colors.amberAccent,
         ),
-      ));
+      ),
+      payload: message.data['notificaction']['body'],
+  );
 }
 
 //configuracion para el envio del mensaje
@@ -75,40 +79,14 @@ const AndroidNotificationChannel channel = AndroidNotificationChannel(
 );
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+String? id;
+String? key;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
-  FlutterLocalNotificationsPlugin plugin = FlutterLocalNotificationsPlugin();
-  const AndroidInitializationSettings settings = AndroidInitializationSettings('@mipmap/ic_launcher');
-  final IOSInitializationSettings iosSettings = IOSInitializationSettings();
-  final MacOSInitializationSettings macSettings = MacOSInitializationSettings();
-  final InitializationSettings initialization = InitializationSettings(
-    android: settings,
-    iOS: iosSettings,
-    macOS: macSettings
-    
-  );
-
-  await plugin.initialize(
-    initialization,
-    onSelectNotification: selectNotification
-  );
-
-  Workmanager().initialize(
-    callBackTask,
-    isInDebugMode: false,
-    
-  );
-
-  Workmanager().registerPeriodicTask(
-    "1",
-    "Key",
-    frequency: Duration(minutes: 10),
-    
-  );
-
+  //metodo para las tareas de sgundo plano
+  taskWorkManager();
   //metodo para enviar notificaciones en segundo plano
   //enviar notificaciones desde firebase
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
@@ -141,19 +119,52 @@ void main() async {
   runApp(app);
 }
 
+//metodo para mostrar notificaciones en segundo plano
+taskWorkManager() async {
+  FlutterLocalNotificationsPlugin plugin = FlutterLocalNotificationsPlugin();
+  const AndroidInitializationSettings settings = AndroidInitializationSettings('@mipmap/ic_launcher');
+  final IOSInitializationSettings iosSettings = IOSInitializationSettings();
+  final MacOSInitializationSettings macSettings = MacOSInitializationSettings();
+  final InitializationSettings initialization = InitializationSettings(
+    android: settings,
+    iOS: iosSettings,
+    macOS: macSettings
+    
+  );
+
+  await plugin.initialize(
+    initialization,
+    onSelectNotification: selectNotification
+  );
+
+  Workmanager().initialize(
+    callBackTask,
+    isInDebugMode: true,
+    
+  );
+
+  Workmanager().registerPeriodicTask(
+    id.toString(),
+    key.toString(),
+    frequency: Duration(minutes: 10),
+    initialDelay: Duration(seconds: 5),
+  );
+}
+
 //metodo para enviar notificaciones mediante workmanager
 void callBackTask(){
   Workmanager().executeTask((tarea, datos) async {
+    final RemoteMessage message = RemoteMessage();
     if(tarea=="Key")
     {
-      showConfirmNotification(datos);
+      _firebaseMessagingBackgroundHandler(message);
     }
     return Future.value(true);
     
   });
 }
 
-showConfirmNotification(datos){
+showConfirmNotification(){
   //configuraciones para los permisos del dispositivo
     var initialzationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
     var initializationSettings = InitializationSettings(android: initialzationSettingsAndroid);
@@ -162,7 +173,6 @@ showConfirmNotification(datos){
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
-      datos = message.data;
       if (notification != null && android != null) {
         flutterLocalNotificationsPlugin.show(
             notification.hashCode,
@@ -180,7 +190,10 @@ showConfirmNotification(datos){
                 enableVibration: false,
                 color: Colors.amberAccent,
               ),
-            ));
+            ),
+            payload: notification.body,
+        );
+
       }
     });
 }
@@ -207,7 +220,7 @@ class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
   @override
   void initState() {
     super.initState();
-    
+    showConfirmNotification();
   }
 
   String routeInitial;

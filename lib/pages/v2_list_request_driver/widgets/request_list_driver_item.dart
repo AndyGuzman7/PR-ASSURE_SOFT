@@ -24,6 +24,20 @@ class _RequestListItemState extends State<RequestListItemDriver> {
       new RequestListItemFunctionality();
 
   final NotificationsFirebase notificationsFirebase = new NotificationsFirebase();
+  @override
+  void initState() {
+    super.initState();
+    
+    notificationsFirebase.subscribeToTopic(Topic: 'ConfirmEstimate');
+  }
+
+  sendNotificationConfirm(){
+      String title = "Cotizacion aceptada";
+      String body = "Se acepto la cotizacion del cliente";
+      String token = "e53nf4hyRVGCGbJ9-1wIrP:APA91bH8JqmbIBng_R4xh68yJgO3GUM5LVTEq75afZwE-MU5CCjC604UNmwAWhwoBwWx5m2st3ZdGQ_G6sXVP_fRf-fFTnwVg0a-iNX6HwIdLEIWizsVkVik_PabugvdbaihZSDLvzgh";
+      String client = "Marco Aurelio";
+      notificationsFirebase.sendNotificationToTaxi(Token: token, Title: title, Body: body, Client: client);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,14 +45,6 @@ class _RequestListItemState extends State<RequestListItemDriver> {
     Image imagedefault = new Image.asset(
       "assets/images/user_default.png",
     );
-    
-    sendNotificationConfirm(){
-      String title = "Cotizacion aceptada";
-      String body = "La cotizacion se acepto";
-      String token = "e53nf4hyRVGCGbJ9-1wIrP:APA91bH8JqmbIBng_R4xh68yJgO3GUM5LVTEq75afZwE-MU5CCjC604UNmwAWhwoBwWx5m2st3ZdGQ_G6sXVP_fRf-fFTnwVg0a-iNX6HwIdLEIWizsVkVik_PabugvdbaihZSDLvzgh";
-      String client = "Marco Aurelio";
-      notificationsFirebase.sendNotificationToTaxi(Token: token, Title: title, Body: body, Client: client);
-    }
 
     //evento donde se envia el mensaje de confirmado al taxista
     final btnAceptar = new CustomButtonWithLinearBorder(

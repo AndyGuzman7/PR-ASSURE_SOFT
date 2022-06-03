@@ -29,12 +29,10 @@ class _ListRequestDriverState extends State<ListRequestDriver> {
       new ListRequestDriverFunctionality();
   late CustomSlider customSlider;
   late GlobalKey<RefreshIndicatorState> refreshListKey;
-  final NotificationsFirebase notificationsFirebase = new NotificationsFirebase();
+  //final NotificationsFirebase notificationsFirebase = new NotificationsFirebase();
   @override
   void initState() {
     super.initState();
-    
-    notificationsFirebase.subscribeToTopic(Topic: 'ConfirmEstimate');
     listRequestDriverFunctionality.initUbication().then((value) {
       if (value) {
         listRequestDriverFunctionality.initServiceRequest();
