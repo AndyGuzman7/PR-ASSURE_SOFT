@@ -7,6 +7,5 @@ abstract class ITaxiServiceRequest {
   Future<bool> deleteNode(vaue);
   Stream<Event> getNodeEvent();
   Future<ClienRequest> getNodeItem(serviceRequestId);
-  Future<List<ClienRequest>> getNode();
   Future<bool> updateRange(ClienRequest clienRequest);
 }

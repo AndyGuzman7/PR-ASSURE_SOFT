@@ -1,46 +1,46 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:form_field_validator/form_field_validator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:taxi_segurito_app/components/buttons/CustomButton.dart';
-import 'package:taxi_segurito_app/components/inputs/CustomTextField.dart';
+import 'package:taxi_segurito_app/components/buttons/CustomButtonWithLinearBorder.dart';
+import 'package:taxi_segurito_app/models/client_request.dart';
 import 'package:taxi_segurito_app/models/estimate_taxi.dart';
-
+import 'package:taxi_segurito_app/pages/v2_taxi_service_request_list/taxi_service_request_list_page.dart';
+import 'package:taxi_segurito_app/pages/v2_view_taxi_request/view_taxi_request_functionality.dart';
 import 'package:taxi_segurito_app/strategis/convert_distance.dart';
-import 'package:taxi_segurito_app/pages/v2_request_client_info_estimates/client_service_request_information_functionality.dart';
 import 'package:taxi_segurito_app/strategis/firebase/implementation/taxi_service_request_impl.dart';
-import 'package:taxi_segurito_app/validators/TextFieldValidators.dart';
+import 'package:taxi_segurito_app/strategis/location_service.dart';
 
-import '../../models/client_request.dart';
+import 'dialog_reason.dart';
 
 // ignore: must_be_immutable
-class ClientServiceRequestInformationPage extends StatefulWidget {
-  String? serviceRequestId;
+class ViewTaxiRequest extends StatefulWidget {
+  EstimateTaxi? estimate;
 
-  ClientServiceRequestInformationPage({this.serviceRequestId});
+  ViewTaxiRequest({this.estimate});
   @override
-  _ClientServiceRequestInformationPageState createState() =>
-      _ClientServiceRequestInformationPageState();
+  State<ViewTaxiRequest> createState() => _ViewTaxiRequestState();
 }
 
-class _ClientServiceRequestInformationPageState
-    extends State<ClientServiceRequestInformationPage> {
+class _ViewTaxiRequestState extends State<ViewTaxiRequest> {
+  LocationService locationService = new LocationService();
   late LatLng latLngOrigen = LatLng(0, 0);
   late LatLng latLngDestino = LatLng(0, 0);
 
   late String distancia = "Ninguna";
   late String passengers = "Ninguno";
-  late CustomTextField fieldPrice;
   Map<MarkerId, Marker> _markers = {};
 
-  ClientServiceRequestInformationFunctionality taxiRequestFunctionality =
-      new ClientServiceRequestInformationFunctionality();
+  late String idEstimateTaxi = "";
+
   Set<Marker> get markers => _markers.values.toSet();
 
   Location location = Location();
 
-  //Creacion de marcadores
+  ViewTaxiRequestFunctionality viewTaxiRequestFunctionality =
+      new ViewTaxiRequestFunctionality();
+
+  //Creation of markers
   Set<Marker> _createMarker() {
     _markers[MarkerId('Origin')] = new Marker(
       markerId: MarkerId('Origin'),
@@ -63,16 +63,23 @@ class _ClientServiceRequestInformationPageState
   @override
   void initState() {
     super.initState();
+
+    locationService.getPermisson();
+    locationService.listenLocation(widget.estimate!.idUserTaxi);
     setState(() {
       setCustomMapPin();
       getNodeItemInformation();
     });
   }
 
+  //Get request data from Firebase
   getNodeItemInformation() {
     TaxiServiceRequestImpl taxiServiceRequestImpl =
         new TaxiServiceRequestImpl();
-    taxiServiceRequestImpl.getNodeItem(widget.serviceRequestId).then((value) {
+
+    taxiServiceRequestImpl
+        .getNodeItem(widget.estimate!.idTaxiServiceRequest)
+        .then((value) {
       ClienRequest clienRequest = value;
       setState(() {
         distancia = ConvertDistance().getDistance(clienRequest);
@@ -86,7 +93,7 @@ class _ClientServiceRequestInformationPageState
     });
   }
 
-  //Cargar iconos de marcadores
+  //Load bookmark icons
   void setCustomMapPin() async {
     pinLocationIconUser = await BitmapDescriptor.fromAssetImage(
         ImageConfiguration(size: Size(35, 35)),
@@ -98,70 +105,131 @@ class _ClientServiceRequestInformationPageState
 
   @override
   Widget build(BuildContext context) {
-    taxiRequestFunctionality.context = context;
     Image imagedefault = new Image.asset(
       "assets/images/user_icon.png",
     );
 
+    closeView() {
+      locationService.stopListening();
+      Navigator.pop(context);
+    }
+
+    //AlertDialog terminate service
+    void showFinishService() {
+      Color colorMain = Color.fromRGBO(255, 193, 7, 1);
+      Color colorMainDanger = Color.fromRGBO(242, 78, 30, 1);
+      Color colorMainNull = Color.fromARGB(255, 244, 123, 123);
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(25),
+            ),
+          ),
+          titleTextStyle: TextStyle(
+            color: Colors.black,
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+          ),
+          title: Text(
+            "Desea finalizar el servicio?",
+            textAlign: TextAlign.center,
+          ),
+          backgroundColor: Colors.white,
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: CustomButtonWithLinearBorder(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        buttonBorderColor: colorMainNull,
+                        marginBotton: 0,
+                        marginLeft: 0,
+                        marginRight: 0,
+                        marginTop: 0,
+                        buttonText: "Rechazar",
+                        buttonColor: Colors.white,
+                        buttonTextColor: colorMainNull),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    child: CustomButtonWithLinearBorder(
+                        onTap: () {
+                          viewTaxiRequestFunctionality.sendTerminateService(
+                              widget.estimate!.idFirebase,
+                              widget.estimate!.idUserTaxi);
+                          Navigator.pop(context);
+                          locationService.stopListening();
+                          closeView();
+                        },
+                        buttonBorderColor: colorMainDanger,
+                        marginBotton: 0,
+                        marginLeft: 0,
+                        marginRight: 0,
+                        marginTop: 0,
+                        buttonText: "Confirmar",
+                        buttonColor: Colors.white,
+                        buttonTextColor: colorMainDanger),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    //button that displays the dialog for canceling the request
+    final btnCancelRequest = new CustomButton(
+      onTap: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) => DialogReason(
+            idFirebase: widget.estimate!.idFirebase,
+            callBackCancel: () {
+              closeView();
+            },
+          ),
+        );
+      },
+      buttonText: "Cancelar Solicitud",
+      buttonColor: Color.fromRGBO(255, 193, 7, 1),
+      buttonTextColor: Colors.white,
+      marginBotton: 0,
+      marginLeft: 0,
+      marginRight: 0,
+      marginTop: 0,
+    );
+
+    //BUtton terminate service
+    final btnTerminate = new CustomButton(
+      onTap: () {
+        showFinishService();
+      },
+      buttonText: "Finalizar Solicitud",
+      buttonColor: Color.fromRGBO(255, 193, 7, 1),
+      buttonTextColor: Colors.white,
+      marginBotton: 0,
+      marginLeft: 0,
+      marginRight: 0,
+      marginTop: 0,
+    );
+
     Text title = new Text(
-      "Lista de Solicitudes",
+      "Servicio en marcha",
       style: const TextStyle(
           fontSize: 25.0, color: Colors.black, fontWeight: FontWeight.w700),
       textAlign: TextAlign.left,
     );
 
-    final _formKey = GlobalKey<FormState>();
-    bool registerRequest() {
-      if (_formKey.currentState!.validate()) {
-        return true;
-      }
-      return false;
-    }
-
-    final btnSendEstimates = new CustomButton(
-      onTap: () {
-        if (registerRequest()) {
-          FocusScope.of(context).unfocus();
-          taxiRequestFunctionality.insertNodeEstimates(
-              double.parse(
-                fieldPrice.getValue(),
-              ),
-              widget.serviceRequestId);
-        }
-      },
-      buttonText: "Enviar",
-      buttonColor: Color.fromRGBO(255, 193, 7, 1),
-      buttonTextColor: Colors.white,
-      marginBotton: 0,
-      marginLeft: 5,
-      marginRight: 0,
-      marginTop: 0,
-    );
-
-    final btnCancel = new CustomButton(
-      onTap: () {},
-      buttonText: "Declinar",
-      buttonColor: Color.fromRGBO(240, 142, 136, 1),
-      buttonTextColor: Colors.white,
-      marginBotton: 0,
-      marginLeft: 5,
-      marginRight: 0,
-      marginTop: 0,
-    );
-
-    fieldPrice = CustomTextField(
-      hint: "Precio Estimado",
-      multiValidator: MultiValidator([
-        RequiredValidator(errorText: 'Tarifa requerido'),
-        NumberValidator(errorText: 'No puede ingresar letras')
-      ]),
-      typeIput: TextInputType.number,
-      marginLeft: 0,
-      marginRight: 0,
-      marginTop: 15,
-      marginBotton: 30,
-      heightNum: 42,
-    );
     final containerTitle = new Container(
       alignment: Alignment.centerLeft,
       margin: new EdgeInsets.only(
@@ -172,7 +240,8 @@ class _ClientServiceRequestInformationPageState
       ),
       child: title,
     );
-    //Contenedor de imagen del lado izquierdo
+
+    //Left side image container
     Container columnOne = new Container(
       child: Align(
         alignment: Alignment.centerRight,
@@ -188,7 +257,7 @@ class _ClientServiceRequestInformationPageState
       ),
     );
 
-    //Contenedor del lado derecho: Informacion de distancia y Numero de pasajeros
+    //Right side container: Distance and number of passengers information
     Container columnTwo = new Container(
       alignment: Alignment.centerLeft,
       margin: EdgeInsets.only(
@@ -262,7 +331,7 @@ class _ClientServiceRequestInformationPageState
               )
             ],
           ),
-          //Mapa
+          //Map
           FutureBuilder(
             future: location.getLocation(),
             builder: (_, AsyncSnapshot<LocationData> snapshot) {
@@ -290,28 +359,27 @@ class _ClientServiceRequestInformationPageState
           ),
           Row(
             children: [
-              Form(
-                key: _formKey,
-                child: Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    //CustomFieldText Passengers
-                    child: Column(
-                      children: [
-                        fieldPrice,
-                        Row(
-                          children: [
-                            Expanded(child: btnCancel),
-                            Expanded(
-                              child: btnSendEstimates,
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 15,
-                        )
-                      ],
-                    ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  //CustomFieldText Passengers
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(child: btnCancelRequest),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Expanded(
+                            child: btnTerminate,
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 15,
+                      )
+                    ],
                   ),
                 ),
               )
