@@ -10,6 +10,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_geofence/geofence.dart';
 import 'package:taxi_segurito_app/SRC/providers/push_notifications_provider.dart';
+import 'package:taxi_segurito_app/models/estimate_taxi.dart';
 import 'package:taxi_segurito_app/pages/contacList/list_contact.dart';
 import 'package:taxi_segurito_app/pages/menu/driver_menu.dart';
 import 'package:taxi_segurito_app/pages/v2_list_request_client/list_request_client_page.dart';
@@ -40,6 +41,8 @@ import './models/vehicle.dart';
 import './models/providers/HttpProvider.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+import 'strategis/firebase/implementation/request_taxi_impl.dart';
 
 
 
@@ -207,6 +210,18 @@ Future selectNotification(payload) async {
   }
 }
 
+/*getToken(key, token) {
+    RequestTaxiImpl requestTaxiImpl = new RequestTaxiImpl();
+    requestTaxiImpl.updateNodeToken(key, token).then((value) {
+      print(value);
+
+      if (value!=false) 
+      {
+        print(token);
+      } 
+    });
+}*/
+
 class AppTaxiSegurito extends StatefulWidget {
   final String initialRoute;
   final String? sessionName;
@@ -216,10 +231,15 @@ class AppTaxiSegurito extends StatefulWidget {
       _AppTaxiSeguritoState(initialRoute, sessionName: this.sessionName);
 }
 
+EstimateTaxi? driverRequest;
 class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
   @override
   void initState() {
     super.initState();
+    /*PushNotificationService notifications = new PushNotificationService();
+    var token = notifications.valueToken();
+    getToken(driverRequest!.idRequestTaxiFirebase, token);*/
+    PushNotificationService.getToken();
     showConfirmNotification();
   }
 

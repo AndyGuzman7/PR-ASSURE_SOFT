@@ -3,6 +3,7 @@ import 'package:taxi_segurito_app/components/buttons/CustomButtonWithLinearBorde
 import 'package:taxi_segurito_app/models/estimate_taxi.dart';
 import 'package:taxi_segurito_app/pages/v2_list_request_driver/widgets/request_list_driver_item_functionality.dart';
 import 'package:taxi_segurito_app/services/notifications.dart';
+import 'package:taxi_segurito_app/services/sessions_service.dart';
 
 class RequestListItemDriver extends StatefulWidget {
   void Function(EstimateTaxi estimateTaxi) callbackRequest;
@@ -23,20 +24,27 @@ class _RequestListItemState extends State<RequestListItemDriver> {
   RequestListItemFunctionality requestListItemFunctionality =
       new RequestListItemFunctionality();
 
-  final NotificationsFirebase notificationsFirebase = new NotificationsFirebase();
+  final NotificationsFirebase notificationsFirebase = NotificationsFirebase();
+  final SessionsService sessions = SessionsService();
   @override
   void initState() {
     super.initState();
     
     notificationsFirebase.subscribeToTopic(Topic: 'ConfirmEstimate');
+    
   }
 
   sendNotificationConfirm(){
-      String title = "Cotizacion aceptada";
-      String body = "Se acepto la cotizacion del cliente";
-      String token = "e53nf4hyRVGCGbJ9-1wIrP:APA91bH8JqmbIBng_R4xh68yJgO3GUM5LVTEq75afZwE-MU5CCjC604UNmwAWhwoBwWx5m2st3ZdGQ_G6sXVP_fRf-fFTnwVg0a-iNX6HwIdLEIWizsVkVik_PabugvdbaihZSDLvzgh";
-      String client = "Marco Aurelio";
-      notificationsFirebase.sendNotificationToTaxi(Token: token, Title: title, Body: body, Client: client);
+      var valueToken = sessions.getSessionValue('token');
+      var result = sessions.verificationSession('token');
+      if(result == true) {
+        String title = "Cotizacion aceptada";
+        String body = "Se acepto la cotizacion del cliente";
+        String token = valueToken;
+        String client = "Marco Aurelio";
+        notificationsFirebase.sendNotificationToTaxi(Token: token, Title: title, Body: body, Client: client);
+      }
+      
   }
 
   @override

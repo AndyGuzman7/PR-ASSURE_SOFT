@@ -10,6 +10,7 @@ class EstimateTaxi {
   late double distancia;
   late bool confirmation = false;
   late int id;
+  late String token;
 
   EstimateTaxi(
       this.idUserTaxi,
@@ -18,7 +19,7 @@ class EstimateTaxi {
       this.estimacion,
       this.latitud,
       this.longitud,
-      this.placa);
+      this.placa,);
   EstimateTaxi.fromJson(Map<dynamic, dynamic> json)
       : idUserTaxi = json['idUserTaxi'],
         idRequestUserFirebase = json['idRequestUserFirebase'],
@@ -27,7 +28,8 @@ class EstimateTaxi {
         latitud = json['latidud'],
         longitud = json['longitud'],
         placa = json['placa'],
-        confirmation = json['confirmation'];
+        confirmation = json['confirmation'],
+        token = json['token'];
 
   Map<dynamic, dynamic> toJson() => <dynamic, dynamic>{
         'idUserTaxi': idUserTaxi,
@@ -37,6 +39,7 @@ class EstimateTaxi {
         'latidud': latitud,
         'longitud': longitud,
         'placa': placa,
-        'confirmation': confirmation
+        'confirmation': confirmation,
+        'token': token,
       };
 }

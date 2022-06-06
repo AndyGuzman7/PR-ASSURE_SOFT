@@ -42,7 +42,7 @@ class ViewRequestFunctionality {
         cotization,
         position.latitude,
         position.longitude,
-        "");
+        "",);
 
     dbRef.reference().child(nameBranch).child(key).set(estimateTaxi.toJson());
     print(key);
