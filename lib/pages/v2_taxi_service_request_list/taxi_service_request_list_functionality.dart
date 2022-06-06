@@ -25,8 +25,6 @@ class TaxiServiceRequestListPageFunctionality {
   late double longitudTaxi;
   late Function(List<ClienRequest>) updateListRequest;
   late Function(EstimateTaxi) showConfirmation;
-  SessionsService sessionsService = new SessionsService();
-  var pleik;
 
   TaxiServiceRequestListPageFunctionality();
 
@@ -66,8 +64,6 @@ class TaxiServiceRequestListPageFunctionality {
   }
 
   void confirmationService(EstimateTaxi estimateTaxi) {
-    getPleikSession();
-    estimateTaxi.placa = pleik;
     serviceRequestEstimatesImpl
         .confirmateEstimateTaxi(
             estimateTaxi, NameGalleryStateConfirmation.CONFIRMADO)
@@ -83,11 +79,6 @@ class TaxiServiceRequestListPageFunctionality {
         );
       }
     });
-  }
-
-  Future<void> getPleikSession() async {
-    pleik = await sessionsService.getSessionValue("pleik");
-    print(pleik);
   }
 
   List<ClienRequest> filtreRequestClientZoneRange(List<ClienRequest> value) {

@@ -30,8 +30,6 @@ class _TaxiServiceRequestListPageState
   Color colorMain = Color.fromRGBO(255, 193, 7, 1);
   Color colorMainDanger = Color.fromRGBO(242, 78, 30, 1);
   Color colorMainNull = Color.fromARGB(255, 244, 123, 123);
-  SessionsService sessionsService = new SessionsService();
-  var pleik;
 
   TaxiServiceRequestListPageFunctionality listRequestClientFunctionality =
       new TaxiServiceRequestListPageFunctionality();
@@ -53,8 +51,6 @@ class _TaxiServiceRequestListPageState
         });
       }
     });
-    print("AAAAAAAAAAAAAAAAAAAAAAAASSS");
-    getPleikSession();
     refreshListKey = new GlobalKey<RefreshIndicatorState>();
     listRequest = new List<ClienRequest>.empty(growable: true);
   }
@@ -221,19 +217,8 @@ class _TaxiServiceRequestListPageState
     );
   }
 
-  Future<void> getPleikSession() async {
-    pleik = await sessionsService.getSessionValue("pleik");
-    print(pleik);
-  }
-
 //AlertDialog confirm request
   void showAlert(EstimateTaxi estimateTaxi) {
-    /*getPleikSession();
-    estimateTaxi.placa = pleik;
-    print("AAAAAAAAAAAAAAA");
-    print("AAAAAAAAAAAAAAA");
-    print("AAAAAAAAAAAAAAA");
-    print(estimateTaxi);*/
     showDialog(
       context: context,
       builder: (context) => AlertDialog(

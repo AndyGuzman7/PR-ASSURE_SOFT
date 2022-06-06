@@ -96,9 +96,6 @@ class AuthService {
     VehicleService _vehicleService = VehicleService();
     listVehicles = await _vehicleService.getVehicleByLastDriver(124);
     for (Vehicle item in listVehicles) {
-      //Vehicle vehicle1 = Vehicle.fromJson(item);
-      print(item);
-      print("GO");
       await _sessionsService.addSessionValue('pleik', item.pleik);
     }
   }
