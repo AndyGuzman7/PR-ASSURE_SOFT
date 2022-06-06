@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -14,7 +15,6 @@ const double CAMERA_TILT = 80;
 const double CAMERA_BEARING = 30;
 const LatLng SOURCE_LOCATION = LatLng(42.747932, -71.167889);
 const LatLng DEST_LOCATION = LatLng(37.335685, -122.0605916);
-
 
 //primeras versiones de prueba
 class ViewMapNow extends StatefulWidget {
@@ -37,17 +37,17 @@ class _ViewMapNowState extends State<ViewMapNow> {
   });
   late LocationData destinationLocation;
   double pinPillPosition = -100;
-  late BitmapDescriptor sourceIcon;
+  BitmapDescriptor? sourceIcon;
 
   late PinInformation sourcePinInfo;
   ViewUserRequestFunctionality viewTaxiRequestFunctionality =
       new ViewUserRequestFunctionality();
 
   PinInformation currentlySelectedPin = PinInformation(
-      pinPath: '',
-      avatarPath: '',
+      pinPath: 'assets/images/location_car.png',
+      avatarPath: 'assets/images/location_car.png',
       location: LatLng(0, 0),
-      locationName: '',
+      locationName: 'Ubicacion del Taxista',
       labelColor: Colors.grey);
 
   @override
@@ -71,29 +71,19 @@ class _ViewMapNowState extends State<ViewMapNow> {
       //viewMapNow.updatePinOnMap(latLng);
     };
 
-    //polylinePoints = PolylinePoints();
-    //AQUI CARGARRRR currentLocation!!!!
-    // subscribe to changes in the user's location
-    // by "listening" to the location's onLocationChanged event
-    // location.onLocationChanged().listen((LocationData cLoc) {
-    //   // cLoc contains the lat and long of the
-    //   // current user's position in real time,
-    //   // so we're holding on to it
-    //   currentLocation = cLoc;
-    //   updatePinOnMap();
-    // });
-
     // set custom marker pins
     setSourceAndDestinationIcons();
     // set the initial location
   }
 
   void setSourceAndDestinationIcons() async {
-    BitmapDescriptor.fromAssetImage(ImageConfiguration(devicePixelRatio: 2.0),
-            'assets/images/driving_pin.png')
-        .then((onValue) {
-      sourceIcon = onValue;
-    });
+    try {
+      sourceIcon = await BitmapDescriptor.fromAssetImage(
+          ImageConfiguration(devicePixelRatio: 2.0),
+          'assets/images/location_car.png');
+    } catch (e) {
+      print(e.toString() + 'AQUI ESTA EL ERROR DE IMAGEN 1');
+    }
   }
 
   void setInitialLocation() async {
@@ -102,7 +92,7 @@ class _ViewMapNowState extends State<ViewMapNow> {
     currentLocation = await locationService.getUbication();
 
     // hard-coded destination for this example
-    destinationLocation = LocationData.fromMap({
+    currentLocation = LocationData.fromMap({
       "latitude": DEST_LOCATION.latitude,
       "longitude": DEST_LOCATION.longitude
     });
@@ -151,7 +141,7 @@ class _ViewMapNowState extends State<ViewMapNow> {
     );
   }
 
-  void showPinsOnMap() {
+  void showPinsOnMap() async {
     // get a LatLng for the source location
     // from the LocationData currentLocation object
     var pinPosition =
@@ -159,13 +149,16 @@ class _ViewMapNowState extends State<ViewMapNow> {
     // get a LatLng out of the LocationData object
     // var destPosition =
     //     LatLng(destinationLocation.latitude, destinationLocation.longitude);
-
-    sourcePinInfo = PinInformation(
-        locationName: "Start Location",
-        location: SOURCE_LOCATION,
-        pinPath: "assets/images/driving_pin.png",
-        avatarPath: "assets/images/friend1.jpg",
-        labelColor: Colors.blueAccent);
+    try {
+      sourcePinInfo = PinInformation(
+          locationName: "Ubicación del Taxista",
+          location: SOURCE_LOCATION,
+          pinPath: "assets/images/location_car.png",
+          avatarPath: "assets/images/location_car.png",
+          labelColor: Colors.blueAccent);
+    } catch (e) {
+      print(e.toString() + 'AQUI ESTA EL ERROR DE IMAGEN 2');
+    }
 
     // destinationPinInfo = PinInformation(
     //     locationName: "End Location",
@@ -184,7 +177,7 @@ class _ViewMapNowState extends State<ViewMapNow> {
             pinPillPosition = 0;
           });
         },
-        icon: sourceIcon));
+        icon: sourceIcon!));
     // destination pin
     // _markers.add(Marker(
     //     markerId: MarkerId('destPin'),
@@ -234,7 +227,7 @@ class _ViewMapNowState extends State<ViewMapNow> {
             });
           },
           position: pinPosition, // updated position
-          icon: sourceIcon));
+          icon: sourceIcon!));
     });
   }
 }
