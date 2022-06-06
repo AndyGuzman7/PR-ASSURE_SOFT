@@ -39,6 +39,22 @@ class VehicleService {
     throw 'Unable to fetch vehicles data';
   }
 
+  Future<List<Vehicle>> getVehicleByLastDriver(int iddriver) async {
+    final queryParams = {'iddriver': iddriver.toString()};
+    final endpoint = Uri.http(
+      Server.host,
+      '${Server.baseEndpoint}/vehicle/vehicle_controller.php',
+      queryParams,
+    );
+
+    var response = await http.get(endpoint);
+    if (response.statusCode == 200) {
+      print(response.body);
+      return _jsonToList(response);
+    }
+    throw 'Unable to fetch vehicles data';
+  }
+
   Future<bool> update(Vehicle vehicle) async {
     try {
       final endpoint = Uri.http(

@@ -7,6 +7,7 @@ import 'package:taxi_segurito_app/pages/v2_client_service_request_information/cl
 import 'package:taxi_segurito_app/pages/v2_taxi_service_request_list/taxi_service_request_list_functionality.dart';
 import 'package:taxi_segurito_app/pages/v2_taxi_service_request_list/widgets/request_list.dart';
 import 'package:taxi_segurito_app/pages/v2_taxi_service_request_list/widgets/request_list_item.dart';
+import 'package:taxi_segurito_app/services/sessions_service.dart';
 
 class TaxiServiceRequestListPage extends StatefulWidget {
   TaxiServiceRequestListPage({Key? key}) : super(key: key);
@@ -50,7 +51,6 @@ class _TaxiServiceRequestListPageState
         });
       }
     });
-
     refreshListKey = new GlobalKey<RefreshIndicatorState>();
     listRequest = new List<ClienRequest>.empty(growable: true);
   }
