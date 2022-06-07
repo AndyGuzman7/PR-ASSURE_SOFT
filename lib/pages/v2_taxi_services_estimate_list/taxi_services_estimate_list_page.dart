@@ -191,6 +191,8 @@ class _TaxiServicesEstimateListPageState
       onTap: () {
         taxiServicesEstimatesListFunctionality
             .confirmationEstimate(estimateTaxi.idFirebase);
+        taxiServicesEstimatesListFunctionality
+            .sendNotificaction(estimateTaxi.token);
         Navigator.pop(context);
       },
       buttonText: "Si",
