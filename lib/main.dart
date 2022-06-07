@@ -1,25 +1,27 @@
-//import 'dart:html';
 import 'dart:convert';
-import 'dart:io';
-import 'dart:async';
 import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'dart:typed_data';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_geofence/geofence.dart';
 import 'package:taxi_segurito_app/SRC/providers/push_notifications_provider.dart';
 import 'package:taxi_segurito_app/models/estimate_taxi.dart';
+import 'package:taxi_segurito_app/models/service_taxi.dart';
 import 'package:taxi_segurito_app/pages/contacList/list_contact.dart';
 import 'package:taxi_segurito_app/pages/menu/driver_menu.dart';
-import 'package:taxi_segurito_app/pages/v2_list_request_client/list_request_client_page.dart';
-import 'package:taxi_segurito_app/pages/v2_list_request_driver/list_request_driver_page.dart';
-import 'package:taxi_segurito_app/pages/v2_request_client_info_estimates/view_request_info_page.dart';
+import 'package:taxi_segurito_app/pages/menu/menu_client.dart';
+import 'package:taxi_segurito_app/pages/v2_location_taxi/v2_receive_location/receive_location_driver.dart';
+import 'package:taxi_segurito_app/pages/v2_client_service_request_information/client_service_request_information_page.dart';
+import 'package:taxi_segurito_app/pages/v2_location_taxi/v2_send_my_location/send_my_location.dart';
+
 import 'package:taxi_segurito_app/pages/v2_taxi_request/taxi_request_page.dart';
+import 'package:taxi_segurito_app/pages/v2_taxi_service_request_list/taxi_service_request_list_page.dart';
+import 'package:taxi_segurito_app/pages/v2_taxi_services_estimate_list/taxi_services_estimate_list_page.dart';
 
 import 'package:taxi_segurito_app/pages/vehicle_screen/vehicle_edit_screen.dart';
 import 'package:taxi_segurito_app/pages/vehicle_screen/vehicle_register_screen.dart';
+import 'package:taxi_segurito_app/strategis/firebase/nameGalleryStateTaxi.dart';
 import 'package:workmanager/workmanager.dart';
 
 import './pages/driver_register/driver_register.dart';
@@ -43,8 +45,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'strategis/firebase/implementation/request_taxi_impl.dart';
-
-
+import 'strategis/firebase/implementation/taxi_impl.dart';
 
 //metodo para el envio de notificaciones de firebase en segundo plano
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -54,34 +55,35 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   id = message.messageId;
   key = message.collapseKey;
   flutterLocalNotificationsPlugin.show(
-      message.data.hashCode,
-      message.data['notificaction']['title'],
-      message.data['notificaction']['body'],
-      NotificationDetails(
-        android: AndroidNotificationDetails(
-          channel.id,
-          channel.name,
-          channelDescription: channel.description,
-          importance: Importance.high,
-          playSound: true,
-          enableVibration: false,
-          color: Colors.amberAccent,
-        ),
+    message.data.hashCode,
+    message.data['notificaction']['title'],
+    message.data['notificaction']['body'],
+    NotificationDetails(
+      android: AndroidNotificationDetails(
+        channel.id,
+        channel.name,
+        channelDescription: channel.description,
+        importance: Importance.high,
+        playSound: true,
+        enableVibration: false,
+        color: Colors.amberAccent,
       ),
-      payload: message.data['notificaction']['body'],
+    ),
+    payload: message.data['notificaction']['body'],
   );
 }
 
 //configuracion para el envio del mensaje
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
-  'high_importance_channel', // id
-  'High Importance Notifications', // title
-  description: 'This channel is used for important notifications.', // description
-  importance: Importance.high,
-  playSound: true
-);
+    'high_importance_channel', // id
+    'High Importance Notifications', // title
+    description:
+        'This channel is used for important notifications.', // description
+    importance: Importance.high,
+    playSound: true);
 
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 String? id;
 String? key;
 
@@ -98,7 +100,6 @@ void main() async {
           AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
 
-
   HttpOverrides.global = new HttpProvider();
   SessionsService sessions = SessionsService();
   bool idsession = await sessions.verificationSession('id');
@@ -114,8 +115,17 @@ void main() async {
       case 'owner':
         app = AppTaxiSegurito('ownerMenu', sessionName: name);
         break;
+      case 'driver':
+        app = AppTaxiSegurito('driverMenu', sessionName: name);
+        SessionsService sessionsService = new SessionsService();
+        int id = int.parse(await sessionsService.getSessionValue("id"));
+        TaxiImpl taxiImpl = new TaxiImpl();
+        ServiceTaxi serviceTaxi =
+            new ServiceTaxi(NameGalleryStateTaxi.DISPONIBLE, 0.0, 0.0);
+        taxiImpl.sendStatusTaxi(id, serviceTaxi);
+        break;
       default:
-        app = AppTaxiSegurito('scannerQr', sessionName: name);
+        app = AppTaxiSegurito('clientMenu', sessionName: name);
         break;
     }
   }
@@ -125,25 +135,19 @@ void main() async {
 //metodo para mostrar notificaciones en segundo plano
 taskWorkManager() async {
   FlutterLocalNotificationsPlugin plugin = FlutterLocalNotificationsPlugin();
-  const AndroidInitializationSettings settings = AndroidInitializationSettings('@mipmap/ic_launcher');
+  const AndroidInitializationSettings settings =
+      AndroidInitializationSettings('@mipmap/ic_launcher');
   final IOSInitializationSettings iosSettings = IOSInitializationSettings();
   final MacOSInitializationSettings macSettings = MacOSInitializationSettings();
   final InitializationSettings initialization = InitializationSettings(
-    android: settings,
-    iOS: iosSettings,
-    macOS: macSettings
-    
-  );
+      android: settings, iOS: iosSettings, macOS: macSettings);
 
-  await plugin.initialize(
-    initialization,
-    onSelectNotification: selectNotification
-  );
+  await plugin.initialize(initialization,
+      onSelectNotification: selectNotification);
 
   Workmanager().initialize(
     callBackTask,
     isInDebugMode: true,
-    
   );
 
   Workmanager().registerPeriodicTask(
@@ -155,58 +159,56 @@ taskWorkManager() async {
 }
 
 //metodo para enviar notificaciones mediante workmanager
-void callBackTask(){
+void callBackTask() {
   Workmanager().executeTask((tarea, datos) async {
     final RemoteMessage message = RemoteMessage();
-    if(tarea=="Key")
-    {
+    if (tarea == "Key") {
       _firebaseMessagingBackgroundHandler(message);
     }
     return Future.value(true);
-    
   });
 }
 
-showConfirmNotification(){
+showConfirmNotification() {
   //configuraciones para los permisos del dispositivo
-    var initialzationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
-    var initializationSettings = InitializationSettings(android: initialzationSettingsAndroid);
-    //configuracion para mostrar la notificacion
-    flutterLocalNotificationsPlugin.initialize(initializationSettings);
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      RemoteNotification? notification = message.notification;
-      AndroidNotification? android = message.notification?.android;
-      if (notification != null && android != null) {
-        flutterLocalNotificationsPlugin.show(
-            notification.hashCode,
-            notification.title,
-            notification.body,
-            NotificationDetails(
-              android: AndroidNotificationDetails(
-                channel.id,
-                channel.name,
-                channelDescription: channel.description,
-                icon: android.smallIcon,
-                importance: Importance.max,
-                priority: Priority.high,
-                playSound: true,
-                enableVibration: false,
-                color: Colors.amberAccent,
-              ),
-            ),
-            payload: notification.body,
-        );
-
-      }
-    });
+  var initialzationSettingsAndroid =
+      AndroidInitializationSettings('@mipmap/ic_launcher');
+  var initializationSettings =
+      InitializationSettings(android: initialzationSettingsAndroid);
+  //configuracion para mostrar la notificacion
+  flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    RemoteNotification? notification = message.notification;
+    AndroidNotification? android = message.notification?.android;
+    if (notification != null && android != null) {
+      flutterLocalNotificationsPlugin.show(
+        notification.hashCode,
+        notification.title,
+        notification.body,
+        NotificationDetails(
+          android: AndroidNotificationDetails(
+            channel.id,
+            channel.name,
+            channelDescription: channel.description,
+            icon: android.smallIcon,
+            importance: Importance.max,
+            priority: Priority.high,
+            playSound: true,
+            enableVibration: false,
+            color: Colors.amberAccent,
+          ),
+        ),
+        payload: notification.body,
+      );
+    }
+  });
 }
 
 //envio de notificacion
 Future selectNotification(payload) async {
-  if (payload!=null){
+  if (payload != null) {
     debugPrint("Notificacion: $payload");
     print("Notificacion Envio: ${DateTime.now()}" + " " + payload);
-
   }
 }
 
@@ -232,6 +234,7 @@ class AppTaxiSegurito extends StatefulWidget {
 }
 
 EstimateTaxi? driverRequest;
+
 class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
   @override
   void initState() {
@@ -254,20 +257,25 @@ class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
       title: "Taxi Segurito",
       theme: ThemeData(primarySwatch: Colors.amber),
       debugShowCheckedModeBanner: false,
-      initialRoute: 'listRequestDriver',
+
+      initialRoute: routeInitial,
+      //home: ReceiveLocationDriver(),
       routes: {
-        'listRequestDriver': (BuildContext contextss) =>
-            ListRequestDriver(idRequest: "-N1vLO9946XQ4MXqRkys"),
+        'sendMyUbication': (_) => SendMyUbication(),
+        'taxiServicesEstimateListPage': (BuildContext contextss) =>
+            TaxiServicesEstimateListPage(
+                idRequestService: "-N1vLO9946XQ4MXqRkys"),
         'loginUser': (_) => UserLoginPage(),
-        'listRequestClient': (_) => ListRequestClient(),
+        'listRequestClient': (_) => TaxiServiceRequestListPage(),
         'taxiRequestScreen': (_) => TaxiRequestPage(),
         'registerScreen': (_) => RegisterPage(),
-        'viewRequestInfo': (_) => RequestInfo(
-              requestID: "-N1oqGSf7jtxDr7DEnjy",
+        'viewRequestInfo': (_) => ClientServiceRequestInformationPage(
+              serviceRequestId: "-N1oqGSf7jtxDr7DEnjy",
             ),
         'firstScreen': (_) => MainWindow(),
         'scannerQr': (_) => ScannerQrPage(name: this.sessionName),
         'ownerMenu': (_) => OwnerMenu(name: this.sessionName),
+        'clientMenu': (_) => ClientMenu(name: this.sessionName),
         'adminMenu': (_) => AdminMenu(name: this.sessionName),
         'driverMenu': (_) => DriverMenu(name: this.sessionName),
         'driverList': (_) => DriversListPage(),

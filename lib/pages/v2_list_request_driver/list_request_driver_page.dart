@@ -1,13 +1,11 @@
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 import 'package:taxi_segurito_app/components/buttons/CustomButtonWithLinearBorder.dart';
 import 'package:taxi_segurito_app/models/client_request.dart';
 import 'package:taxi_segurito_app/models/estimate_taxi.dart';
 
-import 'package:taxi_segurito_app/pages/v2_list_request_driver/list_request_driver_functionality.dart';
-import 'package:taxi_segurito_app/pages/v2_list_request_driver/widgets/request_list_driver.dart';
+
 import 'package:taxi_segurito_app/pages/v2_taxi_request/taxi_request_functionality.dart';
 import 'package:taxi_segurito_app/pages/v2_list_request_driver/widgets/request_list_driver_item.dart';
-
 
 import '../../components/buttons/CustomButton.dart';
 import '../../components/slider/slider.dart';
@@ -86,13 +84,11 @@ class _ListRequestDriverState extends State<ListRequestDriver> {
         showSnackBar(context, item, index);
         removeItem(index);
       },
-
       resizeDuration: new Duration(seconds: 2),
       background: deleteItem(),
-
       child: Card(
         child: new RequestListItemDriver(
-          driverRequest: dinamycOb,
+          estimateTaxi: dinamycOb,
           callbackRequest: (value) {
             requestList.callback!(value);
           },
@@ -119,7 +115,6 @@ class _ListRequestDriverState extends State<ListRequestDriver> {
   }
 
   addRandomItem() {
-    
     listRequestDriverFunctionality.updateListRequest = ((value) {
       setState(() {
         listRequest = value;
@@ -127,7 +122,6 @@ class _ListRequestDriverState extends State<ListRequestDriver> {
         requestList.listRequest!.add(listRequest);
       });
     });
-
   }
 
   undoDelete(index, item) {
@@ -151,11 +145,10 @@ class _ListRequestDriverState extends State<ListRequestDriver> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     listRequestDriverFunctionality.context = context;
-    
+
     requestList.listRequest = listRequest;
     requestList.callback = (value) {};
     customSlider = new CustomSlider();
@@ -207,13 +200,10 @@ class _ListRequestDriverState extends State<ListRequestDriver> {
               children: [customSlider],
             ),
             actions: [btnActualizar],
-
           );
         },
       );
     }
-
-
 
     final btnCancel = new CustomButtonWithLinearBorder(
       onTap: () {
@@ -252,7 +242,6 @@ class _ListRequestDriverState extends State<ListRequestDriver> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             title,
-            
             Container(
               margin: new EdgeInsets.fromLTRB(10, 10, 10, 10),
               child: btnUpdateRange,
@@ -264,7 +253,7 @@ class _ListRequestDriverState extends State<ListRequestDriver> {
                   child: showList(),
                   onRefresh: () async {
                     await refreshList();
-                  },                 
+                  },
                 ),
               ),
             ),
@@ -277,4 +266,4 @@ class _ListRequestDriverState extends State<ListRequestDriver> {
       ),
     );
   }
-}
+}*/

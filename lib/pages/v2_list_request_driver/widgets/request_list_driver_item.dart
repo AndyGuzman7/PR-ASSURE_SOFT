@@ -7,9 +7,9 @@ import 'package:taxi_segurito_app/services/sessions_service.dart';
 
 class RequestListItemDriver extends StatefulWidget {
   void Function(EstimateTaxi estimateTaxi) callbackRequest;
-  EstimateTaxi? driverRequest;
+  EstimateTaxi? estimateTaxi;
   RequestListItemDriver(
-      {Key? key, this.driverRequest, required this.callbackRequest})
+      {Key? key, this.estimateTaxi, required this.callbackRequest})
       : super(key: key);
 
   @override
@@ -29,22 +29,21 @@ class _RequestListItemState extends State<RequestListItemDriver> {
   @override
   void initState() {
     super.initState();
-    
+
     notificationsFirebase.subscribeToTopic(Topic: 'ConfirmEstimate');
-    
   }
 
-  sendNotificationConfirm(){
-      var valueToken = sessions.getSessionValue('token');
-      var result = sessions.verificationSession('token');
-      if(result == true) {
-        String title = "Cotizacion aceptada";
-        String body = "Se acepto la cotizacion del cliente";
-        String token = valueToken;
-        String client = "Marco Aurelio";
-        notificationsFirebase.sendNotificationToTaxi(Token: token, Title: title, Body: body, Client: client);
-      }
-      
+  sendNotificationConfirm() {
+    var valueToken = sessions.getSessionValue('token');
+    var result = sessions.verificationSession('token');
+    if (result == true) {
+      String title = "Cotizacion aceptada";
+      String body = "Se acepto la cotizacion del cliente";
+      String token = valueToken;
+      String client = "Marco Aurelio";
+      notificationsFirebase.sendNotificationToTaxi(
+          Token: token, Title: title, Body: body, Client: client);
+    }
   }
 
   @override
@@ -57,7 +56,8 @@ class _RequestListItemState extends State<RequestListItemDriver> {
     //evento donde se envia el mensaje de confirmado al taxista
     final btnAceptar = new CustomButtonWithLinearBorder(
       onTap: () {
-        requestListItemFunctionality.confirmationEstimate(widget.driverRequest!.idRequestTaxiFirebase);
+        requestListItemFunctionality
+            .confirmationEstimate(widget.estimateTaxi!.idTaxiServiceRequest);
         sendNotificationConfirm();
         Navigator.pop(context);
       },
@@ -92,7 +92,6 @@ class _RequestListItemState extends State<RequestListItemDriver> {
       );
     }
 
-
     showMessage() {
       showDialog(
         barrierDismissible: true,
@@ -109,7 +108,7 @@ class _RequestListItemState extends State<RequestListItemDriver> {
               ),
               alignment: Alignment.topLeft,
             ),
-            backgroundColor: Colors.white,  
+            backgroundColor: Colors.white,
             content: Row(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -165,16 +164,16 @@ class _RequestListItemState extends State<RequestListItemDriver> {
               children: [
                 boxData(
                   Text(
-                    'Precio: ' + widget.driverRequest!.estimacion.toString(),
+                    'Precio: ' + widget.estimateTaxi!.estimacion.toString(),
                   ),
                 ),
                 boxData(Text(
                   'Distancia: ' +
-                      widget.driverRequest!.distancia.toString() +
+                      widget.estimateTaxi!.distancia.toString() +
                       ' Km',
                 )),
                 boxData(Text(
-                  "Placa: " + widget.driverRequest!.placa.toString(),
+                  "Placa: " + widget.estimateTaxi!.placa.toString(),
                 )),
                 btnConfirm
               ],
@@ -211,14 +210,14 @@ class _RequestListItemState extends State<RequestListItemDriver> {
         children: [
           boxData(
             Text(
-              'Precio: ' + widget.driverRequest!.estimacion.toString(),
+              'Precio: ' + widget.estimateTaxi!.estimacion.toString(),
             ),
           ),
           boxData(Text(
-            'Distancia: ' + widget.driverRequest!.distancia.toString() + ' Km',
+            'Distancia: ' + widget.estimateTaxi!.distancia.toString() + ' Km',
           )),
           boxData(Text(
-            "Placa: " + widget.driverRequest!.placa.toString(),
+            "Placa: " + widget.estimateTaxi!.placa.toString(),
           )),
         ],
       ),

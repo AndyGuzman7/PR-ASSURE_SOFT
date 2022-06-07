@@ -1,4 +1,4 @@
-import 'package:firebase_database/firebase_database.dart';
+/*import 'package:firebase_database/firebase_database.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:location/location.dart';
 import 'package:taxi_segurito_app/models/estimate_taxi.dart';
@@ -56,4 +56,4 @@ class ViewRequestFunctionality {
   void getInstance() {
     return dbRef;
   }
-}
+}*/

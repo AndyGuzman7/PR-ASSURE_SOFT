@@ -7,17 +7,16 @@ import 'package:taxi_segurito_app/strategis/firebase/nodeNameGallery.dart';
 class RequestTaxiImpl extends IRequestTaxi {
   late final connection;
   RequestTaxiImpl() {
-    connection = FirebaseConnection().initFirebase();
+    connection = FirebaseConnection().getConnection();
   }
 
-  
   @override
   Future<bool> updateNode(value) async {
     bool succes = false;
 
     await connection
         .reference()
-        .child(NodeNameGallery.REQUESTTAXI)
+        .child(NodeNameGallery.SERVICEREQUESTESTIMATELIST)
         .child(value)
         .update({'confirmation': true}).then((value) {
       succes = true;
