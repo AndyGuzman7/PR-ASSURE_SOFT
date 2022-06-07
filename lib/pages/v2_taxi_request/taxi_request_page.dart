@@ -57,7 +57,7 @@ class _PruebaState extends State<TaxiRequestPage> {
               latLngDestino.latitude,
               latLngDestino.longitude,
               customSlider.getValue());
-          // taxiRequestFunctionality.insertNodeTaxiRequest(clienRequest);
+          taxiRequestFunctionality.insertNodeTaxiRequest(clienRequest);
         }
       },
       buttonText: "Enviar Solicitud",

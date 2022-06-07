@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:geolocator/geolocator.dart';
 import 'package:location/location.dart';
 import 'package:taxi_segurito_app/strategis/firebase/implementation/send_ubication_driver.dart';
+import 'package:taxi_segurito_app/strategis/firebase/implementation/taxi_impl.dart';
 import 'package:taxi_segurito_app/strategis/firebaseService.dart';
 
 class LocationService {
@@ -15,6 +16,7 @@ class LocationService {
   var locationMess = "";
 
   SendLocationDriver sendLocationDriver = new SendLocationDriver();
+  TaxiImpl taxiImpl = TaxiImpl();
   StreamSubscription<LocationData>? locationSubs;
 
   Future<bool> getPermisson() async {
@@ -45,7 +47,7 @@ class LocationService {
   //listen to the location of the taxi driver
   //and then transfer the data to firebase and
   //can be consumed elsewhere
-  Future<void> listenLocation() async {
+  Future<void> listenLocation(int idTaxi) async {
     //activate Background mode, if the user exit the application
     location.enableBackgroundMode(enable: true);
     //IN CASE AN ERROR OCCURS
@@ -60,8 +62,8 @@ class LocationService {
         locationMess = currentLocation.latitude.toString() +
             " \n" +
             currentLocation.longitude.toString();
-        sendLocationDriver
-            .insertNode(currentLocation)
+        taxiImpl
+            .sendUbicationTaxi(idTaxi, currentLocation)
             .then((value) => print(value));
       },
     );

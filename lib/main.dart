@@ -6,8 +6,10 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:taxi_segurito_app/SRC/providers/push_notifications_provider.dart';
+import 'package:taxi_segurito_app/models/service_taxi.dart';
 import 'package:taxi_segurito_app/pages/contacList/list_contact.dart';
 import 'package:taxi_segurito_app/pages/menu/driver_menu.dart';
+import 'package:taxi_segurito_app/pages/v2_location_taxi/v2_receive_location/receive_location_driver.dart';
 import 'package:taxi_segurito_app/pages/v2_client_service_request_information/client_service_request_information_page.dart';
 import 'package:taxi_segurito_app/pages/v2_location_taxi/v2_send_my_location/send_my_location.dart';
 
@@ -17,6 +19,7 @@ import 'package:taxi_segurito_app/pages/v2_taxi_services_estimate_list/taxi_serv
 
 import 'package:taxi_segurito_app/pages/vehicle_screen/vehicle_edit_screen.dart';
 import 'package:taxi_segurito_app/pages/vehicle_screen/vehicle_register_screen.dart';
+import 'package:taxi_segurito_app/strategis/firebase/nameGalleryStateTaxi.dart';
 
 import './pages/driver_register/driver_register.dart';
 import './pages/main_window/main_window.dart';
@@ -40,6 +43,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'pages/menu/menu_client.dart';
+import 'strategis/firebase/implementation/taxi_impl.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -62,6 +66,12 @@ void main() async {
         break;
       case 'driver':
         app = AppTaxiSegurito('driverMenu', sessionName: name);
+        SessionsService sessionsService = new SessionsService();
+        int id = int.parse(await sessionsService.getSessionValue("id"));
+        TaxiImpl taxiImpl = new TaxiImpl();
+        ServiceTaxi serviceTaxi =
+            new ServiceTaxi(NameGalleryStateTaxi.DISPONIBLE, 0.0, 0.0);
+        taxiImpl.sendStatusTaxi(id, serviceTaxi);
         break;
       default:
         app = AppTaxiSegurito('clientMenu', sessionName: name);
@@ -99,7 +109,7 @@ class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
       theme: ThemeData(primarySwatch: Colors.amber),
       debugShowCheckedModeBanner: false,
       initialRoute: routeInitial,
-      //home: SendMyUbication(),
+      //home: ReceiveLocationDriver(),
       routes: {
         'sendMyUbication': (_) => SendMyUbication(),
         'taxiServicesEstimateListPage': (BuildContext contextss) =>

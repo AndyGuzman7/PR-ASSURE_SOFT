@@ -65,7 +65,7 @@ class _ViewTaxiRequestState extends State<ViewTaxiRequest> {
     super.initState();
 
     locationService.getPermisson();
-    locationService.listenLocation();
+    locationService.listenLocation(widget.estimate!.idUserTaxi);
     setState(() {
       setCustomMapPin();
       getNodeItemInformation();

@@ -38,6 +38,13 @@ class ClientMenu extends StatefulWidget {
 class _ClientMenuState extends State<ClientMenu> {
   get borderRadius => BorderRadius.circular(8.0);
   double heightCard = 150;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     MenuClientFunctionality functionality =

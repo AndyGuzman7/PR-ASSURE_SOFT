@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:taxi_segurito_app/components/buttons/CustomButtonWithLinearBorder.dart';
+import 'package:taxi_segurito_app/components/map/view_map.dart';
+import 'package:taxi_segurito_app/components/map/view_map_now.dart';
 import 'package:taxi_segurito_app/models/driver.dart';
 import 'package:taxi_segurito_app/models/estimate_taxi.dart';
 import 'package:taxi_segurito_app/pages/v2_view_user_request/calification_page.dart';
@@ -23,11 +26,17 @@ class _ViewUserRequestState extends State<ViewUserRequest> {
   Color colorMainDanger = Color.fromRGBO(242, 78, 30, 1);
   Color colorMainNull = Color.fromARGB(255, 244, 123, 123);
 
+  late ViewMapNow viewMapNow = new ViewMapNow(
+    idTaxi: widget.idTaxi,
+  );
+
   @override
   void initState() {
     super.initState();
     print(widget.idRequest);
     viewTaxiRequestFunctionality.initListenerNodeFirebase(widget.idRequest);
+    // viewTaxiRequestFunctionality
+    //   .initListenerNodeFirebaseUbicationTaxi(widget.idTaxi);
   }
 
   @override
@@ -40,12 +49,17 @@ class _ViewUserRequestState extends State<ViewUserRequest> {
     viewTaxiRequestFunctionality.showTerminateService = () {
       showTerminateRequest(2, "El servicio fue finalizado con exito");
     };
+    /*viewTaxiRequestFunctionality.setUbicationTaxi = (value) {
+      print(value.latitudActual.toString() + "asd");
+      LatLng latLng = new LatLng(value.latitudActual, value.longitudActual);
+      //viewMapNow.updatePinOnMap(latLng);
+    };*/
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(title: Text('Taxi en camino...')),
       body: Container(
         color: Color.fromARGB(255, 248, 248, 248),
-        child: Column(children: []),
+        child: viewMapNow,
       ),
     );
   }
