@@ -6,6 +6,7 @@ import 'package:taxi_segurito_app/models/client_request.dart';
 import 'package:taxi_segurito_app/models/estimate_taxi.dart';
 import 'package:taxi_segurito_app/pages/v2_client_service_request_information/nameGalleryStateConfirmation.dart';
 import 'package:taxi_segurito_app/pages/v2_view_taxi_request/view_taxi_request.dart';
+import 'package:taxi_segurito_app/services/sessions_service.dart';
 import 'package:taxi_segurito_app/strategis/firebase/implementation/service_request_estimates_impl.dart';
 import 'package:taxi_segurito_app/strategis/firebase/implementation/taxi_service_request_impl.dart';
 

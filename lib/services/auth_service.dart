@@ -3,12 +3,15 @@ import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:taxi_segurito_app/models/user.dart';
 import 'package:taxi_segurito_app/models/driver.dart';
+import 'package:taxi_segurito_app/models/vehicle.dart';
 
 import 'package:taxi_segurito_app/services/server.dart';
+import 'package:taxi_segurito_app/services/vehicle_service.dart';
 import 'sessions_service.dart';
 
 class AuthService {
   late SessionsService _sessionsService;
+  var listVehicles, vehicle;
 
   AuthService() {
     _sessionsService = SessionsService();
@@ -89,6 +92,12 @@ class AuthService {
     await _sessionsService.addSessionValue('role', driver.role);
     await _sessionsService.addSessionValue('name', driver.fullName);
     await _sessionsService.addSessionValue('cellphone', driver.cellphone);
+
+    VehicleService _vehicleService = VehicleService();
+    listVehicles = await _vehicleService.getVehicleByLastDriver(124);
+    for (Vehicle item in listVehicles) {
+      await _sessionsService.addSessionValue('pleik', item.pleik);
+    }
   }
 
   _saveSession(User user) async {
