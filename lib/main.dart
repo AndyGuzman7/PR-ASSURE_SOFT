@@ -94,11 +94,11 @@ void main() async {
   taskWorkManager();
   //metodo para enviar notificaciones en segundo plano
   //enviar notificaciones desde firebase
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  /*FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>()
-      ?.createNotificationChannel(channel);
+      ?.createNotificationChannel(channel);*/
 
   HttpOverrides.global = new HttpProvider();
   SessionsService sessions = SessionsService();
@@ -162,7 +162,7 @@ taskWorkManager() async {
 void callBackTask() {
   Workmanager().executeTask((tarea, datos) async {
     final RemoteMessage message = RemoteMessage();
-    if (tarea == "Key") {
+    if (tarea == key) {
       _firebaseMessagingBackgroundHandler(message);
     }
     return Future.value(true);
@@ -212,17 +212,6 @@ Future selectNotification(payload) async {
   }
 }
 
-/*getToken(key, token) {
-    RequestTaxiImpl requestTaxiImpl = new RequestTaxiImpl();
-    requestTaxiImpl.updateNodeToken(key, token).then((value) {
-      print(value);
-
-      if (value!=false) 
-      {
-        print(token);
-      } 
-    });
-}*/
 
 class AppTaxiSegurito extends StatefulWidget {
   final String initialRoute;
@@ -239,9 +228,6 @@ class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
   @override
   void initState() {
     super.initState();
-    /*PushNotificationService notifications = new PushNotificationService();
-    var token = notifications.valueToken();
-    getToken(driverRequest!.idRequestTaxiFirebase, token);*/
     PushNotificationService.getToken();
     showConfirmNotification();
   }
@@ -258,7 +244,7 @@ class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
       theme: ThemeData(primarySwatch: Colors.amber),
       debugShowCheckedModeBanner: false,
 
-      initialRoute: routeInitial,
+      initialRoute: 'taxiServicesEstimateListPage',
       //home: ReceiveLocationDriver(),
       routes: {
         'sendMyUbication': (_) => SendMyUbication(),
