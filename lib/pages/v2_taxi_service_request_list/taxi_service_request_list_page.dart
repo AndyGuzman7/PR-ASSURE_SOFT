@@ -19,10 +19,10 @@ class TaxiServiceRequestListPage extends StatefulWidget {
 
 class _TaxiServiceRequestListPageState
     extends State<TaxiServiceRequestListPage> {
-  late List<ClienRequest> listRequest;
-  late List<EstimateTaxi> listEstimates = [];
+  List<ClienRequest>? clienRequest = [];
+  List<EstimateTaxi> listEstimates = [];
+
   late GlobalKey<RefreshIndicatorState> refreshListKey;
-  RequestList requestList = new RequestList();
 
   late String idUserTaxista = "-N1vHdpBe2km7i6xJbkz";
   late bool estadoSolicitud = false;
@@ -37,7 +37,6 @@ class _TaxiServiceRequestListPageState
   void initState() {
     super.initState();
 
-    requestList.listRequest = [];
     listRequestClientFunctionality
         .initServiceUbicationPermisson()
         .then((value) {
@@ -45,99 +44,11 @@ class _TaxiServiceRequestListPageState
         listRequestClientFunctionality.initServiceUbication();
         listRequestClientFunctionality.updateListRequest = ((value) {
           setState(() {
-            listRequest = value;
-            requestList.listRequest = listRequest;
+            clienRequest = value;
           });
         });
       }
     });
-    refreshListKey = new GlobalKey<RefreshIndicatorState>();
-    listRequest = new List<ClienRequest>.empty(growable: true);
-  }
-
-  Widget showList() {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
-    return new Container(
-        height: height,
-        width: width,
-        child: ListView.builder(
-            padding: EdgeInsets.all(10),
-            itemCount: requestList.listRequest!.length,
-            itemBuilder: (BuildContext context, int index) {
-              return rowItem(context, index);
-            }));
-  }
-
-  Widget rowItem(context, index) {
-    dynamic dinamycOb = requestList.listRequest![index];
-
-    return Dismissible(
-      key: Key(listRequest[index].toString()),
-      onDismissed: (direction) {
-        var item = listRequest[index];
-        showSnackBar(context, item, index);
-        removeItem(index);
-      },
-      resizeDuration: new Duration(seconds: 2),
-      background: deleteItem(),
-      child: Card(
-        child: new RequestListItem(
-          clientRequest: dinamycOb,
-          callbackRequest: (value) {
-            requestList.callback!(value);
-          },
-        ),
-      ),
-    );
-  }
-
-  showSnackBar(context, item, index) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text('Elemento removido de la lista'),
-      action: SnackBarAction(
-          label: "NO REMOVER SOLICITUD",
-          onPressed: () {
-            undoDelete(index, item);
-          }),
-    ));
-  }
-
-  Future<Null> refreshList() async {
-    await Future.delayed(Duration(seconds: 1));
-    addRandomItem();
-    return null;
-  }
-
-  addRandomItem() {
-    listRequestClientFunctionality.updateListRequest = ((value) {
-      setState(() {
-        listRequest = value;
-        requestList.listRequest = listRequest;
-        requestList.listRequest!.add(listRequest);
-      });
-    });
-  }
-
-  undoDelete(index, item) {
-    setState(() {
-      listRequest.insert(index, item);
-    });
-  }
-
-  removeItem(index) {
-    setState(() {
-      listRequest.removeAt(index);
-    });
-  }
-
-  Widget deleteItem() {
-    return Container(
-      alignment: Alignment.centerRight,
-      padding: EdgeInsets.only(right: 20),
-      color: Colors.blue,
-      child: Icon(Icons.delete, color: Colors.white),
-    );
   }
 
   @override
@@ -147,21 +58,22 @@ class _TaxiServiceRequestListPageState
       showAlert(value);
     };
 
-    requestList.setCallbak = (ClienRequest value) async {
-      print(value.idFirebase);
-
-      EstimateTaxi? result = await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ClientServiceRequestInformationPage(
-            serviceRequestId: value.idFirebase,
+    RequestList requestList = new RequestList(
+      clienRequest: clienRequest,
+      callback: (value) async {
+        EstimateTaxi? result = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ClientServiceRequestInformationPage(
+              serviceRequestId: value.idFirebase,
+            ),
           ),
-        ),
-      );
+        );
 
-      if (result != null) listEstimates.add(result);
-      listRequestClientFunctionality.listenConfirmationClient(listEstimates);
-    };
+        if (result != null) listEstimates.add(result);
+        listRequestClientFunctionality.listenConfirmationClient(listEstimates);
+      },
+    );
 
     Text title = new Text(
       "Lista de Solicitudes",
@@ -182,9 +94,6 @@ class _TaxiServiceRequestListPageState
       ),
     );
     return Scaffold(
-      floatingActionButton: FloatingActionButton(onPressed: () {
-        //showAlert(context);
-      }),
       appBar: appbar,
       body: Container(
         color: Color.fromARGB(255, 248, 248, 248),
@@ -193,17 +102,7 @@ class _TaxiServiceRequestListPageState
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             title,
-            Expanded(
-              child: Container(
-                child: RefreshIndicator(
-                  key: refreshListKey,
-                  child: showList(),
-                  onRefresh: () async {
-                    await refreshList();
-                  },
-                ),
-              ),
-            ),
+            Expanded(child: requestList),
           ],
         ),
       ),
