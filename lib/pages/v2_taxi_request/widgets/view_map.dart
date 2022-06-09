@@ -90,8 +90,7 @@ class _ViewMapState extends State<ViewMap> {
     double height = MediaQuery.of(context).size.height;
 
     return new Container(
-      height: height,
-      width: width,
+      height: height * 0.6,
       child: FutureBuilder(
         future: locationService.getUbication(),
         builder: (_, AsyncSnapshot<LocationData> snapshot) {

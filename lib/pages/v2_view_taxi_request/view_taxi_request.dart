@@ -111,7 +111,7 @@ class _ViewTaxiRequestState extends State<ViewTaxiRequest> {
 
     closeView() {
       locationService.stopListening();
-      Navigator.pop(context);
+      Navigator.pop(context, widget.estimate);
     }
 
     //AlertDialog terminate service
@@ -167,7 +167,7 @@ class _ViewTaxiRequestState extends State<ViewTaxiRequest> {
                               widget.estimate!.idFirebase,
                               widget.estimate!.idUserTaxi);
                           Navigator.pop(context);
-                          locationService.stopListening();
+                          //locationService.stopListening();
                           closeView();
                         },
                         buttonBorderColor: colorMainDanger,
@@ -285,107 +285,112 @@ class _ViewTaxiRequestState extends State<ViewTaxiRequest> {
     );
 
     return Scaffold(
-      appBar: AppBar(),
-      body: Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Padding(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: title,
+      ),
+      body: WillPopScope(
+        onWillPop: () async => false,
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          Container(
+                            margin: new EdgeInsets.only(
+                              top: 10.0,
+                              bottom: 10.0,
+                              left: 5.0,
+                              right: 5.0,
+                            ),
+                            padding: EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Color.fromRGBO(203, 203, 203, 1),
+                                  width: 1,
+                                ),
+                                borderRadius: BorderRadius.circular(20)),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  flex: 0,
+                                  child: columnOne,
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: columnTwo,
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      )
+                      //CustomFieldText Passengers
+                      //child: TextField(),
+                      ),
+                )
+              ],
+            ),
+            //Map
+            FutureBuilder(
+              future: location.getLocation(),
+              builder: (_, AsyncSnapshot<LocationData> snapshot) {
+                if (snapshot.hasData) {
+                  return Expanded(
+                    child: GoogleMap(
+                      initialCameraPosition: CameraPosition(
+                        target: LatLng(
+                            latLngOrigen.latitude, latLngOrigen.longitude),
+                        zoom: 15,
+                      ),
+                      onMapCreated: (GoogleMapController controller) {},
+                      mapToolbarEnabled: false,
+                      myLocationEnabled: true,
+                      markers: _createMarker(),
+                      mapType: MapType.normal,
+                    ),
+                  );
+                } else {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: Padding(
                     padding: const EdgeInsets.all(16.0),
+                    //CustomFieldText Passengers
                     child: Column(
                       children: [
-                        containerTitle,
-                        Container(
-                          margin: new EdgeInsets.only(
-                            top: 10.0,
-                            bottom: 10.0,
-                            left: 5.0,
-                            right: 5.0,
-                          ),
-                          padding: EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Color.fromRGBO(203, 203, 203, 1),
-                                width: 1,
-                              ),
-                              borderRadius: BorderRadius.circular(20)),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                flex: 0,
-                                child: columnOne,
-                              ),
-                              Expanded(
-                                flex: 1,
-                                child: columnTwo,
-                              ),
-                            ],
-                          ),
+                        Row(
+                          children: [
+                            Expanded(child: btnCancelRequest),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            Expanded(
+                              child: btnTerminate,
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 15,
                         )
                       ],
-                    )
-                    //CustomFieldText Passengers
-                    //child: TextField(),
                     ),
-              )
-            ],
-          ),
-          //Map
-          FutureBuilder(
-            future: location.getLocation(),
-            builder: (_, AsyncSnapshot<LocationData> snapshot) {
-              if (snapshot.hasData) {
-                return Expanded(
-                  child: GoogleMap(
-                    initialCameraPosition: CameraPosition(
-                      target:
-                          LatLng(latLngOrigen.latitude, latLngOrigen.longitude),
-                      zoom: 15,
-                    ),
-                    onMapCreated: (GoogleMapController controller) {},
-                    mapToolbarEnabled: false,
-                    myLocationEnabled: true,
-                    markers: _createMarker(),
-                    mapType: MapType.normal,
                   ),
-                );
-              } else {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-            },
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  //CustomFieldText Passengers
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(child: btnCancelRequest),
-                          SizedBox(
-                            width: 20,
-                          ),
-                          Expanded(
-                            child: btnTerminate,
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 15,
-                      )
-                    ],
-                  ),
-                ),
-              )
-            ],
-          ),
-        ],
+                )
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

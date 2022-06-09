@@ -53,7 +53,7 @@ class _ClientMenuState extends State<ClientMenu> {
     ContainerName containerName = ContainerName();
     MySliverAppBar mySliverAppBar = MySliverAppBar(
         expandedHeight: heightCard,
-        nameUser: widget.name!,
+        nameUser: "widget.name!",
         containerName: containerName);
 
     final List<Center> items = [

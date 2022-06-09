@@ -7,6 +7,7 @@ import 'package:taxi_segurito_app/pages/v2_client_service_request_information/cl
 import 'package:taxi_segurito_app/pages/v2_taxi_service_request_list/taxi_service_request_list_functionality.dart';
 import 'package:taxi_segurito_app/pages/v2_taxi_service_request_list/widgets/request_list.dart';
 import 'package:taxi_segurito_app/pages/v2_taxi_service_request_list/widgets/request_list_item.dart';
+import 'package:taxi_segurito_app/pages/v2_view_taxi_request/view_taxi_request.dart';
 import 'package:taxi_segurito_app/services/sessions_service.dart';
 
 class TaxiServiceRequestListPage extends StatefulWidget {
@@ -21,6 +22,7 @@ class _TaxiServiceRequestListPageState
     extends State<TaxiServiceRequestListPage> {
   List<ClienRequest>? clienRequest = [];
   List<EstimateTaxi> listEstimates = [];
+  List<EstimateTaxi> listEstimatesDelete = [];
 
   late GlobalKey<RefreshIndicatorState> refreshListKey;
 
@@ -33,6 +35,8 @@ class _TaxiServiceRequestListPageState
 
   TaxiServiceRequestListPageFunctionality listRequestClientFunctionality =
       new TaxiServiceRequestListPageFunctionality();
+
+  RequestList requestList = new RequestList();
   @override
   void initState() {
     super.initState();
@@ -45,10 +49,16 @@ class _TaxiServiceRequestListPageState
         listRequestClientFunctionality.updateListRequest = ((value) {
           setState(() {
             clienRequest = value;
+            requestList.updateList(clienRequest);
           });
         });
       }
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -58,22 +68,19 @@ class _TaxiServiceRequestListPageState
       showAlert(value);
     };
 
-    RequestList requestList = new RequestList(
-      clienRequest: clienRequest,
-      callback: (value) async {
-        EstimateTaxi? result = await Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ClientServiceRequestInformationPage(
-              serviceRequestId: value.idFirebase,
-            ),
+    requestList.callback = (value) async {
+      EstimateTaxi? result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ClientServiceRequestInformationPage(
+            serviceRequestId: value.idFirebase,
           ),
-        );
+        ),
+      );
 
-        if (result != null) listEstimates.add(result);
-        listRequestClientFunctionality.listenConfirmationClient(listEstimates);
-      },
-    );
+      if (result != null) listEstimates.add(result);
+      listRequestClientFunctionality.listenConfirmationClient(listEstimates);
+    };
 
     Text title = new Text(
       "Lista de Solicitudes",
@@ -115,6 +122,8 @@ class _TaxiServiceRequestListPageState
       child: value,
     );
   }
+
+  deleteListConfirmation() async {}
 
 //AlertDialog confirm request
   void showAlert(EstimateTaxi estimateTaxi) {
@@ -171,10 +180,24 @@ class _TaxiServiceRequestListPageState
                 ),
                 Expanded(
                   child: CustomButtonWithLinearBorder(
-                      onTap: () {
+                      onTap: () async {
                         Navigator.pop(context);
                         listRequestClientFunctionality
                             .confirmationService(estimateTaxi);
+
+                        var estimateTaxis = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ViewTaxiRequest(
+                              estimate: estimateTaxi,
+                            ),
+                          ),
+                        );
+                        EstimateTaxi? result = estimateTaxis;
+
+                        if (result != null) listEstimates.remove(result);
+                        listRequestClientFunctionality
+                            .listenConfirmationClient(listEstimates);
                       },
                       buttonBorderColor: colorMainDanger,
                       marginBotton: 0,

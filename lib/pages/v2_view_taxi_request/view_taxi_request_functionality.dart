@@ -26,7 +26,8 @@ class ViewTaxiRequestFunctionality {
 
   void sendTerminateService(idFirebase, idTaxi) {
     serviceRequestEstimatesImpl
-        .terminateService(idFirebase, NameGalleryStateConfirmation.FINALIZADO)
+        .terminateService(
+            idFirebase.toString(), NameGalleryStateConfirmation.FINALIZADO)
         .then(
           (value) => {
             print("Se finalizo el servicio con exito"),

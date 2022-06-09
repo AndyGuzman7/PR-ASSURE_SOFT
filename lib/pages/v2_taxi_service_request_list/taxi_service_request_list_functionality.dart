@@ -28,7 +28,7 @@ class TaxiServiceRequestListPageFunctionality {
 
   TaxiServiceRequestListPageFunctionality();
 
-  void initListenerNodeFirebase() {
+  Future<void> initListenerNodeFirebase() async {
     try {
       listRequest2 = [];
 
@@ -36,9 +36,6 @@ class TaxiServiceRequestListPageFunctionality {
         listRequest2 = filtreRequestClientZoneRange(
             taxiServiceRequestImpl.convertJsonList(event));
         updateListRequest(listRequest2);
-        for (var item in listRequest2) {
-          print(item.idUser);
-        }
       });
     } catch (e) {
       print(e);
@@ -68,7 +65,7 @@ class TaxiServiceRequestListPageFunctionality {
         .confirmateEstimateTaxi(
             estimateTaxi, NameGalleryStateConfirmation.CONFIRMADO)
         .then((value) {
-      if (value) {
+      /*if (value) {
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -77,7 +74,7 @@ class TaxiServiceRequestListPageFunctionality {
             ),
           ),
         );
-      }
+      }*/
     });
   }
 

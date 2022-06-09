@@ -79,11 +79,9 @@ class _RequestListState extends State<EstimateList> {
   }
 
   addRandomItem() {
-    /*taxiServicesEstimatesListFunctionality.updateListRequest = ((value) {
-      setState(() {
-        listEstimates = value;
-      });
-    });*/
+    setState(() {
+      widget.listEstimates = widget.listEstimates;
+    });
   }
 
   undoDelete(index, item) {
@@ -112,7 +110,7 @@ class _RequestListState extends State<EstimateList> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return RefreshIndicator(
-      key: refreshListKey,
+      key: UniqueKey(),
       child: showList(),
       onRefresh: () async {
         await refreshList();

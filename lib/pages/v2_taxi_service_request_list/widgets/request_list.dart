@@ -6,10 +6,11 @@ import 'package:taxi_segurito_app/pages/v2_taxi_service_request_list/widgets/req
 import 'package:taxi_segurito_app/pages/v2_taxi_services_estimate_list/widgets/estimate_list_item.dart';
 
 class RequestList extends StatefulWidget {
-  List<ClienRequest>? clienRequest = [];
+  List<ClienRequest>? clienRequestList = [];
+  List<ClienRequest>? clienRequestlistDelete = [];
   void Function(ClienRequest clienRequest)? callback;
   _RequestListState _containerListViewState = new _RequestListState();
-  RequestList({Key? key, this.callback, this.clienRequest}) : super(key: key);
+  RequestList({Key? key, this.callback}) : super(key: key);
 
   @override
   _RequestListState createState() {
@@ -19,11 +20,28 @@ class RequestList extends StatefulWidget {
   set setCallback(function) {
     this.callback = function;
   }
+
+  updateList(List<ClienRequest>? clienRequestList) {
+    _containerListViewState.updateList(clienRequestList);
+  }
 }
 
 class _RequestListState extends State<RequestList> {
   late GlobalKey<RefreshIndicatorState> refreshListKey =
       new GlobalKey<RefreshIndicatorState>();
+
+  @override
+  void initState() {
+    super.initState();
+    print("init state");
+  }
+
+  updateList(List<ClienRequest>? clienRequestList) {
+    setState(() {
+      widget.clienRequestList = clienRequestList;
+    });
+  }
+
   Widget showList() {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
@@ -32,7 +50,7 @@ class _RequestListState extends State<RequestList> {
       width: width,
       child: ListView.builder(
         padding: EdgeInsets.all(10),
-        itemCount: widget.clienRequest!.length,
+        itemCount: widget.clienRequestList!.length,
         itemBuilder: (BuildContext context, int index) {
           return rowItem(context, index);
         },
@@ -41,13 +59,14 @@ class _RequestListState extends State<RequestList> {
   }
 
   Widget rowItem(context, index) {
-    dynamic dinamycOb = widget.clienRequest![index];
+    dynamic dinamycOb = widget.clienRequestList![index];
 
     return Dismissible(
-      key: Key(widget.clienRequest![index].toString()),
+      key: Key(widget.clienRequestList![index].toString()),
       onDismissed: (direction) {
-        var item = widget.clienRequest![index];
-        showSnackBar(context, item, index);
+        var item = widget.clienRequestList![index];
+        widget.clienRequestlistDelete!.add(item);
+        //showSnackBar(context, item, index);
         removeItem(index);
       },
       resizeDuration: new Duration(seconds: 2),
@@ -90,13 +109,13 @@ class _RequestListState extends State<RequestList> {
 
   undoDelete(index, item) {
     setState(() {
-      widget.clienRequest!.insert(index, item);
+      widget.clienRequestList!.insert(index, item);
     });
   }
 
   removeItem(index) {
     setState(() {
-      widget.clienRequest!.removeAt(index);
+      widget.clienRequestList!.removeAt(index);
     });
   }
 
@@ -109,12 +128,29 @@ class _RequestListState extends State<RequestList> {
     );
   }
 
+  verificationItemsRemove() {
+    List<ClienRequest>? clienRequestlistAuxDelete = [];
+    widget.clienRequestList!.forEach((element) {
+      if (widget.clienRequestlistDelete!
+          .any((s) => s.idFirebase == element.idFirebase)) {
+        clienRequestlistAuxDelete.add(element);
+      }
+    });
+
+    widget.clienRequestList!
+        .removeWhere((element) => clienRequestlistAuxDelete.contains(element));
+  }
+
   @override
   Widget build(BuildContext context) {
+    verificationItemsRemove();
+    print("build");
+    print(widget.clienRequestList!.length);
+    //print(widget.clienRequestlistDelete!.length);
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return RefreshIndicator(
-      key: refreshListKey,
+      key: UniqueKey(),
       child: showList(),
       onRefresh: () async {
         await refreshList();
