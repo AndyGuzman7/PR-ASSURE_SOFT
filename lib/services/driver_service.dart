@@ -3,14 +3,18 @@ import 'package:http/http.dart' as http;
 import 'package:taxi_segurito_app/models/driver.dart';
 import 'package:taxi_segurito_app/providers/ImageFromBase64Provider.dart';
 import 'package:taxi_segurito_app/services/auth_service.dart';
+import 'package:taxi_segurito_app/services/sessions_service.dart';
 import 'server.dart';
 
 class DriversService {
   AuthService _authService = AuthService();
+  SessionsService sessionsService = new SessionsService();
 
   Future<bool> insert(Driver driver) async {
-    final ownerId = await _authService.getCurrentId();
+    final ownerId = await sessionsService.getSessionValue("id");
     String path = '${Server.url}/driver/driver_controller.php';
+    print(path);
+    print(ownerId.toString() + "ID OWNER");
     final response = await http.post(
       Uri.parse(path),
       body: jsonEncode({
@@ -20,8 +24,12 @@ class DriversService {
         "ci": driver.ci,
         "picture": driver.pictureStr,
         "ownerId": ownerId,
+        "email": driver.email,
+        "password": driver.password,
       }),
     );
+    print(response.body);
+
     return response.statusCode == 200;
   }
 
@@ -33,11 +41,14 @@ class DriversService {
       '${Server.baseEndpoint}/driver/driver_controller.php',
       queryParams,
     );
+    print(endpoint);
 
     http.Response response = await http.get(endpoint);
     if (response.statusCode == 200) {
+      print(response.statusCode);
       return _jsonToList(response);
     }
+
     throw 'Unable to fetch drivers data';
   }
 
@@ -61,6 +72,7 @@ class DriversService {
   }
 
   List<Driver> _jsonToList(http.Response response) {
+    print(response.body);
     List<dynamic> body = jsonDecode(response.body);
     List<Driver> drivers = body.map((d) => Driver.fromJson(d)).toList();
     return drivers;
@@ -94,7 +106,10 @@ class DriversService {
             'cellphone': driver.cellphone,
             'license': driver.license,
             'ci': driver.ci,
-            'picture': stringFromBase64Bytes(driver.picture)
+            'picture': stringFromBase64Bytes(driver.picture),
+            'ownerId': driver.ownerId,
+            'email': driver.email,
+            'password': driver.password,
           },
         ),
       );

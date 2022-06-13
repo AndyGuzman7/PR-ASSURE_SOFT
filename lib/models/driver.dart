@@ -9,6 +9,9 @@ class Driver extends Person {
   late Uint8List picture;
   late String? pictureStr;
   late int? ownerId;
+  late String email;
+  late String password;
+  late String role;
 
   Driver(String fullName, this.ci, String cellphone)
       : super.insert(fullName, cellphone);
@@ -30,6 +33,21 @@ class Driver extends Person {
     this.ownerId,
   }) : super.insert(fullName, cellphone);
 
+  Driver.insertV2({
+    required String fullName,
+    required String cellphone,
+    required this.license,
+    required this.ci,
+    required this.pictureStr,
+    this.ownerId,
+    required this.email,
+    required this.password,
+  }) : super.insert(fullName, cellphone);
+  Driver.logInDriver(this.email, this.password);
+  Driver.logInDriverResponse(
+      int id, this.role, String fullname, String cellphone)
+      : super.logIn(id, fullname, cellphone);
+
   Driver.fromJson(Map<String, dynamic> json) {
     super.idPerson = json['id'] as int;
     super.fullName = json['fullname'] as String;
@@ -37,10 +55,15 @@ class Driver extends Person {
     this.license = json['license'] as String;
     this.ci = json['ci'] as String;
     this.ownerId = json['ownerId'] as int;
+    this.email = json['email'] as String;
+    this.password = json['password'] as String;
     super.status = json['status'] as int;
 
     String pictureBase64 = json['picture'] as String;
     picture = bytesFromBase64String(pictureBase64);
+    this.role = json['role'] as String;
+    // this.email = json['email'] as String;
+    this.password = json['password'] as String;
   }
 
   Driver.init();

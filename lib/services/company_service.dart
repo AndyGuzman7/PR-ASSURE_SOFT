@@ -14,6 +14,7 @@ class CompanyService {
           'nit': company.nit,
         }),
       );
+      print(response.body);
       return response.statusCode == 200;
     } catch (exception) {
       return false;

@@ -30,7 +30,7 @@ class LoginFuctionality {
       if (userRes.role.toString() == 'client') {
         Navigator.pushReplacementNamed(
           context,
-          'scannerQr',
+          'clientMenu',
           arguments: userRes.fullName,
         );
       }
