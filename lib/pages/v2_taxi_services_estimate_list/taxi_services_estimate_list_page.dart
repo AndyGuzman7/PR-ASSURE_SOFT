@@ -7,6 +7,7 @@ import 'package:taxi_segurito_app/models/estimate_taxi.dart';
 import 'package:taxi_segurito_app/pages/v2_taxi_services_estimate_list/taxi_services_estimate_list_functionality.dart';
 import 'package:taxi_segurito_app/pages/v2_taxi_services_estimate_list/widgets/estimate_list.dart';
 import 'package:taxi_segurito_app/pages/v2_view_user_request/view_user_request.dart';
+import 'package:taxi_segurito_app/services/notifications.dart';
 
 class TaxiServicesEstimateListPage extends StatefulWidget {
   String idRequestService;
@@ -25,6 +26,7 @@ class _TaxiServicesEstimateListPageState
   TaxiServicesEstimatesListFunctionality
       taxiServicesEstimatesListFunctionality =
       new TaxiServicesEstimatesListFunctionality();
+  final NotificationsFirebase notificationsFirebase = NotificationsFirebase();
 
   Color colorMain = Color.fromRGBO(255, 193, 7, 1);
   Color colorMainDanger = Color.fromRGBO(242, 78, 30, 1);
@@ -39,6 +41,15 @@ class _TaxiServicesEstimateListPageState
             .startServices(widget.idRequestService);
       }
     });
+    notificationsFirebase.subscribeToTopic(Topic: 'ConfirmEstimate');
+  }
+
+  sendNotificationConfirm(valueToken) {
+    String title = "Cotizacion aceptada";
+    String body = "Se acepto la cotizacion del cliente";
+    String client = "";
+    notificationsFirebase.sendNotificationToTaxi(
+        Token: valueToken, Title: title, Body: body, Client: client);
   }
 
   AppBar appBar = new AppBar(
@@ -191,6 +202,9 @@ class _TaxiServicesEstimateListPageState
       onTap: () {
         taxiServicesEstimatesListFunctionality
             .confirmationEstimate(estimateTaxi.idFirebase);
+        /*taxiServicesEstimatesListFunctionality
+            .sendNotificaction(estimateTaxi.token);*/
+        sendNotificationConfirm(estimateTaxi.token);
         Navigator.pop(context);
       },
       buttonText: "Si",

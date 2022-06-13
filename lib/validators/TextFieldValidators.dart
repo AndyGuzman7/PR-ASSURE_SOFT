@@ -57,3 +57,22 @@ class NumberValidator extends TextFieldValidator {
     return false;
   }
 }
+
+class NumberValidatorZero extends TextFieldValidator {
+  final Pattern _stringRegExp = r'[a-zA-Z]';
+  final Pattern _numberRegExp = r'[0-9]';
+
+  NumberValidatorZero({required String errorText}) : super(errorText);
+  @override
+  bool isValid(String? value) {
+    bool isValidString =
+        hasMatch(_stringRegExp.toString(), value!, caseSensitive: false);
+    bool isValidNumber =
+        hasMatch(_numberRegExp.toString(), value, caseSensitive: false);
+
+    if (int.parse(value) <= 0) {
+      return false;
+    }
+    return true;
+  }
+}

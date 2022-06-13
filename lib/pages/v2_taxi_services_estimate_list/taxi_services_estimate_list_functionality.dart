@@ -112,6 +112,11 @@ class TaxiServicesEstimatesListFunctionality {
     });
   }
 
+  sendConfirmNotification(token) {
+    //envio de notificaciones al taxista
+    
+  }
+
   showSnackBar(contex) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(

@@ -3,12 +3,15 @@ import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'dart:typed_data';
-
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:rxdart/subjects.dart';
 import 'package:taxi_segurito_app/SRC/providers/push_notifications_provider.dart';
+import 'package:taxi_segurito_app/models/estimate_taxi.dart';
 import 'package:taxi_segurito_app/models/service_taxi.dart';
 import 'package:taxi_segurito_app/pages/contacList/list_contact.dart';
 import 'package:taxi_segurito_app/pages/menu/driver_menu.dart';
+import 'package:taxi_segurito_app/pages/menu/menu_client.dart';
 import 'package:taxi_segurito_app/pages/v2_location_taxi/v2_receive_location/receive_location_driver.dart';
 import 'package:taxi_segurito_app/pages/v2_client_service_request_information/client_service_request_information_page.dart';
 import 'package:taxi_segurito_app/pages/v2_location_taxi/v2_send_my_location/send_my_location.dart';
@@ -20,6 +23,7 @@ import 'package:taxi_segurito_app/pages/v2_taxi_services_estimate_list/taxi_serv
 import 'package:taxi_segurito_app/pages/vehicle_screen/vehicle_edit_screen.dart';
 import 'package:taxi_segurito_app/pages/vehicle_screen/vehicle_register_screen.dart';
 import 'package:taxi_segurito_app/strategis/firebase/nameGalleryStateTaxi.dart';
+import 'package:workmanager/workmanager.dart';
 
 import './pages/driver_register/driver_register.dart';
 import './pages/main_window/main_window.dart';
@@ -39,15 +43,72 @@ import './pages/historyReview/HistoryReview.dart';
 import './models/vehicle.dart';
 import './models/providers/HttpProvider.dart';
 import 'package:firebase_database/firebase_database.dart';
-
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-import 'pages/menu/menu_client.dart';
+import 'strategis/firebase/implementation/request_taxi_impl.dart';
 import 'strategis/firebase/implementation/taxi_impl.dart';
+
+//metodo para el envio de notificaciones de firebase en segundo plano
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  print('Handling a background message ${message.messageId}');
+  print(message.data);
+  inputData = message.data;
+  id = message.messageId;
+  key = message.collapseKey;
+  settingNotification();
+  flutterLocalNotificationsPlugin.show(
+    message.data.hashCode,
+    message.data['notificaction']['title'],
+    message.data['notificaction']['body'],
+    NotificationDetails(
+      android: AndroidNotificationDetails(
+        channel.id,
+        channel.name,
+        channelDescription: channel.description,
+        importance: Importance.high,
+        playSound: true,
+        enableVibration: false,
+        color: Colors.amberAccent,
+      ),
+    ),
+    payload: message.data['notificaction']['body'],
+  );
+  print(message.data['notificaction']['body']);
+}
+
+//configuracion para el envio del mensaje
+const AndroidNotificationChannel channel = AndroidNotificationChannel(
+    'high_importance_channel', // id
+    'High Importance Notifications', // title
+    description:
+        'This channel is used for important notifications.', // description
+    importance: Importance.high,
+    playSound: true);
+
+final BehaviorSubject<String?> selectNotificationSubject =
+    BehaviorSubject<String?>();
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
+String? id;
+String? key;
+dynamic inputData;
+String? selectedNotificationPayload;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Firebase.initializeApp();
+  await Firebase.initializeApp();
+  //metodo para las tareas de sgundo plano
+  taskWorkManager();
+  //metodo para enviar notificaciones en segundo plano
+  //enviar notificaciones desde firebase
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(channel);
 
   HttpOverrides.global = new HttpProvider();
   SessionsService sessions = SessionsService();
@@ -81,6 +142,100 @@ void main() async {
   runApp(app);
 }
 
+//metodo para mostrar notificaciones en segundo plano
+taskWorkManager() async {
+  settingNotification();
+
+  Workmanager().initialize(
+    callBackTask,
+    isInDebugMode: false,
+  );
+
+  /*Workmanager().registerOneOffTask(
+    id.toString(),
+    key.toString(),
+    existingWorkPolicy: ExistingWorkPolicy.replace,
+    initialDelay: Duration(seconds: 5),
+    constraints: Constraints(networkType: NetworkType.connected),
+    inputData: inputData,
+  );*/
+
+  Workmanager().registerPeriodicTask(
+    id.toString(),
+    key.toString(),
+    frequency: Duration(minutes: 10),
+    existingWorkPolicy: ExistingWorkPolicy.replace,
+    initialDelay: Duration(seconds: 5),
+    constraints: Constraints(networkType: NetworkType.connected),
+    inputData: inputData,
+  );
+}
+
+//metodo para enviar notificaciones mediante workmanager
+void callBackTask() {
+  Workmanager().executeTask((tarea, datos) async {
+    final RemoteMessage message = RemoteMessage();
+    if (tarea == key) {
+      _firebaseMessagingBackgroundHandler(message);
+    }
+    return Future.value(true);
+  });
+}
+
+showConfirmNotification() {
+  //configuraciones para los permisos del dispositivo
+  settingNotification();
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    RemoteNotification? notification = message.notification;
+    AndroidNotification? android = message.notification?.android;
+    if (notification != null && android != null) {
+      flutterLocalNotificationsPlugin.show(
+        notification.hashCode,
+        notification.title,
+        notification.body,
+        NotificationDetails(
+          android: AndroidNotificationDetails(
+            channel.id,
+            channel.name,
+            channelDescription: channel.description,
+            icon: android.smallIcon,
+            importance: Importance.max,
+            priority: Priority.high,
+            playSound: true,
+            enableVibration: false,
+            color: Colors.amberAccent,
+          ),
+        ),
+        payload: notification.body,
+      );
+    }
+  });
+}
+
+//evento abrir notificacion
+Future onSelectNotification(payload) async {
+  if (payload != null) {
+    debugPrint("Notificacion: $payload");
+  }
+  selectedNotificationPayload = payload;
+  selectNotificationSubject.add(payload);
+}
+
+//metodo para configurar las notificaciones de envio a los telefonos
+settingNotification() {
+  //configuraciones para los permisos del dispositivo
+  var initialzationSettingsAndroid =
+      AndroidInitializationSettings('@mipmap/ic_launcher');
+  var initializationSettings = InitializationSettings(
+    android: initialzationSettingsAndroid,
+  );
+  //configuracion para mostrar la notificacion
+  flutterLocalNotificationsPlugin.initialize(
+    initializationSettings,
+    onSelectNotification: onSelectNotification,
+  );
+}
+
 class AppTaxiSegurito extends StatefulWidget {
   final String initialRoute;
   final String? sessionName;
@@ -90,11 +245,14 @@ class AppTaxiSegurito extends StatefulWidget {
       _AppTaxiSeguritoState(initialRoute, sessionName: this.sessionName);
 }
 
+EstimateTaxi? driverRequest;
+
 class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
   @override
   void initState() {
     super.initState();
-    PushNotificationService.initializedApp();
+    PushNotificationService.getToken();
+    showConfirmNotification();
   }
 
   String routeInitial;
@@ -108,6 +266,7 @@ class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
       title: "Taxi Segurito",
       theme: ThemeData(primarySwatch: Colors.amber),
       debugShowCheckedModeBanner: false,
+
       initialRoute: routeInitial,
       //home: ReceiveLocationDriver(),
       routes: {

@@ -18,13 +18,19 @@ class _RequestListItemState extends State<RequestListItem> {
   Color colorMainNull = Color.fromRGBO(153, 153, 153, 1);
   RequestListItemFunctionality requestListItemFunctionality =
       new RequestListItemFunctionality();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print("reincio de toda la lista init state");
+  }
 
   @override
   Widget build(BuildContext context) {
     Image imagedefault = new Image.asset(
       "assets/images/user_default.png",
     );
-
+    print("reincio de toda la lista build");
     Container columnOne = new Container(
       child: Align(
         alignment: Alignment.centerRight,

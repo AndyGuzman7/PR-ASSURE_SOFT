@@ -11,6 +11,7 @@ class EstimateTaxi {
   late String estadoCliente;
   late String estadoTaxi;
   late int id;
+  late String token;
   late String motivoCancelacion = "No cancelado";
 
   EstimateTaxi(
@@ -22,7 +23,8 @@ class EstimateTaxi {
       this.estimacion,
       this.latitud,
       this.longitud,
-      this.placa);
+      this.placa,
+      this.token);
   EstimateTaxi.fromJson(Map<dynamic, dynamic> json)
       : idUserTaxi = json['idUserTaxi'],
         idTaxiServiceRequest = json['idTaxiServiceRequest'],
@@ -31,6 +33,7 @@ class EstimateTaxi {
         latitud = json['latidud'],
         longitud = json['longitud'],
         placa = json['placa'],
+        token = json['token'],
         motivoCancelacion = json['motivoCancelacion'],
         estadoCliente = json['estadoCliente'],
         estadoTaxi = json['estadoTaxi'];
@@ -43,6 +46,7 @@ class EstimateTaxi {
         'latidud': latitud,
         'longitud': longitud,
         'placa': placa,
+        'token': token,
         'estadoCliente': estadoCliente,
         'estadoTaxi': estadoTaxi,
         'motivoCancelacion': motivoCancelacion

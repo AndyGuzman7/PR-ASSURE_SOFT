@@ -24,16 +24,19 @@ class ClientServiceRequestInformationFunctionality {
     Position position = await Geolocator.getCurrentPosition();
     var idUser = await sessionsService.getSessionValue('id');
     var pleik = await sessionsService.getSessionValue("pleik");
+    var token = await sessionsService.getSessionValue("token");
     EstimateTaxi estimateTaxi = new EstimateTaxi(
-        int.parse(idUser),
-        NameGalleryStateConfirmation.SINCONFIRMAR,
-        NameGalleryStateConfirmation.SINCONFIRMAR,
-        serviceRequestEstimatesImpl.key,
-        idServiceRequest,
-        estimate,
-        position.latitude,
-        position.longitude,
-        pleik.toString());
+      int.parse(idUser),
+      NameGalleryStateConfirmation.SINCONFIRMAR,
+      NameGalleryStateConfirmation.SINCONFIRMAR,
+      serviceRequestEstimatesImpl.key,
+      idServiceRequest,
+      estimate,
+      position.latitude,
+      position.longitude,
+      pleik.toString(),
+      token,
+    );
 
     serviceRequestEstimatesImpl.insertNode(estimateTaxi.toJson()).then((value) {
       if (value) {

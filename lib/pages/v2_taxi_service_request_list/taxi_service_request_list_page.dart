@@ -7,6 +7,7 @@ import 'package:taxi_segurito_app/pages/v2_client_service_request_information/cl
 import 'package:taxi_segurito_app/pages/v2_taxi_service_request_list/taxi_service_request_list_functionality.dart';
 import 'package:taxi_segurito_app/pages/v2_taxi_service_request_list/widgets/request_list.dart';
 import 'package:taxi_segurito_app/pages/v2_taxi_service_request_list/widgets/request_list_item.dart';
+import 'package:taxi_segurito_app/pages/v2_view_taxi_request/view_taxi_request.dart';
 import 'package:taxi_segurito_app/services/sessions_service.dart';
 
 class TaxiServiceRequestListPage extends StatefulWidget {
@@ -19,10 +20,11 @@ class TaxiServiceRequestListPage extends StatefulWidget {
 
 class _TaxiServiceRequestListPageState
     extends State<TaxiServiceRequestListPage> {
-  late List<ClienRequest> listRequest;
-  late List<EstimateTaxi> listEstimates = [];
+  List<ClienRequest>? clienRequest = [];
+  List<EstimateTaxi> listEstimates = [];
+  List<EstimateTaxi> listEstimatesDelete = [];
+
   late GlobalKey<RefreshIndicatorState> refreshListKey;
-  RequestList requestList = new RequestList();
 
   late String idUserTaxista = "-N1vHdpBe2km7i6xJbkz";
   late bool estadoSolicitud = false;
@@ -33,11 +35,12 @@ class _TaxiServiceRequestListPageState
 
   TaxiServiceRequestListPageFunctionality listRequestClientFunctionality =
       new TaxiServiceRequestListPageFunctionality();
+
+  RequestList requestList = new RequestList();
   @override
   void initState() {
     super.initState();
 
-    requestList.listRequest = [];
     listRequestClientFunctionality
         .initServiceUbicationPermisson()
         .then((value) {
@@ -45,99 +48,17 @@ class _TaxiServiceRequestListPageState
         listRequestClientFunctionality.initServiceUbication();
         listRequestClientFunctionality.updateListRequest = ((value) {
           setState(() {
-            listRequest = value;
-            requestList.listRequest = listRequest;
+            clienRequest = value;
+            requestList.updateList(clienRequest);
           });
         });
       }
     });
-    refreshListKey = new GlobalKey<RefreshIndicatorState>();
-    listRequest = new List<ClienRequest>.empty(growable: true);
   }
 
-  Widget showList() {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
-    return new Container(
-        height: height,
-        width: width,
-        child: ListView.builder(
-            padding: EdgeInsets.all(10),
-            itemCount: requestList.listRequest!.length,
-            itemBuilder: (BuildContext context, int index) {
-              return rowItem(context, index);
-            }));
-  }
-
-  Widget rowItem(context, index) {
-    dynamic dinamycOb = requestList.listRequest![index];
-
-    return Dismissible(
-      key: Key(listRequest[index].toString()),
-      onDismissed: (direction) {
-        var item = listRequest[index];
-        showSnackBar(context, item, index);
-        removeItem(index);
-      },
-      resizeDuration: new Duration(seconds: 2),
-      background: deleteItem(),
-      child: Card(
-        child: new RequestListItem(
-          clientRequest: dinamycOb,
-          callbackRequest: (value) {
-            requestList.callback!(value);
-          },
-        ),
-      ),
-    );
-  }
-
-  showSnackBar(context, item, index) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text('Elemento removido de la lista'),
-      action: SnackBarAction(
-          label: "NO REMOVER SOLICITUD",
-          onPressed: () {
-            undoDelete(index, item);
-          }),
-    ));
-  }
-
-  Future<Null> refreshList() async {
-    await Future.delayed(Duration(seconds: 1));
-    addRandomItem();
-    return null;
-  }
-
-  addRandomItem() {
-    listRequestClientFunctionality.updateListRequest = ((value) {
-      setState(() {
-        listRequest = value;
-        requestList.listRequest = listRequest;
-        requestList.listRequest!.add(listRequest);
-      });
-    });
-  }
-
-  undoDelete(index, item) {
-    setState(() {
-      listRequest.insert(index, item);
-    });
-  }
-
-  removeItem(index) {
-    setState(() {
-      listRequest.removeAt(index);
-    });
-  }
-
-  Widget deleteItem() {
-    return Container(
-      alignment: Alignment.centerRight,
-      padding: EdgeInsets.only(right: 20),
-      color: Colors.blue,
-      child: Icon(Icons.delete, color: Colors.white),
-    );
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -147,9 +68,7 @@ class _TaxiServiceRequestListPageState
       showAlert(value);
     };
 
-    requestList.setCallbak = (ClienRequest value) async {
-      print(value.idFirebase);
-
+    requestList.callback = (value) async {
       EstimateTaxi? result = await Navigator.push(
         context,
         MaterialPageRoute(
@@ -182,9 +101,6 @@ class _TaxiServiceRequestListPageState
       ),
     );
     return Scaffold(
-      floatingActionButton: FloatingActionButton(onPressed: () {
-        //showAlert(context);
-      }),
       appBar: appbar,
       body: Container(
         color: Color.fromARGB(255, 248, 248, 248),
@@ -193,17 +109,7 @@ class _TaxiServiceRequestListPageState
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             title,
-            Expanded(
-              child: Container(
-                child: RefreshIndicator(
-                  key: refreshListKey,
-                  child: showList(),
-                  onRefresh: () async {
-                    await refreshList();
-                  },
-                ),
-              ),
-            ),
+            Expanded(child: requestList),
           ],
         ),
       ),
@@ -216,6 +122,8 @@ class _TaxiServiceRequestListPageState
       child: value,
     );
   }
+
+  deleteListConfirmation() async {}
 
 //AlertDialog confirm request
   void showAlert(EstimateTaxi estimateTaxi) {
@@ -272,10 +180,24 @@ class _TaxiServiceRequestListPageState
                 ),
                 Expanded(
                   child: CustomButtonWithLinearBorder(
-                      onTap: () {
+                      onTap: () async {
                         Navigator.pop(context);
                         listRequestClientFunctionality
                             .confirmationService(estimateTaxi);
+
+                        var estimateTaxis = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ViewTaxiRequest(
+                              estimate: estimateTaxi,
+                            ),
+                          ),
+                        );
+                        EstimateTaxi? result = estimateTaxis;
+
+                        if (result != null) listEstimates.remove(result);
+                        listRequestClientFunctionality
+                            .listenConfirmationClient(listEstimates);
                       },
                       buttonBorderColor: colorMainDanger,
                       marginBotton: 0,

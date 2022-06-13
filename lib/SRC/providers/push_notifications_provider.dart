@@ -106,6 +106,23 @@ class PushNotificationService {
     saveKey();
   }
 
+  static Future getToken() async {
+    //Push Notifications
+
+    await Firebase.initializeApp();
+    token = await FirebaseMessaging.instance.getToken();
+    saveKey();
+  }
+  
+  
+  String? value;
+
+  valueToken() async {
+    await Firebase.initializeApp();
+    value = await FirebaseMessaging.instance.getToken();
+    return value;
+  }
+
   static closeStreams() {
     _messageStream.close();
   }

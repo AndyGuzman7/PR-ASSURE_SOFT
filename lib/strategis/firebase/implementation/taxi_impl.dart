@@ -23,7 +23,7 @@ class TaxiImpl extends ITaxi {
       await connection
           .reference()
           .child(NodeNameGallery.TAXI)
-          .child(value)
+          .child(value.toString())
           .update({'estado': status}).then(
         (_) async {
           success = true;

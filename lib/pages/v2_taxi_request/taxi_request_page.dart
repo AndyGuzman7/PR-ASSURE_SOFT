@@ -70,10 +70,12 @@ class _PruebaState extends State<TaxiRequestPage> {
     );
     customSlider = new CustomSlider();
     fieldPassengers = CustomTextField(
+      typeIput: TextInputType.number,
       hint: "Número de pasajeros",
       multiValidator: MultiValidator([
         RequiredValidator(errorText: 'Número de pasajeros requerido'),
-        NumberValidator(errorText: 'No puede ingresar letras')
+        NumberValidator(errorText: 'No puede ingresar letras'),
+        NumberValidatorZero(errorText: 'No se permite 0')
       ]),
       marginLeft: 0,
       marginRight: 0,

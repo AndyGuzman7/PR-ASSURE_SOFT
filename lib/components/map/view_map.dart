@@ -50,8 +50,8 @@ class _ViewMapState extends State<ViewMap> {
     double height = MediaQuery.of(context).size.height;
 
     return new Container(
-      height: height,
-      width: width,
+      color: Colors.green,
+      height: 20,
       child: FutureBuilder(
         future: locationService.getUbication(),
         builder: (_, AsyncSnapshot<LocationData> snapshot) {
@@ -74,18 +74,21 @@ class _ViewMapState extends State<ViewMap> {
               );
             }
 
-            return Expanded(
-                child: GoogleMap(
-              initialCameraPosition:
-                  CameraPosition(target: widget.latLngOrigin!, zoom: 15),
-              onMapCreated: (GoogleMapController controller) {},
-              mapToolbarEnabled: false,
-              compassEnabled: false,
-              myLocationEnabled: true,
-              markers: markersMap.createMarkersMap(
-                  widget.latLngOrigin!, widget.latLngDestine!),
-              mapType: MapType.normal,
-            ));
+            return Container(
+              color: Colors.red,
+              height: 20,
+              child: GoogleMap(
+                initialCameraPosition:
+                    CameraPosition(target: widget.latLngOrigin!, zoom: 15),
+                onMapCreated: (GoogleMapController controller) {},
+                mapToolbarEnabled: false,
+                compassEnabled: false,
+                myLocationEnabled: true,
+                markers: markersMap.createMarkersMap(
+                    widget.latLngOrigin!, widget.latLngDestine!),
+                mapType: MapType.normal,
+              ),
+            );
           } else {
             return Center(child: CircularProgressIndicator());
           }

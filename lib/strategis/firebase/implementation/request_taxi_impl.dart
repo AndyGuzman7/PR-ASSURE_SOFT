@@ -23,4 +23,18 @@ class RequestTaxiImpl extends IRequestTaxi {
     });
     return succes;
   }
+
+  @override
+  Future<String> updateNodeToken(value, valueToken) async {
+    String token = '';
+
+    await connection
+        .reference()
+        .child(NodeNameGallery.REQUESTTAXI)
+        .child(value)
+        .update({'token': valueToken}).then((value) {
+      token = valueToken;
+    });
+    return token;
+  }
 }

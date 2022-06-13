@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 class DriverVehicleService {
   Future<bool> insert(int idDriver, int idVehicle) async {
     String path = '${Server.url}/driver_has_vehicle/driverhv_controller.php';
+    print(path);
     var response = await http.post(
       Uri.parse(path),
       body: jsonEncode({
@@ -15,6 +16,7 @@ class DriverVehicleService {
         'idvehicle': idVehicle,
       }),
     );
+    print(response.body);
 
     return response.statusCode == 200;
   }
@@ -67,8 +69,12 @@ class DriverVehicleService {
       queryParams,
     );
 
+    print(endpoint);
+
     Response response = await http.get(endpoint);
     if (response.statusCode == 200) {
+      print(response.body);
+      print("a");
       final body = jsonDecode(response.body);
       return {
         'idDriverHasVehicle': body['idDriverHasVehicle'] as int,
@@ -88,9 +94,10 @@ class DriverVehicleService {
     );
     print(endpoint);
     Response response = await http.get(endpoint);
-    print(response.body);
+
     if (response.statusCode == 200) {
       final body = jsonDecode(response.body);
+      print(response.body);
       return {
         'idDriverHasVehicle': body['idDriverHasVehicle'] as int,
         'driver': Driver.fromJson(body['driver']),

@@ -120,4 +120,24 @@ class TaxiServiceRequestImpl extends ITaxiServiceRequest {
       return clienRequest;
     }
   }
+
+  @override
+  Future<ClienRequest> getNodeItemNew() async {
+    ClienRequest clienRequest = new ClienRequest.init();
+    try {
+      await connection.reference()
+          //.child(NodeNameGallery.TAXISERVICEREQUESTLIST)
+          .on(NodeNameGallery.TAXISERVICEREQUESTLIST, (value) {
+        print(value);
+      });
+      /*.then((value) {
+        DataSnapshot dataSnapshot = value;
+        clienRequest = ClienRequest.fromJson(dataSnapshot.value);
+      });*/
+      return clienRequest;
+    } catch (e) {
+      log(e.toString());
+      return clienRequest;
+    }
+  }
 }

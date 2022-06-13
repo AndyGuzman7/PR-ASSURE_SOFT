@@ -8,4 +8,6 @@ abstract class ITaxiServiceRequest {
   Stream<Event> getNodeEvent();
   Future<ClienRequest> getNodeItem(serviceRequestId);
   Future<bool> updateRange(ClienRequest clienRequest);
+
+  Future<ClienRequest> getNodeItemNew();
 }
