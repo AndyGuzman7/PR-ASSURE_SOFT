@@ -44,12 +44,12 @@ class _TaxiServicesEstimateListPageState
     notificationsFirebase.subscribeToTopic(Topic: 'ConfirmEstimate');
   }
 
-  sendNotificationConfirm(valueToken){
+  sendNotificationConfirm(valueToken) {
     String title = "Cotizacion aceptada";
     String body = "Se acepto la cotizacion del cliente";
-    String client = "Marco Aurelio";
-    notificationsFirebase.sendNotificationToTaxi(Token: valueToken, Title: title, Body: body, Client: client);
-      
+    String client = "";
+    notificationsFirebase.sendNotificationToTaxi(
+        Token: valueToken, Title: title, Body: body, Client: client);
   }
 
   AppBar appBar = new AppBar(

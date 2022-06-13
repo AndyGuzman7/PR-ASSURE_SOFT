@@ -72,7 +72,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
         color: Colors.amberAccent,
       ),
     ),
-    payload: message.data['notificaction']['body'], 
+    payload: message.data['notificaction']['body'],
   );
   print(message.data['notificaction']['body']);
 }
@@ -84,8 +84,7 @@ const AndroidNotificationChannel channel = AndroidNotificationChannel(
     description:
         'This channel is used for important notifications.', // description
     importance: Importance.high,
-    playSound: true
-);
+    playSound: true);
 
 final BehaviorSubject<String?> selectNotificationSubject =
     BehaviorSubject<String?>();
@@ -215,29 +214,27 @@ showConfirmNotification() {
 
 //evento abrir notificacion
 Future onSelectNotification(payload) async {
-  if(payload != null) {
+  if (payload != null) {
     debugPrint("Notificacion: $payload");
-    
   }
   selectedNotificationPayload = payload;
   selectNotificationSubject.add(payload);
 }
-    
+
 //metodo para configurar las notificaciones de envio a los telefonos
-settingNotification(){
+settingNotification() {
   //configuraciones para los permisos del dispositivo
   var initialzationSettingsAndroid =
-  AndroidInitializationSettings('@mipmap/ic_launcher');
-  var initializationSettings = InitializationSettings(android: initialzationSettingsAndroid,);
+      AndroidInitializationSettings('@mipmap/ic_launcher');
+  var initializationSettings = InitializationSettings(
+    android: initialzationSettingsAndroid,
+  );
   //configuracion para mostrar la notificacion
   flutterLocalNotificationsPlugin.initialize(
-    initializationSettings, 
+    initializationSettings,
     onSelectNotification: onSelectNotification,
   );
-  
 }
-
-
 
 class AppTaxiSegurito extends StatefulWidget {
   final String initialRoute;
@@ -270,7 +267,7 @@ class _AppTaxiSeguritoState extends State<AppTaxiSegurito> {
       theme: ThemeData(primarySwatch: Colors.amber),
       debugShowCheckedModeBanner: false,
 
-      initialRoute: 'taxiServicesEstimateListPage',
+      initialRoute: routeInitial,
       //home: ReceiveLocationDriver(),
       routes: {
         'sendMyUbication': (_) => SendMyUbication(),
